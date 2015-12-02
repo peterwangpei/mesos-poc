@@ -2,6 +2,8 @@
 `poc.Vagrantfile` 是一个通过 vagrant 来模拟真实部署环境的一个脚本。可以通过运行 vagrant 来运行脚本，
 来启动多个虚拟机，然后通过运行 ansible 脚本来执行自动化安装脚本
 
+> 自动化脚本默认是运行在 `ubuntu 14.04` 上， `centos` 支持将在有需要的时候支持
+
 ## 启动方法
 
 你的电脑必须先安装 `vagrant` `virtualbox` 以及 `ansible`
