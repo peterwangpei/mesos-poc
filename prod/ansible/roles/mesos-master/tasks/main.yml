@@ -1,0 +1,17 @@
+---
+
+- name: run mesos master container
+  docker:
+    name: mesos-master
+    image: mesoscloud/mesos-master:0.24.1-ubuntu-14.04
+    net: host
+    state: started
+    restart_policy: always
+    volumes:
+      - /var/log/mesos:/var/log/mesos
+      - /var/lib/mesos:/var/lib/mesos
+    env:
+      MESOS_HOSTNAME: "{{ hostname }}"
+      MESOS_IP: "{{ ipaddr }}"
+      MESOS_ZK: "{{ zk_addrs }}"
+      MESOS_QUORUM: "{{ quorum }}"

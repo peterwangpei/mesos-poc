@@ -1,0 +1,18 @@
+---
+
+- name: install zookeeper
+  docker:
+    name: zookeeper
+    image: mesoscloud/zookeeper:3.4.6-ubuntu-14.04
+    net: host
+    state: started
+    restart_policy: always
+    volumes:
+      - /var/lib/zookeeper:/tmp/zookeeper
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    env:
+      MYID: "{{ zookeeper_id }}"
+      SERVERS: "{{ servers }}"

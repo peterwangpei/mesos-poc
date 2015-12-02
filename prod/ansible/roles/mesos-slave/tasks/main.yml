@@ -1,0 +1,24 @@
+---
+
+- name: run mesos slave container
+  docker:
+    name: mesos-slave
+    image: mesoscloud/mesos-slave:0.24.1-ubuntu-14.04
+    net: host
+    pid: host
+    privileged: yes
+    state: started
+    restart_policy: always
+    volumes:
+      - /usr/bin/docker:/usr/bin/docker
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - /usr/lib/x86_64-linux-gnu/libapparmor.so.1:/usr/lib/x86_64-linux-gnu/libapparmor.so.1:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/log/mesos:/var/log/mesos
+      - /tmp/mesos:/tmp/mesos
+    env:
+      MESOS_HOSTNAME: "{{hostname}}"
+      MESOS_IP: "{{ipaddr}}"
+      MESOS_MASTER: "{{zk_addrs}}"
+      MESOS_ISOLATION: cgroups/cpu,cgroups/mem
+      MESOS_LOG_DIR: /var/log/mesos
