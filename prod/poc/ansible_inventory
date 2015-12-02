@@ -1,27 +1,31 @@
 [zk1]
 192.168.33.11 ansible_port=2222
 
-[zk2]
-192.168.33.12
-
 [mm1]
 192.168.33.21
 
 [ms1]
 192.168.33.31
 
+[ms2]
+192.168.33.32
+
+[ms3]
+192.168.33.33
+
 [zookeeper:children]
 zk1
-zk2
 
 [mesosmaster:children]
 mm1
 
 [mesosslave:children]
 ms1
+ms2
+ms3
 
 [all:vars]
-zk_addrs=zk://192.168.33.11:2181,192.168.33.11:2181/mesos
+zk_addrs=zk://192.168.33.11:2181/mesos
 # docker_opts='--insecure-registry 192.168.99.101:5000 --registry-mirror http://192.168.99.101:5000'
 
 [mm1:vars]
@@ -33,11 +37,16 @@ quorum=1
 hostname=192.168.33.31
 ipaddr=192.168.33.31
 
+[ms2:vars]
+hostname=192.168.33.32
+ipaddr=192.168.33.32
+
+[ms3:vars]
+hostname=192.168.33.33
+ipaddr=192.168.33.33
+
 [zookeeper:vars]
-servers=192.168.33.11,192.168.33.12
+servers=192.168.33.11
 
 [zk1:vars]
 zookeeper_id=1
-
-[zk2:vars]
-zookeeper_id=2

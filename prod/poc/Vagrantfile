@@ -15,9 +15,10 @@ Vagrant.configure(2) do |config|
 
   cluster = {
     "zk1" => "192.168.33.11",
-    "zk2" => "192.168.33.12",
     "mm1" => "192.168.33.21",
-    "ms1" => "192.168.33.31"
+    "ms1" => "192.168.33.31",
+    "ms2" => "192.168.33.32",
+    "ms3" => "192.168.33.33"
   }
 
   cluster.each_with_index do | (hostname, ipaddr), index |

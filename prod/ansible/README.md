@@ -15,5 +15,5 @@ CentOS install ansible:
 $ sudo yum install ansible
 ~~~~~~
 
-Run command `ansible-playbook -i poc mesos_playbook.yml` to install docker and run mesos cluster
-Run command `ansible-playbook -i poc k8s_playbook.yml` to run kubernetes master as mesos framework
+Run command `ansible-playbook -i ansible_inventory mesos_playbook.yml` to install docker and run mesos cluster
+Run command `ansible-playbook -i ansible_inventory k8s_playbook.yml` to run kubernetes master as mesos framework
