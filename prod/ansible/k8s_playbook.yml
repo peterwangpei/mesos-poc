@@ -1,0 +1,7 @@
+---
+
+- name: start kubernetes master
+  hosts: mesosmaster
+  sudo: yes
+  roles:
+    - role: kubernetes

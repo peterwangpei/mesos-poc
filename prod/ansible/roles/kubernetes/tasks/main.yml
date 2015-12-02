@@ -1,0 +1,14 @@
+---
+
+- name: start kubernetes master
+  docker:
+    name: kubernetes
+    image: mesosphere/kubernetes:v0.7.0-v1.1.1-alpha
+    net: host
+    state: started
+    restart_policy: always
+    env:
+      HOST: "{{ hostname }}"
+      DEFAULT_DNS_NAME: "{{ hostname }}"
+      K8SM_MESOS_MASTER: "{{ zk_addrs }}"
+      MESOS_SANDBOX: "/tmp"

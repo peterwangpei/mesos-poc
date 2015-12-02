@@ -41,7 +41,6 @@ ipaddr=10.229.45.144
 hostname=10.229.49.198
 ipaddr=10.229.49.198
 
-
 [ms3:vars]
 hostname=10.229.53.29
 ipaddr=10.229.53.29
