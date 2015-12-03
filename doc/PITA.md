@@ -1,5 +1,30 @@
 # 部署遇到的坑
 
+- **现象**：运行ansible脚本后，输出`fatal: => SSH Error: Permission denied (publickey,password)`
+- **问题**：密码里如果有关键字（如`#`），需要转义（如`\#`）
+- **对策**：修改ansible_inventory，将密码转义
+
+---
+
+- **现象**：运行ansible脚本安装完mesos之后，slave没有被注册上
+- **问题**：mesos slave的机器曾经启动过slave镜像，而最新的slave的镜像信息被修改过，导致不兼容
+- **对策**：运行`rm -f /tmp/mesos/meta/slaves/latest`删除旧的注册信息，然后重启slave镜像
+
+---
+
+- **问题**：镜像下载慢，如nginx
+- **对策**：运行如下脚本提前下载好，并push到本地的docker registry上
+
+ ```
+docker pull nginx
+docker tag nginx:latest 10.229.51.58:5050/nginx:latest
+docker push 10.229.51.58:5050/nginx:latest
+docker rmi nginx:latest 10.229.51.58:5050/nginx:latest
+```
+
+
+---
+
 - **问题**：gcr.io被墙
 - **对策**：手动将下面的包复制并导入到mesos-slave上  
 
