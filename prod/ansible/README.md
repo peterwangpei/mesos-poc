@@ -1,8 +1,9 @@
 
 ## 运行 ansible 脚本
 
-1. 运行命令 `ansible-playbook -i ansible_inventory ansible/mesos_playbook.yml` 安装docker和mesos集群
-2. 运行命令 `ansible-playbook -i ansible_inventory ansible/k8s_playbook.yml` 安装kubernetes
+1. 运行命令 `ansible-playbook -i ansible_inventory ansible/docker_playbook.yml` 安装和启动docker
+2. 运行命令 `ansible-playbook -i ansible_inventory ansible/mesos_playbook.yml` 安装mesos集群（含zookeeper、mesos master和mesos slave）
+3. 运行命令 `ansible-playbook -i ansible_inventory ansible/k8s_playbook.yml` 安装kubernetes
 
 
 ## 验证运行情况 ##

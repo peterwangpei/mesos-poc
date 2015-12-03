@@ -1,15 +1,5 @@
 ---
 
-- name: init docker env
-  hosts: all
-  sudo: yes
-  gather_facts: yes
-  roles:
-    - docker
-  tasks:
-    - apt: name=python-pip force=yes
-    - pip: name=docker-py
-
 - name: run zookeeper cluster
   hosts: zookeeper
   sudo: yes
