@@ -1,0 +1,14 @@
+---
+
+- name: init docker env
+  hosts: all
+  serial: 1
+  sudo: yes
+  gather_facts: yes
+  # tasks:
+  #   - command: /usr/bin/docker
+  #     register: result
+  #     ignore_errors: True
+  roles:
+    - role: docker
+      # when: result | failed

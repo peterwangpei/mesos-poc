@@ -1,0 +1,11 @@
+---
+
+- name: start kubernetes addones
+  hosts: localhost
+  roles:
+    - role: k8saddons
+      to_install:
+        # - skydns-rc
+        # - skydns-svc
+        - kube-ui-rc
+        - kube-ui-svc

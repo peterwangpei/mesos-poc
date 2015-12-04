@@ -1,0 +1,7 @@
+---
+
+- name: start kubernetes master
+  hosts: kubernetes
+  sudo: yes
+  roles:
+    - role: kubernetes # all in docker

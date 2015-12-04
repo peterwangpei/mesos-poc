@@ -1,0 +1,5 @@
+- name: start mesos slave cluster
+  hosts: mesosslave
+  sudo: yes
+  roles:
+    - role: mesos-slave

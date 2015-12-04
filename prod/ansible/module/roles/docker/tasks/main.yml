@@ -5,9 +5,11 @@
 - shell: uname -r
   register: uname_result
 - set_fact: uname={{ uname_result.stdout }}
-- apt: name={{ item }} update_cache=yes cache_valid_time=3600
+- apt: name={{ item }} update_cache=yes cache_valid_time=3600 force=yes
   with_items:
     - linux-image-extra-{{uname}}
     - docker-engine=1.9.1-0~trusty
 - template: src=../templates/docker.j2 dest=/etc/default/docker mode=0644
 - service: name=docker state=restarted enabled=true
+- apt: name=python-pip force=yes
+- pip: name=docker-py

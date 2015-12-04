@@ -1,0 +1,77 @@
+---
+
+# - shell: wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kubelet
+# - shell: chmod a+x kubelet && mv kubelet /usr/local/bin/
+# - shell: touch /var/log/kube-apiserver.log && touch /var/log/kube-scheduler.log && touch /var/log/kube-controller-manager.log
+# - shell: mkdir -p /etc/kubernetes/manifests /srv/kubernetes/manifests
+# - template: src=../templates/kube-apiserver.yaml.j2 dest=/etc/kubernetes/manifests/kube-apiserver.yaml mode=0644
+# - template: src=../templates/kube-scheduler.yaml.j2 dest=/srv/kubernetes/manifests/kube-scheduler.yaml mode=0644
+# - template: src=../templates/kube-controller-manager.yaml.j2 dest=/srv/kubernetes/manifests/kube-controller-manager.yaml mode=0644
+# - template: src=../templates/kubeletconf.j2 dest=/etc/default/kubelet mode=0644
+# - shell: wget https://github.com/kubernetes/kubernetes/raw/release-1.1/cluster/saltbase/salt/kubelet/initd && mv initd /etc/init.d/kubelet && chmod 755 /etc/init.d/kubelet
+# - shell: update-rc.d kubelet defaults
+
+- shell: mkdir -p /var/log/k8s
+- name: run kubnete api-server
+  docker:
+    name: kube-apiserver
+    image: peterwang115/kubernetes-mesos:1.1.2-ubuntu-14.04
+    net: host
+    state: started
+    restart_policy: always
+    command:
+      "apiserver
+      --address=0.0.0.0
+      --etcd-servers={{etcd_servers}}
+      --service-cluster-ip-range={{k8s_cluster_ip_range}}
+      --port={{api_port}}
+      --cloud-provider=mesos
+      --cloud-config=/etc/kubernetes/mesos-cloud.cfg
+      --secure-port=0
+      --v=1 1>> /var/log/k8s/kube-apiserver.log 2>&1"
+
+    volumes:
+      - /var/log/k8s:/var/log/k8s
+    env:
+      MESOS_MASTER: "{{mesos_zk_addrs}}"
+
+
+- name: run kubernetes controller manager
+  docker:
+    name: kube-cm
+    image: peterwang115/kubernetes-mesos:1.1.2-ubuntu-14.04
+    net: host
+    state: started
+    restart_policy: always
+    command:
+      "controller-manager
+      --master=http://127.0.0.1:{{api_port}}
+      --cloud-provider=mesos
+      --cloud-config=/etc/kubernetes/mesos-cloud.cfg
+      --v=1 1>>/var/log/k8s/kube-controller-manager.log 2>&1"
+    volumes:
+      - /var/log/k8s:/var/log/k8s
+    env:
+      MESOS_MASTER: "{{mesos_zk_addrs}}"
+
+- name: run kubernetes scheduler
+  docker:
+    name: kube-sche
+    image: peterwang115/kubernetes-mesos:1.1.2-ubuntu-14.04
+    net: host
+    state: started
+    restart_policy: always
+    command:
+      "scheduler
+      --address={{ipaddr}}
+      --mesos-master={{mesos_zk_addrs}}
+      --etcd-servers={{etcd_servers}}
+      --mesos-user=root
+      --api-servers={{k8s_master_url}}
+      --cluster-dns={{k8s_dns_server}}
+      --cluster-domain={{k8s_dns_domain}}
+      --v=2 1>>/var/log/k8s/kube-scheduler.log 2>&1"
+    volumes:
+      - /var/log/k8s:/var/log/k8s
+    env:
+      MESOS_MASTER: "{{mesos_zk_addrs}}"

@@ -1,7 +1,7 @@
 ---
 
 - name: start kubernetes master
-  hosts: mesosmaster
+  hosts: registry
   sudo: yes
   roles:
-    - role: kubernetes
+    - role: docker-registry

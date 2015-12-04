@@ -1,0 +1,9 @@
+---
+
+# - shell: wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kubectl && chmod a+x kubectl
+- template: src=../templates/{{item}}.yaml.j2 dest=/tmp/{{item}}.yaml
+  with_items:
+    "{{to_install}}"
+- shell: kubectl create -f /tmp/{{item}}.yaml -s {{k8s_master_url}} && rm /tmp/{{item}}.yaml
+  with_items:
+    "{{to_install}}"

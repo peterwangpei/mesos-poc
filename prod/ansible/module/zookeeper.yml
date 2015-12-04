@@ -1,0 +1,7 @@
+---
+
+- name: run zookeeper cluster
+  hosts: zookeeper
+  sudo: yes
+  roles:
+    - role: zookeeper

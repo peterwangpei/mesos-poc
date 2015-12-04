@@ -22,3 +22,5 @@
       MESOS_MASTER: "{{zk_addrs}}"
       MESOS_ISOLATION: cgroups/cpu,cgroups/mem
       MESOS_LOG_DIR: /var/log/mesos
+- name: import docker images
+  shell: docker load -i ../images/pause.tar && docker tag 2c40b0526b63 gcr.io/google_containers/pause:0.8.0

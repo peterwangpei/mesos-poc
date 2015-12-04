@@ -1,0 +1,22 @@
+---
+
+## docker must install in all machine
+# - include: module/docker.yml
+# - include: module/registry.yml
+
+## mesos cluster
+
+# - include: module/zookeeper.yml
+# - include: module/mesos_slave.yml
+# - include: module/mesos_master.yml
+
+## all in one docker kubernets
+# - include: module/k8s.yml
+
+## all in master kubernets demo
+
+# - include: module/etcd.yml
+# - include: module/k8s_cluster.yml
+
+## local should install kubernetes-cli or can run command `kubectl`
+# - include: module/k8s_addon.yml

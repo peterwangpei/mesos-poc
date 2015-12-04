@@ -1,0 +1,7 @@
+---
+
+- name: start etcd
+  hosts: etcd
+  sudo: yes
+  roles:
+    - role: etcd

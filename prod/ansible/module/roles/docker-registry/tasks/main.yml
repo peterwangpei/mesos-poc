@@ -1,0 +1,10 @@
+---
+
+- name: start a docker registry
+  docker:
+    name: registry
+    image: registry:2
+    net: host
+    restart_policy: always
+    volumes:
+      - /var/lib/registry:/var/lib/registry

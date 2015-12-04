@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kube-scheduler
+spec:
+  hostNetwork: true
+  containers:
+  - name: kube-scheduler
+    image: peterwang115/kubernetes-mesos:1.1.2-ubuntu-14.04
+    command:
+    - scheduler
+      --address={{ipaddr}}
+      --mesos-master={{mesos_zk_addrs}}
+      --etcd-servers={{etcd_servers}}
+      --mesos-user=root
+      --api-servers=http://{{ipaddr}}:{{api_port}}
+      --cluster-dns=10.10.10.10
+      --cluster-domain=cluster.local
+      --v=2 1>>/var/log/kube-scheduler.log 2>&1
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 10251
+      initialDelaySeconds: 15
+      timeoutSeconds: 1
+    volumeMounts:
+    - mountPath: /var/log/kube-scheduler.log
+      name: logfile
+  volumes:
+  - hostPath:
+      path: /var/log/kube-scheduler.log
+    name: logfile
