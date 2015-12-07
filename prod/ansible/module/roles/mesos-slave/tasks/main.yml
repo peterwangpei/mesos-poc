@@ -11,6 +11,7 @@
     restart_policy: always
     volumes:
       - /usr/bin/docker:/usr/bin/docker
+      - /dev:/dev
       - /sys/fs/cgroup:/sys/fs/cgroup
       - /usr/lib/x86_64-linux-gnu/libapparmor.so.1:/usr/lib/x86_64-linux-gnu/libapparmor.so.1:ro
       - /var/run/docker.sock:/var/run/docker.sock
@@ -22,5 +23,8 @@
       MESOS_MASTER: "{{zk_addrs}}"
       MESOS_ISOLATION: cgroups/cpu,cgroups/mem
       MESOS_LOG_DIR: /var/log/mesos
+
+-  copy: src=../images/pause.tar dest=/tmp/
 - name: import docker images
-  shell: docker load -i ../images/pause.tar && docker tag 2c40b0526b63 gcr.io/google_containers/pause:0.8.0
+  shell: docker load -i /tmp/pause.tar && docker tag 2c40b0526b63 gcr.io/google_containers/pause:0.8.0
+  ignore_errors: True
