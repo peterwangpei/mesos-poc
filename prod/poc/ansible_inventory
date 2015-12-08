@@ -16,6 +16,9 @@ localhost ansible_connection=local
 [km]
 10.229.50.219 ansible_user=root ansible_ssh_pass=
 
+[k8_addons:children]
+km
+
 [zookeeper:children]
 zk1
 
@@ -32,7 +35,7 @@ km
 
 [all:vars]
 zk_addrs=zk://10.229.51.58:2181/mesos
-#docker_opts='--insecure-registry= --registry-mirror='
+# docker_opts='--insecure-registry= --registry-mirror='
 
 [mm1:vars]
 hostname=10.229.50.219
@@ -58,5 +61,9 @@ servers=10.229.51.58
 zookeeper_id=1
 
 [km:vars]
-#deploy='["skydns-rc", "skydns-svc", "kube-ui-rc", "kube-ui-svc"]'
-deploy='["tomcat", "mysql-rc", "mysql-svc"]'
+
+[k8_addons:children]
+mysql_root_password=123456
+# deploy='["skydns-rc", "skydns-svc", "kube-ui-rc", "kube-ui-svc"]'
+# deploy='["tomcat", "mysql-rc", "mysql-svc"]'
+deploy='[]'

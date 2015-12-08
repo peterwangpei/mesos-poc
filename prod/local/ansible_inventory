@@ -1,6 +1,6 @@
 [localhost]
 # submit pods by command `kubectrl`
-localhost ansible_connection=local 
+localhost ansible_connection=local
 
 [zk1]
 192.168.33.11
@@ -22,6 +22,9 @@ localhost ansible_connection=local
 
 [registry]
 192.168.33.10
+
+[k8_addons:children]
+km
 
 [nfs:children]
 zk1
@@ -85,3 +88,11 @@ api_port=8888
 
 [km:vars]
 ipaddr=192.168.33.41
+
+[k8_addons:children]
+mysql_root_password=123456
+# deploy='["skydns-rc", "skydns-svc", "kube-ui-rc", "kube-ui-svc"]'
+# deploy='["tomcat", "mysql-rc", "mysql-svc"]'
+# deploy='["nfs-pv"]'
+deploy='[]'
+

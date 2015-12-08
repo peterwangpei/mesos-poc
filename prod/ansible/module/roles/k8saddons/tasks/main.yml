@@ -4,6 +4,6 @@
 - template: src=../templates/{{item}}.yaml.j2 dest=/tmp/{{item}}.yaml
   with_items:
     "{{deploy}}"
-- shell: kubectl create -f /tmp/{{item}}.yaml -s {{k8s_master_url}} && rm /tmp/{{item}}.yaml
+- shell: ./kubectl create -f /tmp/{{item}}.yaml -s {{k8s_master_url}} && rm /tmp/{{item}}.yaml
   with_items:
     "{{deploy}}"

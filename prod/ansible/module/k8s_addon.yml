@@ -1,7 +1,6 @@
 ---
 
 - name: start kubernetes addones
-  hosts: km
+  hosts: k8_addons
   roles:
     - role: k8saddons
-      mysql_root_password: 123456
