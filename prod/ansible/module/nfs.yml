@@ -1,0 +1,7 @@
+---
+
+- name: create nfs
+  hosts: nfs
+  sudo: yes
+  roles:
+    - role: nfs

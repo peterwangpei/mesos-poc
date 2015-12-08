@@ -19,7 +19,7 @@ Vagrant.configure(2) do |config|
     "zk1" => { :ip => "192.168.33.11", :mem => 512,  :cpu => 1},
     "mm1" => { :ip => "192.168.33.21", :mem => 512,  :cpu => 1},
     "ms1" => { :ip => "192.168.33.31", :mem => 1024, :cpu => 1},
-    "ms2" => { :ip => "192.168.33.32", :mem => 512,  :cpu => 1},
+    "ms2" => { :ip => "192.168.33.32", :mem => 1024,  :cpu => 2},
     "ms3" => { :ip => "192.168.33.33", :mem => 512,  :cpu => 1},
     "km"  => { :ip => "192.168.33.41", :mem => 512,  :cpu => 1}
   }
@@ -27,7 +27,7 @@ Vagrant.configure(2) do |config|
   cluster.each_with_index do | (hostname, info), index |
     config.vm.define hostname do | host |
       host.vm.provider "virtualbox" do |v|
-        v.name   = "kubernetes-mesos-#{hostname}"
+        # v.name   = "kubernetes-mesos-#{hostname}"
         v.memory = info[:mem]
         v.cpus = info[:cpu]
       end

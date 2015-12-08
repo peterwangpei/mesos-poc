@@ -23,6 +23,9 @@ localhost ansible_connection=local
 [registry]
 192.168.33.10
 
+[nfs:children]
+zk1
+
 [etcd:children]
 zk1
 

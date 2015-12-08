@@ -1,0 +1,7 @@
+---
+
+- apt: name=nfs-kernel-server update_cache=yes cache_valid_time=3600 force=yes
+- command: mkdir -m 777 -p /var/nfs && chown nobody:nogroup /var/nfs
+- template: src=../templates/exports.j2 dest=/etc/exports mode=0644
+- command: exportfs -a
+- service: name=nfs-kernel-server state=restarted enabled=true

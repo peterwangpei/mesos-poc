@@ -12,7 +12,6 @@
     volumes:
       - /usr/bin/docker:/usr/bin/docker
       - /dev:/dev
-      - /sys/fs/cgroup:/sys/fs/cgroup
       - /usr/lib/x86_64-linux-gnu/libapparmor.so.1:/usr/lib/x86_64-linux-gnu/libapparmor.so.1:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/log/mesos:/var/log/mesos

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mysql-rc
+  labels:
+    name: mysql-rc
+spec:
+  replicas: 1
+  selector:
+    name: mysql
+  template:
+    metadata:
+      labels:
+        name: mysql
+    spec:
+      containers:
+        - image: library/mysql:5.7
+          name: mysql
+          resources:
+            limits:
+              cpu: 1
+              memory: 200Mi
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              # change this
+              value: "{{mysql_root_password}}"
+          ports:
+            - containerPort: 3306
+              name: mysql
