@@ -1,8 +1,10 @@
 # kubernetes-mesos 安装指南 #
 
-> 以下安装方法针对的是单节点集群，不是高可用集群，如需安装高可用集群的，  
-> 在熟悉单节点集群的安装方法下，参考 `prod/ansible` 下的安装脚本  
-> 在条件满足的情况下，可以使用 virtualbox 来模拟高可用集群，具体方法参考 `prod/local`
+> 以下安装方法针对的是单节点集群，不是高可用集群，
+> 如需安装高可用集群的， 在熟悉单节点集群的安装方法后，参考 `prod/ansible` 下的安装脚本  
+> 在条件满足的情况下，可以使用 virtualbox/vagrant 在本地模拟运行，具体方法请参考 `prod/local`
+
+> 在部署过程中可能会遇到的问题，请先参考 `doc/PITA.md`
 
 1. 在所有宿主机上安装 docker， 安装步骤请参考 `doc/docker-install` 文件夹
 2. 安装 zookeeper 镜像，命令如下
@@ -73,7 +75,7 @@
     详细的 kubernete，及原理 请参考 `doc/deploy kubernetes.md` `doc/kubernetes.md`
 
 
-> 再部署过程中 可能会遇到的问题 请参考 `doc/PITA.md`
+
 
 ## 验证运行情况
 
