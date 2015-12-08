@@ -1,14 +1,7 @@
 ---
 
 - name: start kubernetes addones
-  hosts: localhost
+  hosts: km
   roles:
     - role: k8saddons
       mysql_root_password: 123456
-      to_install:
-        # - mysql-rc
-        # - mysql-svc
-        # - skydns-rc
-        # - skydns-svc
-        # - kube-ui-rc
-        # - kube-ui-svc
