@@ -1,0 +1,51 @@
+kind: ReplicationController        # 建议填写。对于rc来说，填ReplicationController。
+apiVersion: v1                     # 建议填写。目前版本为v1。
+metadata:                          # 建议填写。
+  name: tomcat                     # 建议填写。此rc的名称，不能重复。
+  namespace:                       # 命名空间，默认为default。
+  uid:                             # 通用唯一识别码。
+spec:                              # 建议填写。
+  replicas: 1                      # 建议填写。生成pod的实例个数。
+  selector:                        # 建议填写。选择指定label的资源。
+    app: tomcat                    # 建议填写。本行是label的一个例子。
+  template:                        # 建议填写。
+    metadata:                      # 建议填写。定义元数据。
+      name:                        # 建议填写。指定资源的名称，不能重复。
+      generateName:                # 指定资源的名称前缀，只有当没指定name的时候生效。
+      namespace:                   # 命名空间，默认为default。
+      uid:                         # 通用唯一识别码。
+      labels:                      # 建议填写。指定资源的label。
+        app: tomcat                # 建议填写。本行是label的一个例子。
+      annotations:                 # 非结构化数据，可以被读取。
+    spec:                          # 建议填写。
+      containers:                  # 建议填写。定义容器。
+      - name: tomcat               # 建议填写。指定容器的名称，不能重复。
+        image: tomcat              # 建议填写。指定镜像的名称。
+        command:                   # 代替Entrypoint的命令。字符串数组。
+        args:                      # Entrypoint的参数。若指定了command则为command的参数。字符串数组。
+        workingDir:                # 容器的WORKDIR。不指定则为默认的容器WORKDIR。
+        ports:                     # 建议填写。
+        - name:                    # 指定端口的名称，不能重复。
+          hostPort:                # 暴露给主机的端口。0 < x < 65536。
+          containerPort: 8080      # 必须填写。暴露给pod的端口。0 < x < 65536。
+          protocol:                # 指定端口的协议。UDP或TCP，默认为TCP。
+          hostIP:                  # 暴露端口给此IP。
+        env:                       # 定义环境变量。
+        - name:                    # 环境变量名。
+          value:                   # 环境变量值。默认为空字符串。
+          valueFrom:               # 定义环境变量来源。value为空时才生效。
+            fieldRef:              # 定义在pod中选取字段。
+              apiVersion:          # 取得fieldPath的版本，默认为v1。
+              fieldPath:           # 若指定了fieldRef，则此为必填项。字段路径。
+        resources:                 # 定义资源。
+          limits:                  # 资源上限。
+            cpu: 2.5               # 定义cpu资源。
+            memory: 2Gi            # 定义内存资源。
+          requests:                # 需求资源。
+            cpu: 100m              # 格式同上。本行意为申请0.1个cpu资源。
+            memory: 256Mi          # 格式同上。本行意为申请256M的内存资源。
+        volumeMounts:              # 指定卷。
+          name:                    # 指定卷的名称。若指定了volumeMounts，则此为必填项。
+          readOnly:                # 指定是否为只读。默认为false。
+          mountPath:               # 指定容器内的加载路径。若指定了volumeMounts，则此为必填项。
+        xxx:                       # 其余可参考http://kubernetes.io/v1.1/docs/api-reference/v1/definitions.html#_v1_container
