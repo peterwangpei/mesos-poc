@@ -1,0 +1,20 @@
+kind: Service                      # 建议填写。对于svc来说，填Service。
+apiVersion: v1                     # 建议填写。目前版本为v1。
+metadata:                          # 建议填写。
+  name: tomcat                     # 建议填写。此rc的名称，不能重复。
+  namespace:                       # 命名空间，默认为default。
+  uid:                             # 通用唯一识别码。
+spec:                              # 建议填写。
+  ports:                           # 指定服务端口信息。
+  - name:                          # 指定端口的名称，不能重复。
+    protocol:                      # 指定端口的协议。UDP或TCP，默认为TCP。
+    port: 80                       # 指定服务的端口。
+    targetPort: 8080               # 操作pod的端口号或端口名称。0 < x < 65536。
+    nodePort: 30088                # 服务在node上暴露的端口。仅当type为NodePort或LoadBalancer时生效。
+  selector:                        # 建议填写。选择指定label的资源。
+    app: tomcat                    # 建议填写。本行是label的一个例子。
+  clusterIP:                       # 分配给本服务的IP。
+  type: NodePort                   # 服务类型，ClusterIP，NodePort或LoadBalancer，默认为ClusterIP。详细可参考http://kubernetes.io/v1.1/docs/user-guide/services.html#external-services
+  externalIPs:                     # 指定一个k8s外部服务的IP，使本服务关联到此外部服务。字符串数组。
+  sessionAffinity:                 # 指定会话类型。ClientIP或None，默认为None。详细可参考http://kubernetes.io/v1.1/docs/user-guide/services.html#virtual-ips-and-service-proxies
+  loadBalancerIP:                  # 指定负载均衡服务器的IP。仅当type为LoadBalancer且负载均衡提供商支持时才生效。
