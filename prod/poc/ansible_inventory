@@ -62,7 +62,7 @@ zookeeper_id=1
 
 [km:vars]
 
-[k8_addons:children]
+[k8_addons:vars]
 mysql_root_password=123456
 # deploy='["skydns-rc", "skydns-svc", "kube-ui-rc", "kube-ui-svc"]'
 # deploy='["tomcat", "mysql-rc", "mysql-svc"]'

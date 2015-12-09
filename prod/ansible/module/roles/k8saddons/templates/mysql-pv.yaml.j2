@@ -1,0 +1,83 @@
+---
+## PersistentVolume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{nfs_server}}
+    path: "{{nfs_path}}"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sqlpvclaim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 512Mi
+
+
+---
+
+## mysql
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mysql-rc
+  labels:
+    name: mysql-rc
+spec:
+  replicas: 1
+  selector:
+    name: mysql
+  template:
+    metadata:
+      labels:
+        name: mysql
+    spec:
+      containers:
+        - image: library/mysql:5.7
+          name: mysql
+          resources:
+            limits:
+              cpu: 1
+              memory: 200Mi
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              # change this
+              value: "{{mysql_root_password}}"
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - mountPath: "/var/lib/mysql"
+              name: mypd
+      volumes:
+        - name: mypd
+          persistentVolumeClaim:
+            claimName: sqlpvclaim
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: mysql-svc
+  name: mysql-svc
+spec:
+  ports:
+    # the port that this service should serve on
+    - port: 3306
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    name: mysql

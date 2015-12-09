@@ -83,3 +83,10 @@
 2. 验证 mesos master 和 mesos slave， 打开网页 `http://<mesosmaster>:5050`, 查看 master、slave 和 framework 的运行情况
 3. 验证 kubernetes， 打开网页 `http://<mesosmaster>:8888`, 查看 kubernetes 的运行界面
 
+<!--
+apt-get install nfs-common
+kubectl run nginx --image=nginx --server=http://192.168.33.41:8888
+kubectl resize --replicas=4 rc rcgame
+kubectl expose rc nginx --port=80
+kubectl describe services/nginx --server=http://192.168.33.41:8888
+-->

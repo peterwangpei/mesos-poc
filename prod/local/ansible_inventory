@@ -24,7 +24,7 @@ localhost ansible_connection=local
 192.168.33.10
 
 [k8_addons:children]
-km
+localhost
 
 [nfs:children]
 zk1
@@ -89,10 +89,10 @@ api_port=8888
 [km:vars]
 ipaddr=192.168.33.41
 
-[k8_addons:children]
+[k8_addons:vars]
 mysql_root_password=123456
-# deploy='["skydns-rc", "skydns-svc", "kube-ui-rc", "kube-ui-svc"]'
-# deploy='["tomcat", "mysql-rc", "mysql-svc"]'
-# deploy='["nfs-pv"]'
-deploy='[]'
-
+nfs_server=192.168.33.11
+nfs_path=/var/nfs
+# deploy='["skydns", "kube-ui"]'
+# deploy='["tomcat", "mysql-pv", "wordpress"]'
+deploy='["mysql-pv"]'
