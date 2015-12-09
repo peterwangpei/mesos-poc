@@ -46,12 +46,12 @@ spec:
         name: mysql
     spec:
       containers:
-        - image: library/mysql:5.7
+        - image: library/mysql:5.7.9
           name: mysql
           resources:
             limits:
               cpu: 1
-              memory: 200Mi
+              memory: 300Mi
           env:
             - name: MYSQL_ROOT_PASSWORD
               # change this

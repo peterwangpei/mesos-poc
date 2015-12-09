@@ -61,6 +61,7 @@ servers=10.229.51.58
 zookeeper_id=1
 
 [km:vars]
+ipaddr=10.229.50.219
 
 [k8_addons:vars]
 mysql_root_password=123456
