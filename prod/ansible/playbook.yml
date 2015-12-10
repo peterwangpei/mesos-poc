@@ -20,5 +20,5 @@
 # - include: module/k8s_cluster.yml
 
 ## local should install kubernetes-cli or can run command `kubectl`
-- include: module/k8s_addon.yml
 # - include: module/nfs.yml
+- include: module/k8s_addon.yml

@@ -92,7 +92,7 @@ ipaddr=192.168.33.41
 [k8_addons:vars]
 mysql_root_password=123456
 nfs_server=192.168.33.11
-nfs_path=/var/nfs
+nfs_path=/var/nfs/mysql
 # deploy='["skydns", "kube-ui"]'
 # deploy='["tomcat", "mysql-pv", "wordpress"]'
-deploy='["mysql-pv"]'
+deploy='["wordpress"]'

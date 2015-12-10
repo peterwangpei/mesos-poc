@@ -59,6 +59,7 @@ spec:
           ports:
             - containerPort: 3306
               name: mysql
+              protocol: TCP
           volumeMounts:
             - mountPath: "/var/lib/mysql"
               name: mypd
@@ -77,7 +78,9 @@ metadata:
 spec:
   ports:
     # the port that this service should serve on
-    - port: 3306
+    - name: mysql
+      port: 3306
+      protocol: TCP
   # label keys and values that must match in order to receive traffic for this service
   selector:
     name: mysql
