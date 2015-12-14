@@ -26,6 +26,9 @@ localhost ansible_connection=local
 [k8_addons:children]
 localhost
 
+[keygen:children]
+km
+
 [nfs:children]
 zk1
 
@@ -95,4 +98,5 @@ nfs_server=192.168.33.11
 nfs_path=/var/nfs/mysql
 # deploy='["skydns", "kube-ui"]'
 # deploy='["tomcat", "mysql-pv", "wordpress"]'
-deploy='["wordpress"]'
+# deploy='["wordpress"]'
+deploy='["nginx"]'

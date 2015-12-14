@@ -23,15 +23,22 @@
       "apiserver
       --address=0.0.0.0
       --etcd-servers={{etcd_servers}}
+      --admission-control='ServiceAccount'
+      --authorization-mode=AlwaysAllow
+      --service-account-key-file='/var/run/kubernetes/auth/serviceaccount.key'
       --service-cluster-ip-range={{k8s_cluster_ip_range}}
       --port={{api_port}}
       --cloud-provider=mesos
       --cloud-config=/etc/kubernetes/mesos-cloud.cfg
       --secure-port=0
+      --client-ca-file=/var/run/kubernetes/auth/ca.crt
+      --tls-private-key-file=/var/run/kubernetes/auth/server.key
+      --tls-cert-file=/var/run/kubernetes/auth/server.crt
       --v=1 1>> /var/log/k8s/kube-apiserver.log 2>&1"
 
     volumes:
       - /var/log/k8s:/var/log/k8s
+      - /var/run/kubernetes/auth:/var/run/kubernetes/auth
     env:
       MESOS_MASTER: "{{mesos_zk_addrs}}"
 
@@ -47,10 +54,14 @@
       "controller-manager
       --master=http://127.0.0.1:{{api_port}}
       --cloud-provider=mesos
+      --service-account-private-key-file='/var/run/kubernetes/auth/serviceaccount.key'
       --cloud-config=/etc/kubernetes/mesos-cloud.cfg
+      --root-ca-file=/var/run/kubernetes/auth/ca.crt
+      --service-account-private-key-file=/var/run/kubernetes/auth/server.key
       --v=1 1>>/var/log/k8s/kube-controller-manager.log 2>&1"
     volumes:
       - /var/log/k8s:/var/log/k8s
+      - /var/run/kubernetes/auth:/var/run/kubernetes/auth
     env:
       MESOS_MASTER: "{{mesos_zk_addrs}}"
 
@@ -75,3 +86,16 @@
       - /var/log/k8s:/var/log/k8s
     env:
       MESOS_MASTER: "{{mesos_zk_addrs}}"
+
+      # --client-ca-file=/var/run/kubernetes/auth/ca.crt
+      # --tls-private-key-file=/var/run/kubernetes/auth/server.key
+      # --tls-cert-file=/var/run/kubernetes/auth/server.crt
+
+      # --root-ca-file=/var/run/kubernetes/auth/ca.crt
+      # --service-account-private-key-file=/var/run/kubernetes/auth/server.key
+
+  # openssl genrsa -out ca.key 2048
+  # openssl req -x509 -new -nodes -key ca.key -subj "/CN=cluster.local" -days 5000 -out ca.crt
+  # openssl genrsa -out server.key 2048
+  # openssl req -new -key server.key -subj "/CN=cluster.local" -out server.csr
+  # openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 5000

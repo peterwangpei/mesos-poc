@@ -2,6 +2,7 @@
 
 - name: init docker env
   hosts: all
+  # hosts: ms23
   serial: 1
   sudo: yes
   gather_facts: yes
