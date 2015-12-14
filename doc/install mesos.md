@@ -255,7 +255,7 @@ mesos-slave --master=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或�
 1. 下载master镜像
 
 	~~~
-	docker pull mesosphere/mesos-master:0.25.0-0.2.70.ubuntu1404
+	docker pull mesoscloud/mesos-slave:0.24.1-ubuntu-14.04
 	~~~
 	
 2. 禁用宿主机防火墙
@@ -287,13 +287,12 @@ mesos-slave --master=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或�
    --restart=always \
    -v /var/log/mesos:/var/log/mesos \
    -v /var/lib/mesos:/var/lib/mesos \
-   mesosphere/mesos-master:0.25.0-0.2.70.ubuntu1404 \
-   --ip=$HOST_IP --port=5050 \
-   --hostname=$HOST_IP \
-   --zk=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或者主机名}:2181,...{zk服务器IP或者主机名}:2181/mesos \
-   --quorum=1 --cluster=mesos \
-   --log_dir=/var/log/mesos \
-   --work_dir=/var/lib/mesos
+   -e MESOS_HOSTNAME=$HOST_IP \
+   -e MESOS_IP=$HOST_IP \
+   -e MESOS_ZK=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或者主机名}:2181,...{zk服务器IP或者主机名}:2181/mesos \
+   -e MESOS_QUORUM=1 \
+   -e MESOS_LOG_DIR=/var/log/mesos
+   mesoscloud/mesos-master:0.24.1-ubuntu-14.04
    ~~~
 4. 验证master
  
@@ -305,8 +304,8 @@ mesos-slave --master=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或�
 
  	~~~
  	#Host为Ubuntu
-	docker pull mesosphere/mesos-slave:0.25.0-0.2.70.ubuntu1404	
-	#Host为CentOS
+	docker pull mesoscloud/mesos-slave:0.24.1-ubuntu-14.04
+	#Host为CentOS(mesosphere/mesos-slave:0.25.0-0.2.70.ubuntu1404)
 	
 	#如果Host与Container的操作系统不一致，需要重新生成镜像，并且在镜像中安装Docker。以下示例来自官方DockerFile，并在此基础上添加了docker的安装命令。
 	
@@ -319,6 +318,8 @@ mesos-slave --master=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或�
 	RUN apt-get -y install mesos=VERSION
 	RUN apt-get -y install docker.io
 	~~~
+	#Host为CentOS(mesoscloud/mesos-slave:0.24.1-ubuntu-14.04)
+	待定
  	
 2. 启动slave容器
    
@@ -333,22 +334,18 @@ mesos-slave --master=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或�
    --pid=host \
    --net=host \
    --privileged=true \
-   -v /sys:/sys \
-   -v /cgroup:/cgroup \
-   -v /proc:/host/proc:ro \
-   -v /sandbox:/sandbox \
-   -v /var/bin/docker:/var/bin/docker \
-   -v /var/run/docker.sock:/var/run/docker.sock \
+   -v /usr/bin/docker:/usr/bin/docker \
+   -v /dev:/dev \
    -v /lib64:/lib64 \
-   mesosphere/mesos-slave:0.25.0-0.2.70.ubuntu1404 \
-   --ip=$HOST_IP \
-   --port=5051 \
-   --hostname=$HOST_IP \
-   --master=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或者主机名}:2181,{zk服务器IP或者主机名}:2181,.../mesos \
-   --containerizers=docker,mesos \
-   --isolation=cgroups/cpu,cgroups/mem \
-   --log_dir=/var/log/mesos \
-   --work_dir=/sandbox
+   -v /var/run/docker.sock:/var/run/docker.sock \
+   -v /var/log/mesos:/var/log/mesos \
+   -v /tmp/mesos:/tmp/mesos \
+   -e MESOS_HOSTNAME=$HOST_IP \
+   -e MESOS_IP=$HOST_IP \
+   -e MESOS_MASTER=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或者主机名}:2181,...{zk服务器IP或者主机名}:2181/mesos \
+   -e MESOS_ISOLATION=cgroups/cpu,cgroups/mem \
+   -e MESOS_LOG_DIR=/var/log/mesos \
+   mesoscloud/mesos-slave:0.24.1-ubuntu-14.04
    
    #Host为Ubuntu
 	docker run -d \
@@ -357,22 +354,18 @@ mesos-slave --master=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或�
    --net=host \
    --restart=always \
    --privileged=true \
-   -v /sys:/sys \
-   -v /cgroup:/cgroup \
-   -v /proc:/host/proc:ro \
-   -v /sandbox:/sandbox \
-   -v /var/bin/docker:/var/bin/docker \
-   -v /var/run/docker.sock:/var/run/docker.sock \
+   -v /usr/bin/docker:/usr/bin/docker \
+   -v /dev:/dev \
    -v /usr/lib/x86_64-linux-gnu/libapparmor.so.1:/usr/lib/x86_64-linux-gnu/libapparmor.so.1:ro \
-   mesosphere/mesos-slave:0.25.0-0.2.70.ubuntu1404 \
-   --ip=$HOST_IP \
-   --port=5051 \
-   --hostname=$HOST_IP \
-   --master=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或者主机名}:2181,{zk服务器IP或者主机名}:2181,.../mesos \
-   --containerizers=docker,mesos \
-   --isolation=cgroups/cpu,cgroups/mem \
-   --log_dir=/var/log/mesos \
-   --work_dir=/sandbox 
+   -v /var/run/docker.sock:/var/run/docker.sock \
+   -v /var/log/mesos:/var/log/mesos \
+   -v /tmp/mesos:/tmp/mesos \
+   -e MESOS_HOSTNAME=$HOST_IP \
+   -e MESOS_IP=$HOST_IP \
+   -e MESOS_MASTER=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或者主机名}:2181,...{zk服务器IP或者主机名}:2181/mesos \
+   -e MESOS_ISOLATION=cgroups/cpu,cgroups/mem \
+   -e MESOS_LOG_DIR=/var/log/mesos \
+   mesoscloud/mesos-slave:0.24.1-ubuntu-14.04
    
    #如果在镜像中安装了Docker，则使用如下命令启动容器
    	docker run -d \
@@ -380,20 +373,17 @@ mesos-slave --master=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或�
    --pid=host \
    --net=host \
    --privileged=true \
-   -v /sys:/sys \
-   -v /cgroup:/cgroup \
-   -v /proc:/host/proc:ro \
-   -v /sandbox:/sandbox \
+   -v /usr/bin/docker:/usr/bin/docker \
+   -v /dev:/dev \
    -v /var/run/docker.sock:/var/run/docker.sock \
-   mesosphere/mesos-slave:0.25.0-0.2.70.ubuntu1404 \
-   --ip=127.0.0.1 \
-   --port=5051 \
-   --hostname=127.0.0.1\
-   --master=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或者主机名}:2181,{zk服务器IP或者主机名}:2181,.../mesos \
-   --containerizers=docker,mesos \
-   --isolation=cgroups/cpu,cgroups/mem \
-   --log_dir=/var/log/mesos \
-   --work_dir=/sandbox 
+   -v /var/log/mesos:/var/log/mesos \
+   -v /tmp/mesos:/tmp/mesos \
+   -e MESOS_HOSTNAME=$HOST_IP \
+   -e MESOS_IP=$HOST_IP \
+   -e MESOS_MASTER=zk://{zk服务器IP或者主机名}:2181,{zk服务器IP或者主机名}:2181,...{zk服务器IP或者主机名}:2181/mesos \
+   -e MESOS_ISOLATION=cgroups/cpu,cgroups/mem \
+   -e MESOS_LOG_DIR=/var/log/mesos \
+   mesoscloud/mesos-slave:0.24.1-ubuntu-14.04
    ~~~
    
 3. 验证slave
