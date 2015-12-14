@@ -36,6 +36,8 @@ km
 [all:vars]
 zk_addrs=zk://10.229.51.58:2181/mesos
 # docker_opts='--insecure-registry= --registry-mirror='
+docker_opts='--insecure-registry 10.229.51.58:5000 --registry-mirror http://10.229.51.58:5000'
+k8s_master_url=http://10.229.50.219:8888 
 
 [mm1:vars]
 hostname=10.229.50.219
@@ -67,4 +69,4 @@ ipaddr=10.229.50.219
 mysql_root_password=123456
 # deploy='["skydns-rc", "skydns-svc", "kube-ui-rc", "kube-ui-svc"]'
 # deploy='["tomcat", "mysql-rc", "mysql-svc"]'
-deploy='[]'
+deploy='["tomcat", "mysql"]'
