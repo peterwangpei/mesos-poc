@@ -11,16 +11,17 @@
 # - shell: wget https://github.com/kubernetes/kubernetes/raw/release-1.1/cluster/saltbase/salt/kubelet/initd && mv initd /etc/init.d/kubelet && chmod 755 /etc/init.d/kubelet
 # - shell: update-rc.d kubelet defaults
 
-- shell: mkdir -p /var/log/k8s
+- shell: mkdir -p /var/log/k8s /etc/kubernetes/
+- template: src=../templates/mesos-cloud.cfg.j2 dest=/etc/kubernetes/mesos-cloud.cfg mode=0644
 - name: run kubnete api-server
   docker:
     name: kube-apiserver
-    image: peterwang115/kubernetes-mesos:1.1.2-ubuntu-14.04
+    image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
     net: host
     state: started
     restart_policy: always
     command:
-      "apiserver
+      "km apiserver
       --address=0.0.0.0
       --etcd-servers={{etcd_servers}}
       --admission-control='ServiceAccount'
@@ -38,20 +39,18 @@
 
     volumes:
       - /var/log/k8s:/var/log/k8s
-      - /var/run/kubernetes/auth:/var/run/kubernetes/auth
-    env:
-      MESOS_MASTER: "{{mesos_zk_addrs}}"
-
+      - /etc/kubernetes:/etc/kubernetes
+      - /etc/kubernetes/auth:/var/run/kubernetes/auth
 
 - name: run kubernetes controller manager
   docker:
     name: kube-cm
-    image: peterwang115/kubernetes-mesos:1.1.2-ubuntu-14.04
+    image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
     net: host
     state: started
     restart_policy: always
     command:
-      "controller-manager
+      "km controller-manager
       --master=http://127.0.0.1:{{api_port}}
       --cloud-provider=mesos
       --service-account-private-key-file='/var/run/kubernetes/auth/serviceaccount.key'
@@ -60,20 +59,19 @@
       --service-account-private-key-file=/var/run/kubernetes/auth/server.key
       --v=1 1>>/var/log/k8s/kube-controller-manager.log 2>&1"
     volumes:
+      - /etc/kubernetes:/etc/kubernetes
       - /var/log/k8s:/var/log/k8s
-      - /var/run/kubernetes/auth:/var/run/kubernetes/auth
-    env:
-      MESOS_MASTER: "{{mesos_zk_addrs}}"
+      - /etc/kubernetes/auth:/var/run/kubernetes/auth
 
 - name: run kubernetes scheduler
   docker:
     name: kube-sche
-    image: peterwang115/kubernetes-mesos:1.1.2-ubuntu-14.04
+    image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
     net: host
     state: started
     restart_policy: always
     command:
-      "scheduler
+      "km scheduler
       --address={{ipaddr}}
       --mesos-master={{mesos_zk_addrs}}
       --etcd-servers={{etcd_servers}}
@@ -84,8 +82,6 @@
       --v=2 1>>/var/log/k8s/kube-scheduler.log 2>&1"
     volumes:
       - /var/log/k8s:/var/log/k8s
-    env:
-      MESOS_MASTER: "{{mesos_zk_addrs}}"
 
       # --client-ca-file=/var/run/kubernetes/auth/ca.crt
       # --tls-private-key-file=/var/run/kubernetes/auth/server.key
@@ -94,6 +90,7 @@
       # --root-ca-file=/var/run/kubernetes/auth/ca.crt
       # --service-account-private-key-file=/var/run/kubernetes/auth/server.key
 
+  # openssl genrsa -out /tmp/serviceaccount.key 2048
   # openssl genrsa -out ca.key 2048
   # openssl req -x509 -new -nodes -key ca.key -subj "/CN=cluster.local" -days 5000 -out ca.crt
   # openssl genrsa -out server.key 2048
