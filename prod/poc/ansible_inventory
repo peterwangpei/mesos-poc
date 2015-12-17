@@ -16,6 +16,9 @@ localhost ansible_connection=local
 [km]
 10.229.50.219 ansible_user=root ansible_ssh_pass=
 
+[hap]
+localhost ansible_connection=local
+
 [k8_addons:children]
 km
 
@@ -61,6 +64,10 @@ servers=10.229.51.58
 
 [zk1:vars]
 zookeeper_id=1
+
+[hap:vars]
+zk_ip=10.229.51.58
+mm_ip=10.229.50.219
 
 [km:vars]
 ipaddr=10.229.50.219
