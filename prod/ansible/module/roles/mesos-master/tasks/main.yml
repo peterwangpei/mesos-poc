@@ -13,6 +13,6 @@
     env:
       MESOS_HOSTNAME: "{{ hostname }}"
       MESOS_IP: "{{ ipaddr }}"
-      MESOS_ZK: "{{ zk_addrs }}"
+      MESOS_ZK: "{{ mesos_zk_addrs }}"
       MESOS_QUORUM: "{{ quorum }}"
       MESOS_LOG_DIR: /var/log/mesos

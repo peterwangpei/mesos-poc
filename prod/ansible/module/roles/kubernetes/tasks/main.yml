@@ -10,5 +10,5 @@
     env:
       HOST: "{{ hostname }}"
       DEFAULT_DNS_NAME: "{{ hostname }}"
-      K8SM_MESOS_MASTER: "{{ zk_addrs }}"
+      K8SM_MESOS_MASTER: "{{ mesos_zk_addrs }}"
       MESOS_SANDBOX: "/tmp"

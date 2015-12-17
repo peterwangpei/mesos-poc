@@ -6,13 +6,14 @@ spec:
   hostNetwork: true
   containers:
   - name: kube-controller-manager
-    image: peterwang115/kubernetes-mesos:1.1.2-ubuntu-14.04
+    image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
     command:
+    - km
     - controller-manager
-      --master=http://{{ipaddr}}:{{api_port}}
-      --cloud-provider=mesos
-      --cloud-config=/etc/kubernetes/mesos-cloud.cfg
-      --v=1 1>>/var/log/kube-controller-manager.log 2>&1
+    - --master=http://{{ipaddr}}:{{api_port}}
+    - --cloud-provider=mesos
+    - --cloud-config=/etc/kubernetes/mesos-cloud.cfg
+    - --v=1
     livenessProbe:
       httpGet:
         path: /healthz
@@ -20,9 +21,9 @@ spec:
       initialDelaySeconds: 15
       timeoutSeconds: 1
     volumeMounts:
-    - mountPath: /var/log/kube-controller-manager.log
-      name: logfile
+    - mountPath: /etc/kubernetes
+      name: mesoscfg
   volumes:
   - hostPath:
-      path: /var/log/kube-controller-manager.log
-    name: logfile
+      path: /etc/kubernetes
+    name: mesoscfg

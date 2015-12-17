@@ -19,7 +19,7 @@
 #     env:
 #       MESOS_HOSTNAME: "{{hostname}}"
 #       MESOS_IP: "{{ipaddr}}"
-#       MESOS_MASTER: "{{zk_addrs}}"
+#       MESOS_MASTER: "{{mesos_zk_addrs}}"
 #       MESOS_ISOLATION: cgroups/cpu,cgroups/mem
 #       MESOS_LOG_DIR: /var/log/mesos
 
@@ -37,7 +37,7 @@
     env:
       MESOS_HOSTNAME: "{{hostname}}"
       MESOS_IP: "{{ipaddr}}"
-      MESOS_MASTER: "{{zk_addrs}}"
+      MESOS_MASTER: "{{mesos_zk_addrs}}"
       MESOS_SWITCH_USER: 0
       MESOS_CONTAINERIZERS: docker,mesos
       MESOS_ISOLATION: cgroups/cpu,cgroups/mem

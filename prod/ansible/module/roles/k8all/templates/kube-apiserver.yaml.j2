@@ -5,32 +5,33 @@ metadata:
 spec:
   hostNetwork: true
   containers:
-  - name: kube-apiserver
-    image: peterwang115/kubernetes-mesos:1.1.2-ubuntu-14.04
-    env:
-      - name: MESOS_MASTER
-        value: {{mesos_zk_addrs}}
-    command:
-    - apiserver
-      --address=0.0.0.0
-      --etcd-servers={{etcd_servers}}
-      --service-cluster-ip-range=10.10.10.0/24
-      --port={{api_port}}
-      --cloud-provider=mesos
-      --cloud-config=/etc/kubernetes/mesos-cloud.cfg
-      --secure-port=0
-      --v=1 1>>/var/log/kube-apiserver.log 2>&1
-    ports:
-    - containerPort: 6443
-      hostPort: 6443
-      name: https
-    - containerPort: {{api_port}}
-      hostPort: {{api_port}}
-      name: local
-    volumeMounts:
-      - mountPath: /var/log/kube-apiserver.log
-        name: logfile
-    volumes:
-      - hostPath:
-          path: /var/log/kube-apiserver.log
-        name: logfile
+    - name: kube-apiserver
+      image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
+      env:
+        - name: MESOS_MASTER
+          value: {{mesos_zk_addrs}}
+      command:
+        - km
+        - apiserver
+        - --address=0.0.0.0
+        - --etcd-servers={{etcd_servers}}
+        - --service-cluster-ip-range=10.10.10.0/24
+        - --port={{api_port}}
+        - --cloud-provider=mesos
+        - --cloud-config=/etc/kubernetes/mesos-cloud.cfg
+        - --secure-port=0
+        - --v=1
+      ports:
+        - containerPort: 6443
+          hostPort: 6443
+          name: https
+        - containerPort: {{api_port}}
+          hostPort: {{api_port}}
+          name: local
+      volumeMounts:
+        - mountPath: /etc/kubernetes/
+          name: mesoscfg
+  volumes:
+    - hostPath:
+        path: /etc/kubernetes
+      name: mesoscfg

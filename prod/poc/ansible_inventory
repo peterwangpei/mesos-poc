@@ -47,7 +47,7 @@ ha1
 ha2
 
 [all:vars]
-zk_addrs=zk://10.229.51.58:2181/mesos
+mesos_zk_addrs=zk://10.229.51.58:2181/mesos
 # docker_opts='--insecure-registry= --registry-mirror='
 docker_opts='--insecure-registry 10.229.51.58:5000 --registry-mirror http://10.229.51.58:5000'
 etcd_servers=http://10.229.51.58:4001

@@ -17,8 +17,11 @@ localhost ansible_connection=local
 [ms3]
 192.168.33.33
 
-[km]
+[km1]
 192.168.33.41
+
+[km2]
+192.168.33.42
 
 [registry]
 192.168.33.10
@@ -35,9 +38,6 @@ localhost ansible_connection=local
 [k8_addons:children]
 localhost
 
-[keygen:children]
-km
-
 [nfs:children]
 zk1
 
@@ -48,7 +48,8 @@ zk1
 zk1
 
 [kubernetes:children]
-km
+km1
+km2
 
 [mesosmaster:children]
 mm1
@@ -63,8 +64,6 @@ ha1
 ha2
 
 [all:vars]
-# Desprecated
-zk_addrs=zk://192.168.33.11:2181/mesos  
 docker_opts='--insecure-registry 192.168.33.10:5000 --registry-mirror http://192.168.33.10:5000'
 mesos_zk_addrs=zk://192.168.33.11:2181/mesos
 etcd_servers=http://192.168.33.11:4001
@@ -74,6 +73,7 @@ k8s_dns_server=10.10.10.10
 k8s_master_url=http://192.168.33.41:8888 
 k8s_dns_replicas=1
 k8s_dns_domain=cluster.local
+k8s_api_servers=http://192.168.33.41:8888,192.168.33.42:8888
 
 [mm1:vars]
 hostname=192.168.33.21
@@ -116,8 +116,12 @@ ipaddr=192.168.33.11
 [ha2:vars]
 ipaddr=192.168.33.21
 
-[km:vars]
+
+[km1:vars]
 ipaddr=192.168.33.41
+
+[km2:vars]
+ipaddr=192.168.33.42
 
 [k8_addons:vars]
 mysql_root_password=123456
@@ -126,4 +130,4 @@ nfs_path=/var/nfs/mysql
 # deploy='["skydns", "kube-ui"]'
 # deploy='["tomcat", "mysql-pv", "wordpress", "nginx"]'
 # deploy='["wordpress"]'
-deploy='["skydns"]'
+deploy='["nginx"]'
