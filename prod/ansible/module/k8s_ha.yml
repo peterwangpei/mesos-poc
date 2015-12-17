@@ -1,0 +1,5 @@
+- name: start kubernetes high availability
+  hosts: ha
+  sudo: yes
+  roles:
+    - role: k8s-ha
