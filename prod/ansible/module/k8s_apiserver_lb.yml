@@ -2,4 +2,4 @@
   hosts: api_server_lb_ha
   sudo: yes
   roles:
-    - role: haproxy
+    - role: k8s-apiserv-haproxy

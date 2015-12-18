@@ -8,12 +8,14 @@ spec:
   - name: kube-scheduler
     image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
     command:
-    - /usr/local/bin/km
+    - km
     - scheduler
     - --address={{ipaddr}}
-    - --mesos-master={{zk_addrs}}
+    - --mesos-master={{mesos_zk_addrs}}
     - --etcd-servers={{etcd_servers}}
-    - --api-servers={{k8s_api_server_lb_url}}:{{k8s_api_server_lb_port}}
+    - --mesos-user=root
+    - --api-servers={{k8s_api_servers}}
     - --cluster-dns=10.10.10.10
+    - --ha
     - --cluster-domain=cluster.local
-    - --v=1
+    - --v=2

@@ -63,37 +63,30 @@ k8s_dns_server=10.10.10.10
 k8s_dns_replicas=1
 k8s_dns_domain=cluster.local
 
-# alias for k8s haproxy url addr
-k8s_master_url=http://192.168.33.41:8888
 k8s_api_server_lb_port=80
 k8s_api_server_lb_ip=192.168.33.11
 k8s_api_server_lb_url=http://192.168.33.11:80
 k8s_api_servers=http://192.168.33.41:8888,192.168.33.42:8888
 k8s_api_servers_ips=["192.168.33.41", "192.168.33.42"]
-k8s_api_ports=8888
+k8s_api_port=8888
 
 [mm1:vars]
-hostname=192.168.33.21
 ipaddr=192.168.33.21
 quorum=1
 
 [ms1:vars]
-hostname=192.168.33.31
 ipaddr=192.168.33.31
 
 [ms2:vars]
-hostname=192.168.33.32
 ipaddr=192.168.33.32
 
 [ms3:vars]
-hostname=192.168.33.33
 ipaddr=192.168.33.33
 
 [zookeeper:vars]
 servers=192.168.33.11
 
 [zk1:vars]
-ipaddr=192.168.33.11
 zookeeper_id=1
 
 [km1:vars]

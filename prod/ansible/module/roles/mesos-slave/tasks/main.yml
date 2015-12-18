@@ -17,7 +17,7 @@
 #       - /var/log/mesos:/var/log/mesos
 #       - /tmp/mesos:/tmp/mesos
 #     env:
-#       MESOS_HOSTNAME: "{{hostname}}"
+#       MESOS_HOSTNAME: "{{ipaddr}}"
 #       MESOS_IP: "{{ipaddr}}"
 #       MESOS_MASTER: "{{mesos_zk_addrs}}"
 #       MESOS_ISOLATION: cgroups/cpu,cgroups/mem
@@ -35,7 +35,7 @@
     volumes:
       - /var/log/mesos:/var/log/mesos
     env:
-      MESOS_HOSTNAME: "{{hostname}}"
+      MESOS_HOSTNAME: "{{ ipaddr }}"
       MESOS_IP: "{{ipaddr}}"
       MESOS_MASTER: "{{mesos_zk_addrs}}"
       MESOS_SWITCH_USER: 0

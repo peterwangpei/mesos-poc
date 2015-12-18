@@ -1,7 +1,0 @@
----
-
-- name: start kubernetes master
-  hosts: kubernetes
-  sudo: yes
-  roles:
-    - role: k8all # all in master

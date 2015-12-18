@@ -17,8 +17,8 @@
 ## all in master kubernets demo
 
 # - include: module/etcd.yml
-- include: module/haproxy.yml
-# - include: module/k8s_cluster.yml
+# - include: module/k8s_apiserver_lb.yml
+# - include: module/k8s_ha.yml
 
 ## local should install kubernetes-cli or can run command `kubectl`
 # - include: module/nfs.yml

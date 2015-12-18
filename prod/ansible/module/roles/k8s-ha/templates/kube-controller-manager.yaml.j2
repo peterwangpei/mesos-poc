@@ -5,21 +5,25 @@ metadata:
 spec:
   hostNetwork: true
   containers:
-  - name: kube-ontroller-manager
+  - name: kube-controller-manager
     image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
     command:
-    - /usr/local/bin/km
+    - km
     - controller-manager
-    - --address={{ipaddr}}
-    - --port=10252
-    - --master={{k8s_api_server_lb_url}}:{{k8s_api_server_lb_port}}
+    - --master=http://{{ipaddr}}:{{k8s_api_port}}
     - --cloud-provider=mesos
     - --cloud-config=/etc/kubernetes/mesos-cloud.cfg
     - --v=1
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 10252
+      initialDelaySeconds: 15
+      timeoutSeconds: 1
     volumeMounts:
-    - mountPath: /etc/kubernetes/mesos-cloud.cfg
+    - mountPath: /etc/kubernetes
       name: mesoscfg
   volumes:
   - hostPath:
-      path: /srv/kubernetes/mesos-cloud.cfg
+      path: /etc/kubernetes
     name: mesoscfg

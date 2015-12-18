@@ -7,7 +7,7 @@ backend appservs
     option forwardfor
     option httpchk HEAD / HTTP/1.1\r\nHost:localhost
 {% for ip in k8s_api_servers_ips %}
-    server k8s{{loop.index}} {{ip}}:{{k8s_api_ports}} check
+    server k8s{{loop.index}} {{ip}}:{{k8s_api_port}} check
 {% endfor %}
 
 listen stats 

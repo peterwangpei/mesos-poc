@@ -1,10 +1,103 @@
-# - shell: wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kubelet
-# - shell: chmod a+x kubelet && mv kubelet /usr/local/bin/
-- shell: mkdir -p /etc/kubernetes/manifests /srv/kubernetes/manifests
-- template: src=../templates/mesos-cloud.cfg.j2 dest=/etc/kubernetes/manifests/mesos-cloud.cfg mode=0644
-- template: src=../templates/podmaster.yaml.j2 dest=/etc/kubernetes/manifests/podmaster.yaml mode=0644
-- template: src=../templates/kube-apiserver.yaml.j2 dest=/etc/kubernetes/manifests/kube-apiserver.yaml mode=0644
-- template: src=../templates/kube-scheduler.yaml.j2 dest=/srv/kubernetes/manifests/kube-scheduler.yaml mode=0644
-- template: src=../templates/kube-controller-manager.yaml.j2 dest=/srv/kubernetes/manifests/kube-controller-manager.yaml mode=0644
+---
 
-- shell: /usr/local/bin/kubelet --config=/etc/kubernetes/manifests
+- shell: mkdir -p /var/log/k8s /etc/kubernetes/
+- template: src=../templates/mesos-cloud.cfg.j2 dest=/etc/kubernetes/mesos-cloud.cfg mode=0644
+
+- shell: wget -c -t 0 https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kubelet
+- shell: chmod a+x kubelet && mv kubelet /usr/local/bin/
+- shell: mkdir -p /var/log/kubernetes /etc/kubernetes/manifests /srv/kubernetes/manifests
+- shell: rm -fr /etc/kubernetes/manifests/* /srv/kubernetes/manifests/*
+- template: src=../templates/kube-apiserver.yaml.j2 dest=/etc/kubernetes/manifests/kube-apiserver.yaml mode=0644
+- template: src=../templates/podmaster.yaml.j2 dest=/etc/kubernetes/manifests/podmaster.yaml mode=0644
+- template: src=../templates/kube-scheduler.yaml.j2 dest=/etc/kubernetes/manifests/kube-scheduler.yaml mode=0644
+
+- template: src=../templates/kube-controller-manager.yaml.j2 dest=/srv/kubernetes/manifests/kube-controller-manager.yaml mode=0644
+- template: src=../templates/kubeletconf.j2 dest=/etc/default/kubelet mode=0644
+- template: src=../templates/kubelet.init.j2  dest=/etc/init.d/kubelet mode=0755
+- shell: update-rc.d kubelet defaults
+- service: name=kubelet state=restarted enabled=true
+
+
+# - name: run kubnete api-server
+#   docker:
+#     name: kube-apiserver
+#     image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
+#     net: host
+#     state: started
+#     restart_policy: always
+#     command:
+#       "km apiserver
+#       --address=0.0.0.0
+#       --etcd-servers={{etcd_servers}}
+#       --admission-control='ServiceAccount'
+#       --authorization-mode=AlwaysAllow
+#       --service-account-key-file='/var/run/kubernetes/auth/serviceaccount.key'
+#       --service-cluster-ip-range={{k8s_cluster_ip_range}}
+#       --port={{k8s_api_port}}
+#       --cloud-provider=mesos
+#       --cloud-config=/etc/kubernetes/mesos-cloud.cfg
+#       --secure-port=0
+#       --client-ca-file=/var/run/kubernetes/auth/ca.crt
+#       --tls-private-key-file=/var/run/kubernetes/auth/server.key
+#       --tls-cert-file=/var/run/kubernetes/auth/server.crt
+#       --v=1 1>> /var/log/k8s/kube-apiserver.log 2>&1"
+
+#     volumes:
+#       - /var/log/k8s:/var/log/k8s
+#       - /etc/kubernetes:/etc/kubernetes
+#       - /etc/kubernetes/auth:/var/run/kubernetes/auth
+
+# - name: run kubernetes controller manager
+#   docker:
+#     name: kube-cm
+#     image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
+#     net: host
+#     state: started
+#     restart_policy: always
+#     command:
+#       "km controller-manager
+#       --master=http://127.0.0.1:{{k8s_api_port}}
+#       --cloud-provider=mesos
+#       --service-account-private-key-file='/var/run/kubernetes/auth/serviceaccount.key'
+#       --cloud-config=/etc/kubernetes/mesos-cloud.cfg
+#       --root-ca-file=/var/run/kubernetes/auth/ca.crt
+#       --service-account-private-key-file=/var/run/kubernetes/auth/server.key
+#       --v=1 1>>/var/log/k8s/kube-controller-manager.log 2>&1"
+#     volumes:
+#       - /etc/kubernetes:/etc/kubernetes
+#       - /var/log/k8s:/var/log/k8s
+#       - /etc/kubernetes/auth:/var/run/kubernetes/auth
+
+# - name: run kubernetes scheduler
+#   docker:
+#     name: kube-sche
+#     image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
+#     net: host
+#     state: started
+#     restart_policy: always
+#     command:
+#       "km scheduler
+#       --address={{ipaddr}}
+#       --mesos-master={{mesos_zk_addrs}}
+#       --etcd-servers={{etcd_servers}}
+#       --mesos-user=root
+#       --api-servers={{k8s_api_servers}}
+#       --cluster-dns={{k8s_dns_server}}
+#       --cluster-domain={{k8s_dns_domain}}
+#       --v=2 1>>/var/log/k8s/kube-scheduler.log 2>&1"
+#     volumes:
+#       - /var/log/k8s:/var/log/k8s
+
+      # --client-ca-file=/var/run/kubernetes/auth/ca.crt
+      # --tls-private-key-file=/var/run/kubernetes/auth/server.key
+      # --tls-cert-file=/var/run/kubernetes/auth/server.crt
+
+      # --root-ca-file=/var/run/kubernetes/auth/ca.crt
+      # --service-account-private-key-file=/var/run/kubernetes/auth/server.key
+
+  # openssl genrsa -out /tmp/serviceaccount.key 2048
+  # openssl genrsa -out ca.key 2048
+  # openssl req -x509 -new -nodes -key ca.key -subj "/CN=cluster.local" -days 5000 -out ca.crt
+  # openssl genrsa -out server.key 2048
+  # openssl req -new -key server.key -subj "/CN=cluster.local" -out server.csr
+  # openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 5000

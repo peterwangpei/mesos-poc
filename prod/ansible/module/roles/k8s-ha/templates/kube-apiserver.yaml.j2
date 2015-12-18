@@ -5,23 +5,33 @@ metadata:
 spec:
   hostNetwork: true
   containers:
-  - name: kube-apiserver
-    image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
-    command:
-    - /usr/local/bin/km
-    - apiserver
-    - --insecure-bind-address=0.0.0.0
-    - --etcd-servers=http://{{etcd_ip}}:4001
-    - --service-cluster-ip-range=10.0.0.0/16
-    - --insecure-port=8080
-    - --cloud-provider=mesos
-    - --cloud-config=/etc/kubernetes/mesos-cloud.cfg
-    - --secure-port=0
-    - --v=1
-    volumeMounts:
-    - mountPath: /etc/kubernetes/mesos-cloud.cfg
-      name: mesoscfg
+    - name: kube-apiserver
+      image: zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
+      env:
+        - name: MESOS_MASTER
+          value: {{mesos_zk_addrs}}
+      command:
+        - km
+        - apiserver
+        - --address=0.0.0.0
+        - --etcd-servers={{etcd_servers}}
+        - --service-cluster-ip-range=10.10.10.0/24
+        - --port={{k8s_api_port}}
+        - --cloud-provider=mesos
+        - --cloud-config=/etc/kubernetes/mesos-cloud.cfg
+        - --secure-port=0
+        - --v=1
+      ports:
+        - containerPort: 6443
+          hostPort: 6443
+          name: https
+        - containerPort: {{k8s_api_port}}
+          hostPort: {{k8s_api_port}}
+          name: local
+      volumeMounts:
+        - mountPath: /etc/kubernetes/
+          name: mesoscfg
   volumes:
-  - hostPath:
-      path: /tmp/ha/mesos-cloud.cfg
-    name: mesoscfg
+    - hostPath:
+        path: /etc/kubernetes
+      name: mesoscfg

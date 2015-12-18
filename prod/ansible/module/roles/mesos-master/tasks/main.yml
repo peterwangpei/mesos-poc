@@ -11,7 +11,7 @@
       - /var/log/mesos:/var/log/mesos
       - /var/lib/mesos:/var/lib/mesos
     env:
-      MESOS_HOSTNAME: "{{ hostname }}"
+      MESOS_HOSTNAME: "{{ ipaddr }}"
       MESOS_IP: "{{ ipaddr }}"
       MESOS_ZK: "{{ mesos_zk_addrs }}"
       MESOS_QUORUM: "{{ quorum }}"

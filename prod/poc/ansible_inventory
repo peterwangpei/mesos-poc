@@ -58,23 +58,19 @@ k8s_api_server_lb_ip=10.229.51.58
 k8s_api_server_lb_url=http://10.229.51.58:80
 k8s_api_servers=http://10.229.50.219:8888
 k8s_api_servers_ips=["10.229.50.219"]
-k8s_api_ports=8888
+k8s_api_port=8888
 
 [mm1:vars]
-hostname=10.229.50.219
 ipaddr=10.229.50.219
 quorum=1
 
 [ms1:vars]
-hostname=10.229.45.144
 ipaddr=10.229.45.144
 
 [ms2:vars]
-hostname=10.229.49.198
 ipaddr=10.229.49.198
 
 [ms3:vars]
-hostname=10.229.53.29
 ipaddr=10.229.53.29
 
 [zookeeper:vars]

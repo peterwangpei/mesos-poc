@@ -5,22 +5,22 @@ metadata:
 spec:
   hostNetwork: true
   containers:
-  # - name: scheduler-elector
-  #   image: zhpooer/podmaster:1.1
-  #   command:
-  #   - /podmaster
-  #   - --etcd-servers={{etcd_servers}}
-  #   - --key=scheduler
-  #   - --source-file=/kubernetes/kube-scheduler.yaml
-  #   - --dest-file=/manifests/kube-scheduler.yaml
-  #   volumeMounts:
-  #   - mountPath: /kubernetes
-  #     name: k8s
-  #     readOnly: true
-  #   - mountPath: /manifests
-  #     name: manifests
+  - name: scheduler-elector
+    image: gcr.io/google_containers/podmaster:1.1
+    command:
+    - /podmaster
+    - --etcd-servers={{etcd_servers}}
+    - --key=scheduler
+    - --source-file=/kubernetes/kube-scheduler.yaml
+    - --dest-file=/manifests/kube-scheduler.yaml
+    volumeMounts:
+    - mountPath: /kubernetes
+      name: k8s
+      readOnly: true
+    - mountPath: /manifests
+      name: manifests
   - name: controller-manager-elector
-    image: zhpooer/podmaster:1.1
+    image: gcr.io/google_containers/podmaster:1.1
     command:
     - /podmaster
     - --etcd-servers={{etcd_servers}}
@@ -36,7 +36,7 @@ spec:
       name: manifests
   volumes:
   - hostPath:
-      path: /srv/kubernetes/manifests
+      path: /srv/kubernetes
     name: k8s
   - hostPath:
       path: /etc/kubernetes/manifests
