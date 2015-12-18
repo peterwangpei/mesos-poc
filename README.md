@@ -89,4 +89,16 @@ kubectl run nginx --image=nginx --server=http://192.168.33.41:8888
 kubectl resize --replicas=4 rc rcgame
 kubectl expose rc nginx --port=80
 kubectl describe services/nginx --server=http://192.168.33.41:8888
+
+library/haproxy:1.6.2
+quay.io/coreos/etcd:v2.2.1
+zhpooer/podmaster:1.1
+zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
+gro/pause
+
+kubectl
+kubelet
+
+zenge 的包
+
 -->

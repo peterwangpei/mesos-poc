@@ -110,4 +110,3 @@ nfs_path=/var/nfs/mysql
 # deploy='["tomcat", "mysql-pv", "wordpress", "nginx"]'
 # deploy='["wordpress", "k8s-lb-ha"]'
 deploy='["nginx"]'
-

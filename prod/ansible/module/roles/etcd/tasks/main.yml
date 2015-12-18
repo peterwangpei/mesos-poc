@@ -1,7 +1,7 @@
 - name: run etcd
   docker:
     name: etcd
-    image: quay.io/coreos/etcd:v2.2.1
+    image: zhpooer/etcd:v2.2.1
     state: started
     restart_policy: always
     ports:

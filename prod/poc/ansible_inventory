@@ -1,4 +1,5 @@
 [zk1]
+# 10.229.51.58
 localhost ansible_connection=local
 
 [mm1]
@@ -13,22 +14,19 @@ localhost ansible_connection=local
 [ms3]
 10.229.53.29 ansible_user=root ansible_ssh_pass=
 
-[km]
-10.229.50.219 ansible_user=root ansible_ssh_pass=
-
-[hap]
-localhost ansible_connection=local
-
-[ha1]
-localhost ansible_connection=local
-
-[ha2]
+[km1]
 10.229.50.219 ansible_user=root ansible_ssh_pass=
 
 [k8_addons:children]
-km
+zk1
 
 [zookeeper:children]
+zk1
+
+[etcd:children]
+zk1
+
+[api_server_lb_ha:children]
 zk1
 
 [mesosmaster:children]
@@ -40,18 +38,27 @@ ms2
 ms3
 
 [kubernetes:children]
-km
-
-[ha:children]
-ha1
-ha2
+km1
 
 [all:vars]
 mesos_zk_addrs=zk://10.229.51.58:2181/mesos
 # docker_opts='--insecure-registry= --registry-mirror='
 docker_opts='--insecure-registry 10.229.51.58:5000 --registry-mirror http://10.229.51.58:5000'
 etcd_servers=http://10.229.51.58:4001
-k8s_master_url=http://10.229.50.219:8888 
+# deprecated
+k8s_master_url=http://10.229.50.219:8888
+
+k8s_cluster_ip_range=10.10.10.0/24
+k8s_dns_server=10.10.10.10
+k8s_dns_replicas=1
+k8s_dns_domain=cluster.local
+
+k8s_api_server_lb_port=80
+k8s_api_server_lb_ip=10.229.51.58
+k8s_api_server_lb_url=http://10.229.51.58:80
+k8s_api_servers=http://10.229.50.219:8888
+k8s_api_servers_ips=["10.229.50.219"]
+k8s_api_ports=8888
 
 [mm1:vars]
 hostname=10.229.50.219
@@ -76,25 +83,15 @@ servers=10.229.51.58
 [zk1:vars]
 zookeeper_id=1
 
-[hap:vars]
-zk_ip=10.229.51.58
-mm_ip=10.229.50.219
-
-[ha:vars]
-etcd_ip=10.229.51.58
-haproxy_url=http://10.229.51.58:12345
-
-[ha1:vars]
-ipaddr=10.229.51.58
-
-[ha2:vars]
-ipaddr=10.229.50.219
-
-[km:vars]
+[km1:vars]
 ipaddr=10.229.50.219
 
 [k8_addons:vars]
 mysql_root_password=123456
-# deploy='["skydns-rc", "skydns-svc", "kube-ui-rc", "kube-ui-svc"]'
-# deploy='["tomcat", "mysql-rc", "mysql-svc"]'
-deploy='["tomcat", "mysql"]'
+# nfs_server=192.168.33.11
+# nfs_path=/var/nfs/mysql
+# deploy='["skydns", "kube-ui"]'
+# deploy='["tomcat", "mysql-pv", "wordpress", "nginx"]'
+# deploy='["wordpress", "k8s-lb-ha"]'
+deploy='["nginx"]'
+
