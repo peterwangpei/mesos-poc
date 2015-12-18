@@ -7,4 +7,4 @@
 - template: src=../templates/kube-scheduler.yaml.j2 dest=/srv/kubernetes/manifests/kube-scheduler.yaml mode=0644
 - template: src=../templates/kube-controller-manager.yaml.j2 dest=/srv/kubernetes/manifests/kube-controller-manager.yaml mode=0644
 
-- shell: ./kubelet --config=/etc/kubernetes/manifests
+- shell: /usr/local/bin/kubelet --config=/etc/kubernetes/manifests
