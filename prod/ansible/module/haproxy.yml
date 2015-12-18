@@ -1,5 +1,5 @@
 - name: start haproxy for kubernetes high availability
-  hosts: hap
+  hosts: api_server_lb_ha
   sudo: yes
   roles:
     - role: haproxy

@@ -12,7 +12,7 @@ spec:
     - controller-manager
     - --address={{ipaddr}}
     - --port=10252
-    - --master={{haproxy_url}}
+    - --master={{k8s_api_server_lb_url}}:{{k8s_api_server_lb_port}}
     - --cloud-provider=mesos
     - --cloud-config=/etc/kubernetes/mesos-cloud.cfg
     - --v=1

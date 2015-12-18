@@ -1,14 +1,17 @@
 frontend webserver
-    bind *:12345
+    bind *:{{k8s_api_server_lb_port}}
     default_backend appservs
+
 backend appservs
     balance roundrobin
     option forwardfor
     option httpchk HEAD / HTTP/1.1\r\nHost:localhost
-    server k8s1 {{zk_ip}}:8080 check
-    server k8s2 {{km_ip}}:8080 check
+{% for ip in k8s_api_servers_ips %}
+    server k8s{{loop.index}} {{ip}}:{{k8s_api_ports}} check
+{% endfor %}
+
 listen stats 
-    bind {{zk_ip}}:1936
+    bind 127.0.0.1:1936
     mode http
     log global
     

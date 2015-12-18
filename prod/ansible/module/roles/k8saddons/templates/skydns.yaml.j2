@@ -48,7 +48,7 @@ spec:
             memory: 50Mi
         args:
         # command = "/kube2sky"
-        - -kube_master_url={{k8s_master_url}}
+        - -kube_master_url={{k8s_api_server_lb_url}}
         - -domain={{k8s_dns_domain}}
       - name: skydns
         image: zhpooer/skydns:2015-10-13-8c72f8c

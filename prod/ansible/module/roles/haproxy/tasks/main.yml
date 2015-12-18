@@ -1,12 +1,13 @@
 ---
 
-- template: src=../templates/haproxy.cfg.j2 dest=/tmp/haproxy.cfg mode=0644
+- shell: mkdir -p /etc/haproxy
+- template: src=../templates/haproxy.cfg.j2 dest=/etc/haproxy/haproxy.cfg mode=0644
 - name: run haproxy
   docker:
     name: haproxy
-    image: haproxy
+    image: library/haproxy:1.6.2
     net: host
     state: started
     restart_policy: always
     volumes:
-      - /tmp/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+      - /etc/haproxy:/usr/local/etc/haproxy

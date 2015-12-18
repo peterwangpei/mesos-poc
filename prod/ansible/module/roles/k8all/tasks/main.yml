@@ -33,7 +33,7 @@
 #       --authorization-mode=AlwaysAllow
 #       --service-account-key-file='/var/run/kubernetes/auth/serviceaccount.key'
 #       --service-cluster-ip-range={{k8s_cluster_ip_range}}
-#       --port={{api_port}}
+#       --port={{k8s_api_port}}
 #       --cloud-provider=mesos
 #       --cloud-config=/etc/kubernetes/mesos-cloud.cfg
 #       --secure-port=0
@@ -56,7 +56,7 @@
 #     restart_policy: always
 #     command:
 #       "km controller-manager
-#       --master=http://127.0.0.1:{{api_port}}
+#       --master=http://127.0.0.1:{{k8s_api_port}}
 #       --cloud-provider=mesos
 #       --service-account-private-key-file='/var/run/kubernetes/auth/serviceaccount.key'
 #       --cloud-config=/etc/kubernetes/mesos-cloud.cfg

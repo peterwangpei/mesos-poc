@@ -13,7 +13,7 @@ spec:
     - --address={{ipaddr}}
     - --mesos-master={{zk_addrs}}
     - --etcd-servers={{etcd_servers}}
-    - --api-servers={{haproxy_url}}
+    - --api-servers={{k8s_api_server_lb_url}}:{{k8s_api_server_lb_port}}
     - --cluster-dns=10.10.10.10
     - --cluster-domain=cluster.local
     - --v=1

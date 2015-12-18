@@ -1,1 +1,1 @@
-DAEMON_ARGS="$DAEMON_ARGS http://{{ipaddr}}:{{api_port}} --enable-debugging-handlers=true --config=/etc/kubernetes/manifests --allow-privileged=false --system-container=/system --cgroup-root=/"
+DAEMON_ARGS="$DAEMON_ARGS http://{{ipaddr}}:{{k8s_api_port}} --enable-debugging-handlers=true --config=/etc/kubernetes/manifests --allow-privileged=false --system-container=/system --cgroup-root=/"

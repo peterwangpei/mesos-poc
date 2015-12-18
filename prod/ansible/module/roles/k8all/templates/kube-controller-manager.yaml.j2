@@ -10,7 +10,7 @@ spec:
     command:
     - km
     - controller-manager
-    - --master=http://{{ipaddr}}:{{api_port}}
+    - --master=http://{{ipaddr}}:{{k8s_api_port}}
     - --cloud-provider=mesos
     - --cloud-config=/etc/kubernetes/mesos-cloud.cfg
     - --v=1

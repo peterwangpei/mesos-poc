@@ -16,7 +16,7 @@ spec:
         - --address=0.0.0.0
         - --etcd-servers={{etcd_servers}}
         - --service-cluster-ip-range=10.10.10.0/24
-        - --port={{api_port}}
+        - --port={{k8s_api_port}}
         - --cloud-provider=mesos
         - --cloud-config=/etc/kubernetes/mesos-cloud.cfg
         - --secure-port=0
@@ -25,8 +25,8 @@ spec:
         - containerPort: 6443
           hostPort: 6443
           name: https
-        - containerPort: {{api_port}}
-          hostPort: {{api_port}}
+        - containerPort: {{k8s_api_port}}
+          hostPort: {{k8s_api_port}}
           name: local
       volumeMounts:
         - mountPath: /etc/kubernetes/

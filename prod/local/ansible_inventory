@@ -26,14 +26,8 @@ localhost ansible_connection=local
 [registry]
 192.168.33.10
 
-[hap]
-192.168.33.11
-
-[ha1]
-192.168.33.11
-
-[ha2]
-192.168.33.21
+[api_server_lb_ha:children]
+zk1
 
 [k8_addons:children]
 localhost
@@ -59,21 +53,24 @@ ms1
 ms2
 ms3
 
-[ha:children]
-ha1
-ha2
-
 [all:vars]
 docker_opts='--insecure-registry 192.168.33.10:5000 --registry-mirror http://192.168.33.10:5000'
 mesos_zk_addrs=zk://192.168.33.11:2181/mesos
 etcd_servers=http://192.168.33.11:4001
 k8s_cluster_ip_range=10.10.10.0/24
 k8s_dns_server=10.10.10.10
-# ports shoud be same with k8s_s
-k8s_master_url=http://192.168.33.41:8888 
+
 k8s_dns_replicas=1
 k8s_dns_domain=cluster.local
+
+# alias for k8s haproxy url addr
+k8s_master_url=http://192.168.33.41:8888
+k8s_api_server_lb_port=80
+k8s_api_server_lb_ip=192.168.33.11
+k8s_api_server_lb_url=http://192.168.33.11:80
 k8s_api_servers=http://192.168.33.41:8888,192.168.33.42:8888
+k8s_api_servers_ips=["192.168.33.41", "192.168.33.42"]
+k8s_api_ports=8888
 
 [mm1:vars]
 hostname=192.168.33.21
@@ -99,24 +96,6 @@ servers=192.168.33.11
 ipaddr=192.168.33.11
 zookeeper_id=1
 
-[hap:vars]
-zk_ip=192.168.33.11
-mm_ip=192.168.33.21
-
-[kubernetes:vars]
-api_port=8888
-
-[ha:vars]
-etcd_ip=192.168.33.11
-haproxy_url=http://192.168.33.11:12345
-
-[ha1:vars]
-ipaddr=192.168.33.11
-
-[ha2:vars]
-ipaddr=192.168.33.21
-
-
 [km1:vars]
 ipaddr=192.168.33.41
 
@@ -129,5 +108,6 @@ nfs_server=192.168.33.11
 nfs_path=/var/nfs/mysql
 # deploy='["skydns", "kube-ui"]'
 # deploy='["tomcat", "mysql-pv", "wordpress", "nginx"]'
-# deploy='["wordpress"]'
+# deploy='["wordpress", "k8s-lb-ha"]'
 deploy='["nginx"]'
+
