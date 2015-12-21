@@ -1,12 +1,23 @@
+#------------------------------------------- Declare Machine ------------------------------------------- #
+
 [localhost]
 # submit pods by command `kubectrl`
 localhost ansible_connection=local
 
-[zk1]
+[registry]
+192.168.33.10
+
+[miscell]
 192.168.33.11
 
-[mm1]
+[mono1]
 192.168.33.21
+
+[mono2]
+192.168.33.22
+
+[mono3]
+192.168.33.23
 
 [ms1]
 192.168.33.31
@@ -17,62 +28,51 @@ localhost ansible_connection=local
 [ms3]
 192.168.33.33
 
-[km1]
-192.168.33.41
 
-[km2]
-192.168.33.42
 
-[registry]
-192.168.33.10
-
-[api_server_lb_ha:children]
-zk1
+#------------------------------------------- Group set ------------------------------------------- #
 
 [k8_addons:children]
 localhost
 
+[api_server_lb_ha:children]
+miscell
+
+[ceph:children]
+miscell
+
 [nfs:children]
-zk1
+miscell
 
 [etcd:children]
-zk1
+mono1
+mono2
+mono3
 
 [zookeeper:children]
-zk1
+mono1
+mono2
+mono3
 
 [kubernetes:children]
-km1
-km2
+mono1
+mono2
+mono3
 
 [mesosmaster:children]
-mm1
+mono1
+mono2
+mono3
 
 [mesosslave:children]
 ms1
 ms2
 ms3
 
-[all:vars]
-docker_opts='--insecure-registry 192.168.33.10:5000 --registry-mirror http://192.168.33.10:5000'
-mesos_zk_addrs=zk://192.168.33.11:2181/mesos
-etcd_servers=http://192.168.33.11:4001
-k8s_cluster_ip_range=10.10.10.0/24
-k8s_dns_server=10.10.10.10
+#------------------------------------------- Machine variable ------------------------------------------- #
 
-k8s_dns_replicas=1
-k8s_dns_domain=cluster.local
-
-k8s_api_server_lb_port=80
-k8s_api_server_lb_ip=192.168.33.11
-k8s_api_server_lb_url=http://192.168.33.11:80
-k8s_api_servers=http://192.168.33.41:8888,192.168.33.42:8888
-k8s_api_servers_ips=["192.168.33.41", "192.168.33.42"]
-k8s_api_port=8888
-
-[mm1:vars]
-ipaddr=192.168.33.21
-quorum=1
+[miscell:vars]
+ipaddr=192.168.33.11
 
 [ms1:vars]
 ipaddr=192.168.33.31
@@ -83,23 +83,63 @@ ipaddr=192.168.33.32
 [ms3:vars]
 ipaddr=192.168.33.33
 
-[zookeeper:vars]
-servers=192.168.33.11
-
-[zk1:vars]
+[mono1:vars]
+ipaddr=192.168.33.21
+hostname=mono1
 zookeeper_id=1
 
-[km1:vars]
-ipaddr=192.168.33.41
+[mono2:vars]
+ipaddr=192.168.33.22
+hostname=mono2
+zookeeper_id=2
 
-[km2:vars]
-ipaddr=192.168.33.42
+[mono3:vars]
+ipaddr=192.168.33.23
+hostname=mono3
+zookeeper_id=3
+
+#------------------------------------------- Group variable ------------------------------------------- #
+
+[all:vars]
+docker_opts='--insecure-registry 192.168.33.10:5000 --registry-mirror http://192.168.33.10:5000'
+mesos_zk_addrs=zk://192.168.33.21:2181,192.168.33.22:2181,192.168.33.23:2181/mesos
+etcd_servers=http://192.168.33.21:4001,192.168.33.22:4001,192.168.33.23:4001
+etcd_cluster="mono1=http://192.168.33.21:2380,mono2=http://192.168.33.22:2380,mono3=http://192.168.33.23:2380"
+
+k8s_cluster_ip_range=10.10.10.0/24
+k8s_dns_server=10.10.10.10
+
+k8s_dns_replicas=1
+k8s_dns_domain=cluster.local
+
+k8s_api_server_lb_port=80
+k8s_api_server_lb_ip=192.168.33.11
+k8s_api_server_lb_url=http://192.168.33.11:80
+
+k8s_api_servers=http://192.168.33.21:8888,192.168.33.22:8888,192.168.33.23:8888
+k8s_api_servers_ips=["192.168.33.21", "192.168.33.22", "192.168.33.23"]
+k8s_api_port=8888
+
+# 部署完 ceph-demo 之后，进入到部署ceph机子里面，运行如下命令，获取 编码
+# grep key /etc/ceph/ceph.client.kube.keyring |awk '{printf "%s", $NF}'|base64
+# https://github.com/kubernetes/kubernetes/tree/master/examples/rbd
+ceph_client_secret=QVFBYm0zZFdyQlppTkJBQXJLUzRrV3UyOXpwcHpFODJGY3FlRHc9PQo=
+ceph_network=192.168.33.0/24
+ceph_mon_addrs=["192.168.33.11:6789"]
+
+[mesosmaster:vars]
+quorum=2
+
+[zookeeper:vars]
+servers=192.168.33.21,192.168.33.22,192.168.33.23
 
 [k8_addons:vars]
 mysql_root_password=123456
-nfs_server=192.168.33.11
-nfs_path=/var/nfs/mysql
-# deploy='["skydns", "kube-ui"]'
-# deploy='["tomcat", "mysql-pv", "wordpress", "nginx"]'
-# deploy='["wordpress", "k8s-lb-ha"]'
-deploy='["nginx"]'
+# nfs_server=192.168.33.11
+# nfs_path=/var/nfs/mysql
+# deploy=["skydns", "kube-ui"]
+# deploy=["tomcat", "mysql-pv", "wordpress", "nginx"]
+# deploy=["k8s-lb-ha"]
+# deploy=["ceph-secret", "mysql-ceph"]
+
+deploy=["mysql-ceph"]

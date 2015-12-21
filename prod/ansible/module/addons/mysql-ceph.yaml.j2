@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ceph-secret
+data:
+  key: {{ceph_client_secret}}
+
+---
+## mysql
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mysql-ceph-rc
+  labels:
+    name: mysql-ceph-rc
+spec:
+  replicas: 1
+  selector:
+    name: mysql-ceph
+  template:
+    metadata:
+      labels:
+        name: mysql-ceph
+    spec:
+      containers:
+        - image: library/mysql:5.7.9
+          name: mysql-ceph
+          resources:
+            limits:
+              cpu: 0.7
+              memory: 300Mi
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "{{mysql_root_password}}"
+          ports:
+            - containerPort: 3306
+              name: mysql
+              protocol: TCP
+          volumeMounts:
+            - mountPath: "/var/lib/mysql"
+              name: cephfs
+      volumes:
+        - name: cephfs
+          cephfs:
+            monitors: {{ceph_mon_addrs}}
+            user: admin
+            secretRef:
+              name: ceph-secret
+            readOnly: false
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: mysql-ceph-svc
+  name: mysql-ceph-svc
+spec:
+  ports:
+    # the port that this service should serve on
+    - name: mysql
+      port: 3306
+      protocol: TCP
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    name: mysql-ceph

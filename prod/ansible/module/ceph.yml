@@ -1,0 +1,5 @@
+- name: start ceph demo
+  hosts: ceph
+  sudo: yes
+  roles:
+    - role: ceph

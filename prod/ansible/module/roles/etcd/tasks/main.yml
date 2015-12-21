@@ -6,6 +6,14 @@
     restart_policy: always
     ports:
       - 4001:4001
-      - 7001:7001
+      - 2379:2379
+      - 2380:2380
     command:
-      "--listen-client-urls http://0.0.0.0:4001 --advertise-client-urls http://{{ipaddr}}:4001"
+      "-name {{hostname}} \
+      -advertise-client-urls http://{{ipaddr}}:2379,http://{{ipaddr}}:4001 \
+      -listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 \
+      -initial-advertise-peer-urls http://{{ipaddr}}:2380 \
+      -listen-peer-urls http://0.0.0.0:2380 \
+      -initial-cluster-token etcd-cluster \
+      -initial-cluster {{etcd_cluster}} \
+      -initial-cluster-state new"

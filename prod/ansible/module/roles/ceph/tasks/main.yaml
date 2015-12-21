@@ -1,0 +1,14 @@
+- shell: mkdir -p /etc/ceph
+- template: src=../templates/ceph.client.admin.keyring.j2 dest=/etc/ceph/ceph.client.admin.keyring
+- name: run ceph-demo
+  docker:
+    name: ceph
+    net: host
+    image: ceph/demo:latest
+    state: started
+    restart_policy: always
+    volumes:
+      - /etc/ceph:/etc/ceph
+    env:
+      MON_IP: "{{ipaddr}}"
+      CEPH_NETWORK: "{{ceph_network}}"

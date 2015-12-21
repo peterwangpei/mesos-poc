@@ -85,6 +85,9 @@
 
 <!--
 apt-get install nfs-common
+apt-get install -qq -y linux-image-extra-`uname -r`
+sudo apt-get install -y ceph-common ceph-fs-common
+
 kubectl run nginx --image=nginx --server=http://192.168.33.41:8888
 kubectl resize --replicas=4 rc rcgame
 kubectl expose rc nginx --port=80
@@ -101,4 +104,5 @@ kubelet
 
 zenge 的包
 
+zookeeper mesoscloud/zookeeper:3.4.6-ubuntu-14.04
 -->
