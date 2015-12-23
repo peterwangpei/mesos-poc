@@ -135,6 +135,8 @@ servers=192.168.33.21,192.168.33.22,192.168.33.23
 
 [k8_addons:vars]
 mysql_root_password=123456
+mysql_master_node_name=192.168.33.31
+mysql_slave_node_names=192.168.33.32 192.168.33.33
 # nfs_server=192.168.33.11
 # nfs_path=/var/nfs/mysql
 # deploy=["skydns", "kube-ui"]

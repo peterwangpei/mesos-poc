@@ -1,0 +1,10 @@
+---
+
+# - shell: wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kubectl && chmod a+x kubectl && mv kubectl /usr/local/bin
+- template: src=../../../addons/mysqlmaster.yaml.j2 dest=/tmp/mysqlmaster.yaml
+- template: src=../../../addons/mysqlslave.yaml.j2 dest=/tmp/mysqlslave.yaml
+- shell: /usr/local/bin/kubectl label no {{mysql_master_node_name}} name=master --overwrite -s {{k8s_api_server_lb_url}}
+- shell: /usr/local/bin/kubectl label no {{mysql_slave_node_names}} name=slave --overwrite -s {{k8s_api_server_lb_url}}
+- shell: /usr/local/bin/kubectl create -f /tmp/mysqlmaster.yaml -s {{k8s_api_server_lb_url}}
+- shell: sleep 10s
+- shell: /usr/local/bin/kubectl create -f /tmp/mysqlslave.yaml -s {{k8s_api_server_lb_url}}

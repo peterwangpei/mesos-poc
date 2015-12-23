@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mysql-master
+  labels:
+    name: mysql-master
+spec:
+  replicas: 1
+  selector:
+    name: mysql-master
+  template:
+    metadata:
+      labels:
+        name: mysql-master
+    spec:
+      nodeSelector: 
+        name: master
+      containers:
+        - image: mysql-master:1
+          name: mysql-master
+          resources:
+            limits:
+              cpu: 200m
+              memory: 400Mi
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "123456"
+          ports:
+            - containerPort: 3306
+              name: mysql-master
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          hostPath:
+              path: /var/mysql/ggg
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: mysql-master
+  name: mysql-master
+spec:
+  ports:
+    - port: 3306
+  selector:
+    name: mysql-master
