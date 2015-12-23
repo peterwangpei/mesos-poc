@@ -133,6 +133,6 @@ mysql_root_password=123456
 # deploy=["skydns", "kube-ui"]
 # deploy=["tomcat", "mysql-pv", "wordpress", "nginx"]
 # deploy=["k8s-lb-ha"]
-# deploy=["ceph-secret", "mysql-ceph"]
-
-deploy=["tomcat-demo"]
+# deploy=["ceph-secret", "mysql-ceph", "tomcat-demo"]
+# deploy=["pxc-cluster-svc"]
+deploy=["pxc-node1"]
