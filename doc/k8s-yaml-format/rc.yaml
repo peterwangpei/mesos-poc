@@ -44,8 +44,16 @@ spec:                              # 建议填写。
           requests:                # 需求资源。
             cpu: 100m              # 格式同上。本行意为申请0.1个cpu资源。
             memory: 256Mi          # 格式同上。本行意为申请256M的内存资源。
-        volumeMounts:              # 指定卷。
+        volumeMounts:              # 指定容器加载的卷。
           name:                    # 指定卷的名称。若指定了volumeMounts，则此为必填项。
           readOnly:                # 指定是否为只读。默认为false。
           mountPath:               # 指定容器内的加载路径。若指定了volumeMounts，则此为必填项。
         xxx:                       # 其余可参考http://kubernetes.io/v1.1/docs/api-reference/v1/definitions.html#_v1_container
+      volumes:                     # 指定卷资源。
+        name:                      # 卷的名字
+        hostPath:                  # 表示这个卷使用主机路径。通常不建议用在生产环境。
+          path:                    # 指定主机路径。
+        xxx:                       # 其余可参考http://kubernetes.io/v1.1/docs/api-reference/v1/definitions.html#_v1_volume
+      nodeSelector:                # 建议填写。选择指定label的node。
+        app: tomcat                # 建议填写。本行是label的一个例子。
+      xxx:                         # 其余可参考http://kubernetes.io/v1.1/docs/api-reference/v1/definitions.html#_v1_podspec
