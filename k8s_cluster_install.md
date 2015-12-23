@@ -29,6 +29,8 @@ mesoscloud/zookeeper:3.4.6-ubuntu-14.04
 * `zk_id`, 从 1 开始往上加，比如 第一台机子是 1, 第二台就是 2，以此类推
 * `servers`, 所有安装 zookeeper 机子的IP， 如 `192.168.33.21,192.168.33.22,192.168.33.23`
 
+通过命令 `telnet #{zk ip} 2181`(输入命令 `stat`), 来验证 zookeeper 的成功安装, 
+
 ## 二、搭建 mesos master 集群 ##
 
 ~~~~~~
@@ -51,6 +53,8 @@ mesoscloud/mesos-master:0.24.1-ubuntu-14.04
 * `ipaddr`, 运行这条命令机子的 ip 地址
 * `mesos_zk_addr`, mesos 利用 zookeeper 选举的地址，如 `zk://192.168.33.21:2181,192.168.33.22:2181,192.168.33.23:2181/mesos`
 * `mesos_quorum`, master 集群投票最小通过数， 默认为 1, 伪代码 `max(1, mesos_master_cluster.size/2)`, 比如有三台 mesos master 值就为 2
+
+通过访问地址 `http://#{mesosmaster ip}:5050` 来验证安装成功
 
 ## 三、搭建 mesos slave 集群 ##
 
@@ -80,6 +84,8 @@ mesosphere/mesos-slave-dind:0.2.4_mesos-0.24.0_docker-1.8.2_ubuntu-14.04.3
 * `mesos_zk_addr`, mesos 利用 zookeeper 选举的地址，如 `zk://192.168.33.21:2181,192.168.33.22:2181,192.168.33.23:2181/mesos`
 * `docker_opts`, 设置在 slave 当中启动 docker 时，需要用到的参数, 如设置 registry 地址 `--insecure-registry 192.168.33.10:5000 --registry-mirror http://192.168.33.10:5000`
 
+通过访问地址 `http://#{mesosmaster ip}:5050` 来查看安装的 mesos slave 节点
+
 ## 四、etcd 集群的搭建
 
 ~~~~~~
@@ -108,6 +114,8 @@ zhpooer/etcd:v2.2.1 \
 * `hostname`, 顾名思义，没有硬性规定，一般取 `etcd#{n}`
 * `ipaddr`， 本机地址
 * `etcd_cluster`, 所有 etcd 节点的IP地址，如 `http://192.168.33.21:4001,192.168.33.22:4001,192.168.33.23:4001`
+
+通过命令 `curl -L http://#{etcdip}:4001/v2/stats/leader`, 来查看是否安装成功
 
 ## 五、k8s 集群搭建
 
@@ -170,7 +178,7 @@ zhpooer/podmaster:1.1
 
 > 在每台机子上运行 docker ps -a 来查看各个服务的运行情况
 
-参考文档
+运行完成以后可以在 mesos master 上看到 scheduler 注册情况
 
 
 ### k8s api_server 前端负均衡
@@ -179,7 +187,7 @@ zhpooer/podmaster:1.1
 
 ~~~~~~
 # 默认 80 端口
-kubectl delete -f /tmp/pxc-node1.yaml  --server=http://#{负载均衡地址}:#{k8s_api_server_lb_port}
+kubectl get pod events ep  --server=http://#{负载均衡地址}:#{k8s_api_server_lb_port}
 ~~~~~~
 
 添加以下内容到 `/etc/haproxy/haproxy.cfg`
@@ -222,8 +230,11 @@ listen stats
 
 ~~~~~~
 docker pull library/haproxy:1.6.2
-docker run -d
---net host --name haproxy --restart always
--v /etc/haproxy:/usr/local/etc/haproxy
+
+docker run -d \
+--net host --name haproxy --restart always \
+-v /etc/haproxy:/usr/local/etc/haproxy \
 library/haproxy:1.6.2
 ~~~~~~
+
+验证脚本 `kubectl get pod events ep  --server=http://#{负载均衡地址}:#{k8s_api_server_lb_port}`
