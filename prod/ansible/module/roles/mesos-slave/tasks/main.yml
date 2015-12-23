@@ -44,6 +44,6 @@
       MESOS_LOG_DIR: /var/log/mesos
       DOCKER_DAEMON_ARGS: "{{docker_opts}}"
 -  copy: src=../images/pause.tar dest=/tmp/
-- name: import docker images
-  shell: docker load -i /tmp/pause.tar && docker tag 2c40b0526b63 gcr.io/google_containers/pause:0.8.0
-  ignore_errors: True
+# - name: import docker images
+#   shell: docker load -i /tmp/pause.tar && docker tag 2c40b0526b63 gcr.io/google_containers/pause:0.8.0
+#   ignore_errors: True

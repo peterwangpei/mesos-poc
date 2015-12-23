@@ -6,11 +6,11 @@
 
 ## mesos cluster
 
-# - include: module/zookeeper.yml
-# - include: module/etcd.yml
+- include: module/zookeeper.yml
+- include: module/etcd.yml
 
-# - include: module/mesos_master.yml
-# - include: module/mesos_slave.yml
+- include: module/mesos_master.yml
+- include: module/mesos_slave.yml
 
 ###### all in one docker kubernets
 ###### - include: module/k8s.yml
@@ -22,4 +22,4 @@
 ## local should install kubernetes-cli or can run command `kubectl`
 # - include: module/nfs.yml
 # - include: module/ceph.yml
-- include: module/k8s_addon.yml
+# - include: module/k8s_addon.yml

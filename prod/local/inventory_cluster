@@ -142,4 +142,4 @@ mysql_root_password=123456
 # deploy=["k8s-lb-ha"]
 # deploy=["ceph-secret", "mysql-ceph"]
 
-deploy=["mysql-ceph"]
+deploy=["tomcat-demo"]
