@@ -6,12 +6,10 @@
   tasks:
     - service: name=kubelet state=stopped
 
-- name: clean mesos master/slave, zookeeper, etcd, k8s
+- name: clean mesos master/slave, k8s
   hosts:
     - mesosmaster
     - mesosslave
-    - zookeeper
-    - etcd
     - kubernetes
   sudo: yes
   tasks:
