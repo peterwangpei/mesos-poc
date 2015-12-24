@@ -19,10 +19,10 @@
   sudo: yes
   hosts: zookeeper
   tasks:
-    - shell: docker rm zookeeper
+    - shell: docker rm -f zookeeper
 
 - name: rm etcd
   sudo: yes
   hosts: etcd
   tasks:
-    - shell: docker rm etcd
+    - shell: docker rm -f etcd
