@@ -31,8 +31,12 @@ spec:
               mountPath: /var/lib/mysql
       volumes:
         - name: mysql-persistent-storage
-          hostPath:
-              path: /var/mysql/master
+          cephfs:
+            monitors: {{ceph_mon_addrs}}
+            user: admin
+            secretRef:
+              name: ceph-secret
+            readOnly: false
 ---
 apiVersion: v1
 kind: Service
