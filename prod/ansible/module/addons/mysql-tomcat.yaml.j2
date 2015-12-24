@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: mysql-tomcat
+  labels:
+    name: mysql-tomcat
+spec:
+  replicas: 1
+  selector:
+    name: mysql-tomcat
+  template:
+    metadata:
+      labels:
+        name: mysql-tomcat
+    spec:
+      containers:
+        - image: tomcat/demo:1.0.0
+          name: mysql-tomcat
+          resources:
+            limits:
+              cpu: 0.7
+              memory: 500Mi
+          ports:
+            - containerPort: 8080
+              name: mysql-tomcat
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: mysql-tomcat
+  name: mysql-tomcat
+spec:
+  ports:
+    - port: 8080
+  selector:
+    name: mysql-tomcat
+  type: LoadBalancer
