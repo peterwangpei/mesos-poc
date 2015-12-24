@@ -14,3 +14,15 @@
   sudo: yes
   tasks:
     - shell: docker rm -f `docker ps -aq`
+
+- name: rm zookeeper
+  sudo: yes
+  hosts: zookeeper
+  tasks:
+    - shell: docker rm zookeeper
+
+- name: rm etcd
+  sudo: yes
+  hosts: etcd
+  tasks:
+    - shell: docker rm etcd
