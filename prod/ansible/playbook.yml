@@ -10,7 +10,7 @@
 - include: module/etcd.yml
 
 - include: module/mesos_master.yml
-- include: module/mesos_slave.yml
+# - include: module/mesos_slave.yml
 
 ###### all in one docker kubernets
 ###### - include: module/k8s.yml

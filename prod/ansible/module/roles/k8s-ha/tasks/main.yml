@@ -6,7 +6,7 @@
 # - shell: wget -c -t 0 https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kubelet
 # - shell: chmod a+x kubelet && mv kubelet /usr/local/bin/
 - shell: mkdir -p /var/log/kubernetes /etc/kubernetes/manifests /srv/kubernetes/manifests
-- shell: rm -fr /etc/kubernetes/manifests/* /srv/kubernetes/manifests/*
+- shell: rm -fr /etc/kubernetes/manifests/* /srv/kubernetes/manifests/* /etc/default/kubelet
 - template: src=../templates/kube-apiserver.yaml.j2 dest=/etc/kubernetes/manifests/kube-apiserver.yaml mode=0644
 - template: src=../templates/podmaster.yaml.j2 dest=/etc/kubernetes/manifests/podmaster.yaml mode=0644
 - template: src=../templates/kube-scheduler.yaml.j2 dest=/etc/kubernetes/manifests/kube-scheduler.yaml mode=0644

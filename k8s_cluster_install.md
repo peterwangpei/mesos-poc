@@ -129,6 +129,7 @@ zhpooer/etcd:v2.2.1 \
 ~~~~~~
 zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14
 zhpooer/podmaster:1.1
+zhpooer/pause:0.8.0
 ~~~~~~
 
 
