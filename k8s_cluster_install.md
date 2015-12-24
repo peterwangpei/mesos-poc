@@ -132,6 +132,8 @@ zhpooer/podmaster:1.1
 zhpooer/pause:0.8.0
 ~~~~~~
 
+简介： 通过 Linux 服务 `kubelet`(我们自己创建的)，监控 `/etc/kubernetes/manifests/` 下的 yalm 文件(k8s 各个组件的运行配置，用 docker 运行)，
+然后 `kubelet` 会启动 k8s 的组件，如 `apiserver`、`scheduler`、`controller-manager`, 并监控他们的的运行
 
 1. 运行以下命令
 
@@ -151,7 +153,7 @@ zhpooer/pause:0.8.0
     http-client-timeout = 5s
     state-cache-ttl     = 20s
     ~~~~~~
-3. 复制文件, 将以下文件复制到 所有 k8s master 主机上, `记得模板里面的变量`
+3. 复制文件, 将以下文件复制到 所有 k8s master 主机上, `记得替换模板里面的变量`, 文件位置在 [prod/ansible/module/roles/k8s-ha/templates](./prod/ansible/module/roles/k8s-ha/templates)
 
     ~~~~~~
     HOME=prod/ansible/module/roles/k8s-ha
