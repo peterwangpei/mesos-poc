@@ -47,3 +47,7 @@
 # - name: import docker images
 #   shell: docker load -i /tmp/pause.tar && docker tag 2c40b0526b63 gcr.io/google_containers/pause:0.8.0
 #   ignore_errors: True
+- name: import pause to mesos-slave-dind
+  shell: docker cp /tmp/pause.tar `docker ps -f name=mesos-slave -q`:/pause.tar
+  shell: docker exec `docker ps -f name=mesos-slave -q` docker load -i /pause.tar
+  shell: docker tag 2c40b0526b63 gcr.io/google_containers/pause:0.8.0
