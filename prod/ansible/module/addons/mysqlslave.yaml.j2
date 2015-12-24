@@ -1,23 +1,21 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: mysql-master
+  name: mysql-slave
   labels:
-    name: mysql-master
+    name: mysql-slave
 spec:
   replicas: 1
   selector:
-    name: mysql-master
+    name: mysql-slave
   template:
     metadata:
       labels:
-        name: mysql-master
+        name: mysql-slave
     spec:
-      nodeSelector: 
-        name: master
       containers:
-        - image: mysql-master:1
-          name: mysql-master
+        - image: mysql-slave:1
+          name: mysql-slave
           resources:
             limits:
               cpu: 200m
@@ -27,23 +25,23 @@ spec:
               value: "123456"
           ports:
             - containerPort: 3306
-              name: mysql-master
+              name: mysql-slave
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
       volumes:
         - name: mysql-persistent-storage
           hostPath:
-              path: /var/mysql/ggg
+              path: /var/mysql/slave
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    name: mysql-master
-  name: mysql-master
+    name: mysql-slave
+  name: mysql-slave
 spec:
   ports:
     - port: 3306
   selector:
-    name: mysql-master
+    name: mysql-slave
