@@ -48,6 +48,7 @@
 #   shell: docker load -i /tmp/pause.tar && docker tag 2c40b0526b63 gcr.io/google_containers/pause:0.8.0
 #   ignore_errors: True
 
-- shell: sleep 5s
+- shell: sleep 3s
 - shell: docker cp /tmp/pause.tar `docker ps -f name=mesos-slave -q`:/pause.tar
+- shell: sleep 2s
 - shell: docker exec `docker ps -f name=mesos-slave -q` docker load -i /pause.tar
