@@ -45,11 +45,11 @@
     <Resource name="jdbc/master" auth="Container" type="javax.sql.DataSource"
               maxActive="100" maxIdle="30" maxWait="10000"
               username="root" password="123456" driverClassName="com.mysql.jdbc.Driver"
-              url="jdbc:mysql://mysql-master.default.svc.cluster.info:3306/demo"/>
+              url="jdbc:mysql://mysql-master.default.svc.cluster.local:3306/demo"/>
 
     <Resource name="jdbc/slave" auth="Container" type="javax.sql.DataSource"
               maxActive="100" maxIdle="30" maxWait="10000"
               username="peter" password="123456" driverClassName="com.mysql.jdbc.Driver"
-              url="jdbc:mysql://mysql-slave.default.svc.cluster.info:3306/demo"/>
+              url="jdbc:mysql://mysql-slave.default.svc.cluster.local:3306/demo"/>
 
 </Context>
