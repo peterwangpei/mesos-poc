@@ -1,3 +1,36 @@
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cephpv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  cephfs:
+    monitors: {{ceph_mon_addrs}}
+    user: admin
+    secretRef:
+      name: ceph-secret
+    readOnly: false
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mysqlpvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 512Mi
+
+---
+
 apiVersion: v1
 kind: ReplicationController
 metadata:
@@ -31,13 +64,10 @@ spec:
               mountPath: /var/lib/mysql
       volumes:
         - name: mysql-persistent-storage
-          cephfs:
-            monitors: {{ceph_mon_addrs}}
-            user: admin
-            secretRef:
-              name: ceph-secret
-            readOnly: false
+          persistentVolumeClaim: mysqlpvc
+
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
