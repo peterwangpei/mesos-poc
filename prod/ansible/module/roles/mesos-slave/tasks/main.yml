@@ -50,5 +50,4 @@
 
 - shell: sleep 3s
 - shell: docker cp /tmp/pause.tar `docker ps -f name=mesos-slave -q`:/pause.tar
-- shell: sleep 2s
 - shell: docker exec `docker ps -f name=mesos-slave -q` docker load -i /pause.tar
