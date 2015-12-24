@@ -113,7 +113,7 @@ zhpooer/etcd:v2.2.1 \
 
 * `hostname`, 顾名思义，没有硬性规定，一般取 `etcd#{n}`
 * `ipaddr`， 本机地址
-* `etcd_cluster`, 所有 etcd 节点的IP地址，如 `http://192.168.33.21:4001,192.168.33.22:4001,192.168.33.23:4001`
+* `etcd_cluster`, 所有 etcd 节点的IP地址，如  `etcd1=http://192.168.33.21:2380,etcd2=http://192.168.33.22:2380,etcd3=http://192.168.33.23:2380`
 
 通过命令 `curl -L http://#{etcdip}:4001/v2/stats/leader`, 来查看是否安装成功
 
@@ -221,15 +221,16 @@ listen stats
 参数说明
 
 * `k8s_api_server_lb_port`, haproxy 监听地址，可以这是为 80
-* `server k8s{{loop.index}} {{ip}}:{{k8s_api_port}} check`, `k8s_api_port`, 为 api_server 端口地址，已经定义； 生成如下 
+* `server k8s{{loop.index}} {{ip}}:{{k8s_api_port}} check`;
+`k8s_api_port`, 为所有 k8s master api_server 端口地址，使用前面已经定义好的参数； 最终生成的配置可能如下
 
    ~~~~~~
    server k8s0 192.168.33.21:{{k8s_api_port}} check
-   server k8s0 192.168.33.22:{{k8s_api_port}} check
-   server k8s0 192.168.33.23:{{k8s_api_port}} check
+   server k8s1 192.168.33.22:{{k8s_api_port}} check
+   server k8s2 192.168.33.23:{{k8s_api_port}} check
    ~~~~~~
 
-**最后运行命令**
+**最后运行容器**
 
 ~~~~~~
 docker pull library/haproxy:1.6.2
