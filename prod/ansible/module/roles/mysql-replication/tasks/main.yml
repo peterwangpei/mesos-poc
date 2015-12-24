@@ -3,9 +3,11 @@
 # - shell: wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kubectl && chmod a+x kubectl && mv kubectl /usr/local/bin
 - template: src=../../../addons/mysqlmaster.yaml.j2 dest=/tmp/mysqlmaster.yaml
 - template: src=../../../addons/mysqlslave.yaml.j2 dest=/tmp/mysqlslave.yaml
+- template: src=../../../addons/mysql-tomcat-demo.yaml.j2 dest=/tmp/mysql-tomcat-demo.yaml
 - template: src=../../../addons/ceph-secret.yaml.j2 dest=/tmp/ceph-secret.yaml
 
 - shell: /usr/local/bin/kubectl create -f /tmp/ceph-secret.yaml -s {{k8s_api_server_lb_url}}
 - shell: /usr/local/bin/kubectl create -f /tmp/mysqlmaster.yaml -s {{k8s_api_server_lb_url}}
 - shell: sleep 10s
 - shell: /usr/local/bin/kubectl create -f /tmp/mysqlslave.yaml -s {{k8s_api_server_lb_url}}
+- shell: /usr/local/bin/kubectl create -f /tmp/mysql-tomcat-demo.yaml -s {{k8s_api_server_lb_url}}
