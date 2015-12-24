@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="demo:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/demo_war_exploded</output-path>
+    <root id="archive" name="demo.war">
+      <element id="javaee-facet-resources" facet="demo/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="demo" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="dir-copy" path="$PROJECT_DIR$/web/WEB-INF/lib" />
+        </element>
+        <element id="file-copy" path="$PROJECT_DIR$/web/META-INF/context.xml" />
+      </element>
+    </root>
+  </artifact>
+</component>

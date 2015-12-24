@@ -1,0 +1,24 @@
+FROM ${docker.image}
+MAINTAINER ZaneZeng
+
+RUN \
+	curl -fsSL "https://github.com/coreos/etcd/releases/download/v${version.release}/etcd-v{version.release}-linux-amd64.tar.gz" -o etcd-v{version.release}-linux-amd64.tar.gz && \
+	tar xzvf etcd-v{version.release}-linux-amd64.tar.gz && \
+	rm etcd-v{version.release}-linux-amd64.tar.gz && \
+	mv etcd-v{version.release}-linux-amd64 etcd-{version.release} && \ 
+	cd etcd-{version.release} && \
+	rm /usr/bin/etcd && \
+	ln -s ${pwd} /usr/bin/etcd
+
+ENV ETCD_DATA_DIR /var/lib/etcd
+
+ADD docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod a+x            /docker-entrypoint.sh
+
+EXPOSE 4001 7001 2379 2380
+
+VOLUME ["${ETCD_DATA_DIR}"]
+
+ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
+
+CMD ["etcd"]

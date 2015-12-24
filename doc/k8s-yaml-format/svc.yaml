@@ -1,7 +1,7 @@
 kind: Service                      # 建议填写。对于svc来说，填Service。
 apiVersion: v1                     # 建议填写。目前版本为v1。
 metadata:                          # 建议填写。
-  name: tomcat                     # 建议填写。此rc的名称，不能重复。
+  name: tomcat                     # 建议填写。此svc的名称，不能重复。
   namespace:                       # 命名空间，默认为default。
   uid:                             # 通用唯一识别码。
 spec:                              # 建议填写。

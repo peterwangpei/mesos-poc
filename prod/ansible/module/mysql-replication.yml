@@ -1,0 +1,6 @@
+---
+
+- name: start mysql async replication
+  hosts: k8_addons
+  roles:
+    - role: mysql-replication

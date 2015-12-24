@@ -1,0 +1,10 @@
+<config>   
+    <group>   
+        <property name="docker.image" />
+        <property name="version.major"/>
+        <property name="version.release"/>
+    </group>   
+    <script>   
+        <generate template="docker.template" destfile="${version}/dockerfile" charset="utf-8" />   
+    </script>   
+</config>
