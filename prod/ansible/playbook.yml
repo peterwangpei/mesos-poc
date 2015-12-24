@@ -17,9 +17,9 @@
 
 ## all in master kubernets demo
 # - include: module/k8s_apiserver_lb.yml
-# - include: module/k8s_ha.yml
+- include: module/k8s_ha.yml
 
 ## local should install kubernetes-cli or can run command `kubectl`
 # - include: module/nfs.yml
 # - include: module/ceph.yml
-# - include: module/k8s_addon.yml
+- include: module/k8s_addon.yml
