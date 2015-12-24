@@ -1,0 +1,18 @@
+---
+
+- name: stop kubelet
+  hosts: kubernetes
+  sudo: yes
+  tasks:
+    - service: name=kubelet state=stopped
+
+- name: clean mesos master/slave, zookeeper, etcd, k8s
+  hosts:
+    - mesosmaster
+    - mesosslave
+    - zookeeper
+    - etcd
+    - kubernetes
+  sudo: yes
+  tasks:
+    - shell: docker rm -f `docker ps -aq`
