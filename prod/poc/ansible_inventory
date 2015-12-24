@@ -1,3 +1,5 @@
+#------------------------------------------- Declare Machine ------------------------------------------- #
+
 [zk1]
 # 10.229.51.58
 localhost ansible_connection=local
@@ -17,17 +19,28 @@ localhost ansible_connection=local
 [km1]
 10.229.50.219 ansible_user=root ansible_ssh_pass=
 
+#------------------------------------------- Group set ------------------------------------------- #
+
 [k8_addons:children]
+zk1
+
+[api_server_lb_ha:children]
+zk1
+
+[ceph:children]
+
+
+[nfs:children]
+
+
+[etcd:children]
 zk1
 
 [zookeeper:children]
 zk1
 
-[etcd:children]
-zk1
-
-[api_server_lb_ha:children]
-zk1
+[kubernetes:children]
+km1
 
 [mesosmaster:children]
 mm1
@@ -37,32 +50,7 @@ ms1
 ms2
 ms3
 
-[kubernetes:children]
-km1
-
-[all:vars]
-mesos_zk_addrs=zk://10.229.51.58:2181/mesos
-# docker_opts='--insecure-registry= --registry-mirror='
-docker_opts='--insecure-registry 10.229.51.58:5000 --registry-mirror http://10.229.51.58:5000'
-etcd_servers=http://10.229.51.58:4001
-# deprecated
-k8s_master_url=http://10.229.50.219:8888
-
-k8s_cluster_ip_range=10.10.10.0/24
-k8s_dns_server=10.10.10.10
-k8s_dns_replicas=1
-k8s_dns_domain=cluster.local
-
-k8s_api_server_lb_port=80
-k8s_api_server_lb_ip=10.229.51.58
-k8s_api_server_lb_url=http://10.229.51.58:80
-k8s_api_servers=http://10.229.50.219:8888
-k8s_api_servers_ips=["10.229.50.219"]
-k8s_api_port=8888
-
-[mm1:vars]
-ipaddr=10.229.50.219
-quorum=1
+#------------------------------------------- Machine variable ------------------------------------------- #
 
 [ms1:vars]
 ipaddr=10.229.45.144
@@ -73,14 +61,53 @@ ipaddr=10.229.49.198
 [ms3:vars]
 ipaddr=10.229.53.29
 
-[zookeeper:vars]
-servers=10.229.51.58
-
-[zk1:vars]
-zookeeper_id=1
+[mm1:vars]
+ipaddr=10.229.50.219
 
 [km1:vars]
 ipaddr=10.229.50.219
+hostname=km1
+zookeeper_id=1
+
+[zk1:vars]
+ipaddr=10.229.51.58
+zookeeper_id=1
+hostname=zk1
+
+#------------------------------------------- Group variable ------------------------------------------- #
+
+[all:vars]
+docker_opts='--insecure-registry 10.229.51.58:5000 --registry-mirror http://10.229.51.58:5000'
+mesos_zk_addrs=zk://10.229.51.58:2181/mesos
+etcd_servers=http://10.229.51.58:4001
+etcd_cluster="zk1=http://10.229.51.58:2380"
+
+k8s_cluster_ip_range=10.10.10.0/24
+k8s_dns_server=10.10.10.10
+
+k8s_dns_replicas=1
+k8s_dns_domain=cluster.local
+
+k8s_api_server_lb_port=80
+k8s_api_server_lb_ip=10.229.51.58
+k8s_api_server_lb_url=http://10.229.51.58:80
+
+k8s_api_servers=http://10.229.50.219:8888
+k8s_api_servers_ips=["10.229.50.219"]
+k8s_api_port=8888
+
+# 部署完 ceph-demo 之后，进入到部署ceph机子里面，运行如下命令，获取 编码
+# grep key /etc/ceph/ceph.client.kube.keyring |awk '{printf "%s", $NF}'|base64
+# https://github.com/kubernetes/kubernetes/tree/master/examples/rbd
+ceph_client_secret=
+ceph_network=
+ceph_mon_addrs=
+
+[mesosmaster:vars]
+quorum=1
+
+[zookeeper:vars]
+servers=10.229.51.58
 
 [k8_addons:vars]
 mysql_root_password=123456
@@ -92,3 +119,4 @@ deploy=["skydns", "kube-ui"]
 # deploy=["tomcat", "mysql-pv", "wordpress", "nginx"]
 # deploy=["wordpress", "k8s-lb-ha"]
 # deploy=["nginx"]
+
