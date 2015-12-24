@@ -88,9 +88,9 @@ k8s_dns_server=10.10.10.10
 k8s_dns_replicas=1
 k8s_dns_domain=cluster.local
 
-k8s_api_server_lb_port=80
-k8s_api_server_lb_ip=10.229.51.58
-k8s_api_server_lb_url=http://10.229.51.58:80
+k8s_api_server_lb_port=8888
+k8s_api_server_lb_ip=10.229.50.219
+k8s_api_server_lb_url=http://10.229.50.219:8888
 
 k8s_api_servers=http://10.229.50.219:8888
 k8s_api_servers_ips=["10.229.50.219"]
