@@ -14,7 +14,7 @@ spec:
         name: mysql-slave
     spec:
       containers:
-        - image: mysql-slave:1
+        - image: peterwang115/mysql-slave:0.0.1
           name: mysql-slave
           resources:
             limits:
@@ -26,6 +26,13 @@ spec:
           ports:
             - containerPort: 3306
               name: mysql-slave
+          volumeMounts:
+            - name: mysql-slave-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-slave-storage
+          hostPath:
+            path: /var/mysql/slave
 ---
 apiVersion: v1
 kind: Service
