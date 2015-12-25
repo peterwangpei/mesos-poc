@@ -135,4 +135,5 @@ mysql_root_password=123456
 # deploy=["k8s-lb-ha"]
 # deploy=["ceph-secret", "mysql-ceph", "tomcat-demo"]
 # deploy=["pxc-cluster-svc"]
-deploy=["pxc-node1"]
+# deploy=["skydns"]
+deploy=["mysql-ceph", "tomcat-demo"]
