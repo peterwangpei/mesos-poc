@@ -27,7 +27,7 @@ spec:
             - containerPort: 3306
               name: mysql-master
           volumeMounts:
-            - name: cephfs
+            - name: mysql-master-storage
               mountPath: /var/lib/mysql
       volumes:
         - name: mysql-master-storage
