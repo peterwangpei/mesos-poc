@@ -1,0 +1,40 @@
+---
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: cephpv
+  labels:
+    type: rbd
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  #cephfs:
+  #  monitors: {{ceph_mon_addrs}}
+  #  user: admin
+  #  secretRef:
+  #    name: ceph-secret
+  #  readOnly: false
+  rbd:
+    monitors: {{ceph_mon_addrs}}
+    image: mysql
+    user: admin
+    secretRef:
+      name: ceph-secret
+    fsType: ext4
+    readOnly: false
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: cephpvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 512Mi

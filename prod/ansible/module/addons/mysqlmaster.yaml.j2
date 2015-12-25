@@ -30,15 +30,17 @@ spec:
             - name: cephfs
               mountPath: /var/lib/mysql
       volumes:
-        - name: cephfs
-          cephfs:
-            monitors: {{ceph_mon_addrs}}
-            user: admin
-            secretRef:
-              name: ceph-secret
-            readOnly: false
-
-
+        - name: mysql-master-storage
+          hostPath:
+            path: /var/mysql/master
+          # cephfs:
+          #   monitors: {{ceph_mon_addrs}}
+          #   user: admin
+          #   secretRef:
+          #     name: ceph-secret
+          #   readOnly: false
+          # persistentVolumeClaim:
+          #   claimName: mysqlpvc
 ---
 apiVersion: v1
 kind: Service

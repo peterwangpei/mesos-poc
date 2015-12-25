@@ -5,8 +5,10 @@
 - template: src=../../../addons/mysqlslave.yaml.j2 dest=/tmp/mysqlslave.yaml
 - template: src=../../../addons/mysql-tomcat.yaml.j2 dest=/tmp/mysql-tomcat.yaml
 - template: src=../../../addons/ceph-secret.yaml.j2 dest=/tmp/ceph-secret.yaml
+- template: src=../../../addons/ceph-pv.yaml.j2 dest=/tmp/ceph-pv.yaml
 
-- shell: /usr/local/bin/kubectl create -f /tmp/ceph-secret.yaml -s {{k8s_api_server_lb_url}}
+#- shell: /usr/local/bin/kubectl create -f /tmp/ceph-secret.yaml -s {{k8s_api_server_lb_url}}
+#- shell: /usr/local/bin/kubectl create -f /tmp/ceph-pv.yaml -s {{k8s_api_server_lb_url}}
 - shell: /usr/local/bin/kubectl create -f /tmp/mysqlmaster.yaml -s {{k8s_api_server_lb_url}}
 - shell: sleep 10s
 - shell: /usr/local/bin/kubectl create -f /tmp/mysqlslave.yaml -s {{k8s_api_server_lb_url}}
