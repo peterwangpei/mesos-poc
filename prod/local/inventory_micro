@@ -7,16 +7,16 @@ localhost ansible_connection=local
 [registry]
 192.168.33.10
 
-[miscell]
+[misc]
 192.168.33.11
 
-[mono1]
+[mk1]
 192.168.33.21
 
-[mono2]
+[mk2]
 192.168.33.22
 
-[mono3]
+[mk3]
 192.168.33.23
 
 [ms1]
@@ -36,26 +36,25 @@ localhost ansible_connection=local
 localhost
 
 [api_server_lb_ha:children]
-miscell
+misc
 
 [ceph:children]
-miscell
+misc
 
 [nfs:children]
-miscell
+misc
 
 [etcd:children]
-mono1
+mk1
 
 [zookeeper:children]
-mono1
+mk1
 
 [kubernetes:children]
-mono1
-
+mk1
 
 [mesosmaster:children]
-mono1
+mk1
 
 [mesosslave:children]
 ms1
@@ -64,7 +63,7 @@ ms3
 
 #------------------------------------------- Machine variable ------------------------------------------- #
 
-[miscell:vars]
+[misc:vars]
 ipaddr=192.168.33.11
 
 [ms1:vars]
@@ -76,19 +75,19 @@ ipaddr=192.168.33.32
 [ms3:vars]
 ipaddr=192.168.33.33
 
-[mono1:vars]
+[mk1:vars]
 ipaddr=192.168.33.21
-hostname=mono1
+hostname=mk1
 zookeeper_id=1
 
-[mono2:vars]
+[mk2:vars]
 ipaddr=192.168.33.22
-hostname=mono2
+hostname=mk2
 zookeeper_id=2
 
-[mono3:vars]
+[mk3:vars]
 ipaddr=192.168.33.23
-hostname=mono3
+hostname=mk3
 zookeeper_id=3
 
 #------------------------------------------- Group variable ------------------------------------------- #
@@ -97,7 +96,7 @@ zookeeper_id=3
 docker_opts='--insecure-registry 192.168.33.10:5000 --registry-mirror http://192.168.33.10:5000'
 mesos_zk_addrs=zk://192.168.33.21:2181/mesos
 etcd_servers=http://192.168.33.21:4001
-etcd_cluster="mono1=http://192.168.33.21:2380"
+etcd_cluster="mk1=http://192.168.33.21:2380"
 
 k8s_cluster_ip_range=10.10.10.0/24
 k8s_dns_server=10.10.10.10
