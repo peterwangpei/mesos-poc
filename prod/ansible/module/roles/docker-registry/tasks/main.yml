@@ -3,7 +3,7 @@
 - name: start a docker registry
   docker:
     name: registry
-    image: registry:2
+    image: registry:2.2.0
     net: host
     restart_policy: always
     volumes:
