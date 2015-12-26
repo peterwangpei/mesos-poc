@@ -10,6 +10,6 @@
   #     register: result
   #     ignore_errors: True
   roles:
-    - role: docker
+    - docker
       # when: result | failed
-    - role: docker-configuration
+    - docker-configuration
