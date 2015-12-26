@@ -13,12 +13,6 @@ localhost ansible_connection=local
 [mk1]
 192.168.33.21
 
-[mk2]
-192.168.33.22
-
-[mk3]
-192.168.33.23
-
 [ms1]
 192.168.33.31
 
@@ -79,16 +73,6 @@ ipaddr=192.168.33.33
 ipaddr=192.168.33.21
 hostname=mk1
 zookeeper_id=1
-
-[mk2:vars]
-ipaddr=192.168.33.22
-hostname=mk2
-zookeeper_id=2
-
-[mk3:vars]
-ipaddr=192.168.33.23
-hostname=mk3
-zookeeper_id=3
 
 #------------------------------------------- Group variable ------------------------------------------- #
 
