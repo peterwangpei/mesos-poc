@@ -1,0 +1,4 @@
+---
+
+- template: src=../templates/docker.j2 dest=/etc/default/docker mode=0644
+- service: name=docker state=restarted enabled=true

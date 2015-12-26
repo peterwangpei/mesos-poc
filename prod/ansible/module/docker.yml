@@ -12,3 +12,4 @@
   roles:
     - role: docker
       # when: result | failed
+    - role: docker-configuration

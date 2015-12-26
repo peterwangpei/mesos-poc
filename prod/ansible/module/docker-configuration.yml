@@ -1,0 +1,8 @@
+---
+
+- name: init docker env
+  hosts: all
+  sudo: yes
+  gather_facts: yes
+  roles:
+    - role: docker-configuration
