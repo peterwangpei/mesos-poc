@@ -1,7 +1,7 @@
 ---
 
 - name: init docker env
-  hosts: all
+  hosts: all:!localhost
   sudo: yes
   gather_facts: yes
   roles:
