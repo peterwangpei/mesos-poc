@@ -5,6 +5,7 @@
 ~~~~~~
 ## docker must install in all machine
 - include: module/docker.yml
+- include: module/docker-configuration.yml
 ## mesos cluster
 - include: module/zookeeper.yml
 - include: module/mesos_slave.yml

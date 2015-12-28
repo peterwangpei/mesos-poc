@@ -53,6 +53,7 @@ vagrant 会启动，7个虚拟机，并做如下配置：
 
     ~~~~~~
      - include: module/docker.yml
+     - include: module/docker-configuration.yml
      - include: module/registry.yml
     ~~~~~~
 3. 通过 `vagrant ssh reg` 登录到 registry 的虚拟机，拷贝 `docker_share.sh` 到 registry 虚拟机，
