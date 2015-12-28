@@ -31,14 +31,14 @@ spec:
               mountPath: /var/lib/mysql
       volumes:
         - name: mysql-master-storage
-          hostPath:
-            path: /var/mysql/master
-          # cephfs:
-          #   monitors: {{ceph_mon_addrs}}
-          #   user: admin
-          #   secretRef:
-          #     name: ceph-secret
-          #   readOnly: false
+          cephfs:
+            monitors: {{ceph_mon_addrs}}
+            user: admin
+            secretRef:
+              name: ceph-secret
+            readOnly: false
+          # hostPath:
+          #   path: /var/mysql/master
           # persistentVolumeClaim:
           #   claimName: cephpvc
 ---
