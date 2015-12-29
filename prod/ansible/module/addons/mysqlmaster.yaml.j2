@@ -18,8 +18,8 @@ spec:
           name: mysql-master
           resources:
             limits:
-              cpu: 300m
-              memory: 600Mi
+              cpu: 100m
+              memory: 200Mi
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: "123456"
@@ -37,6 +37,16 @@ spec:
             secretRef:
               name: ceph-secret
             readOnly: false
+          # rbd:
+          #   pool: rbd
+          #   image: mysql
+          #   user: admin
+          #   keyring: /etc/ceph/keyring
+          #   secretRef:
+          #     name: ceph-secret
+          #   fsType: ext4
+          #   readOnly: false
+          #   monitors: {{ceph_mon_addrs}}
           # hostPath:
           #   path: /var/mysql/master
           # persistentVolumeClaim:

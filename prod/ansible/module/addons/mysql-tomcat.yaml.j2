@@ -19,8 +19,8 @@ spec:
           name: mysql-tomcat
           resources:
             limits:
-              cpu: 0.7
-              memory: 500Mi
+              cpu: 100m
+              memory: 300Mi
           ports:
             - containerPort: 8080
               name: mysql-tomcat
