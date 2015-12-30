@@ -17,8 +17,13 @@ do
   fi
 done
 
-mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "GRANT SELECT,REPLICATION SLAVE ON *.* TO 'peter'@'%' IDENTIFIED BY '123456';"
-mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE demo; CREATE TABLE demo.users(user_id INT(4) PRIMARY KEY NOT NULL AUTO_INCREMENT, user_name VARCHAR(40), user_pass VARCHAR(40), email VARCHAR(100));"
+mysqlpeter=( mysql -upeter -p123456 )
+if ! echo 'SELECT 1' | "${mysqlpeter[@]}" &> /dev/null;
+then
+  echo "start creating slave user peter and users table in demo database"
+  mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "GRANT SELECT,REPLICATION SLAVE ON *.* TO 'peter'@'%' IDENTIFIED BY '123456';"
+  mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE demo; CREATE TABLE demo.users(user_id INT(4) PRIMARY KEY NOT NULL AUTO_INCREMENT, user_name VARCHAR(40), user_pass VARCHAR(40), email VARCHAR(100));"
+fi
 
 echo "end configurating mysql database"
 fg
