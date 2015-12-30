@@ -23,6 +23,7 @@
       MESOS_ISOLATION: cgroups/cpu,cgroups/mem
       MESOS_LOG_DIR: /var/log/mesos
 - copy: src=../../../../ceph dest=/etc/
+- shell: if [ -z `dpkg -l | grep ceph-common | awk '{print $2}'` ]; then apt-get -y ceph-common; fi
 - shell: if [ ! -f /dev/rbd/rbd/mysql ]; then rbd map mysql --pool rbd --name client.admin; fi
 - shell: mkdir -p /mnt/rdb/mysql
 - shell: if [ -z `mount | grep /mnt/rdb/mysql | awk '{print $1}'` ]; then mount -t ext4 /dev/rbd/rbd/mysql /mnt/rdb/mysql; else umount -l /mnt/rdb/mysql && mount -t ext4 /dev/rbd/rbd/mysql /mnt/rdb/mysql; fi
