@@ -5,6 +5,7 @@ echo "start configurating mysql database"
 source /entrypoint.sh &
 
 mysql=( mysql -uroot -p${MYSQL_ROOT_PASSWORD} )
+sleep 20s
 for i in {1..15}
 do
   echo "connect to mysql: $i"

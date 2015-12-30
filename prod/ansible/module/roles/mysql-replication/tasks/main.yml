@@ -8,5 +8,6 @@
 
 - shell: /usr/local/bin/kubectl create -f /tmp/ceph-secret.yaml -s {{k8s_api_server_lb_url}}
 - shell: /usr/local/bin/kubectl create -f /tmp/mysqlmaster.yaml -s {{k8s_api_server_lb_url}}
+- shell: sleep 10s
 - shell: /usr/local/bin/kubectl create -f /tmp/mysqlslave.yaml -s {{k8s_api_server_lb_url}}
 - shell: /usr/local/bin/kubectl create -f /tmp/mysql-tomcat.yaml -s {{k8s_api_server_lb_url}}
