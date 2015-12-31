@@ -108,12 +108,14 @@ vagrant 会启动，7个虚拟机，并做如下配置：
 2. 通过ansible脚本运行ceph/demo
 3. 安装 `ceph-common` 包
 4. 运行 `sudo rbd create mysql --size 100000 -k /etc/ceph/ceph.client.admin.keyring` 创建 mysql image
-5. 运行 `sudo mkfs.ext4 -m0 /dev/rbd/rbd/mysql` 将 mysql image 格式化
-6. 运行如下命令检测是否可以正常加载 mysql image
+5. 运行 `sudo rbd map mysql --pool rbd --name client.admin` 将 mysql 映射到块设备
+6. 运行 `sudo mkfs.ext4 -m0 /dev/rbd/rbd/mysql` 将 mysql 块设备格式化
+7. 运行如下命令检测是否可以正常加载 mysql image 并将其清空（主要是lost+found）
 
     ```
 sudo mkdir -p /mnt/rdb/mysql
 sudo mount -t ext4 /dev/rbd/rbd/mysql /mnt/rdb/mysql
 ls /mnt/rdb/mysql/
+sudo rm -rf /mnt/rdb/mysql/*
 sudo umount /mnt/rdb/mysql
     ```

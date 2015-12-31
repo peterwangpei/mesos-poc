@@ -7,19 +7,7 @@
 > 在部署过程中可能会遇到的问题，请先参考 `doc/PITA.md`
 
 1. 在所有宿主机上安装 docker， 安装步骤请参考 `doc/docker-install` 文件夹
-2. 启动 ceph，命令如下
-
-    ~~~~~~
-    docker pull ceph/demo
-
-    docker run -d \
-    -e MON_IP=#{ceph的ip地址} \
-    -e CEPH_NETWORK=#{允许访问ceph的ip地址，如192.168.33.0/24} \
-    -v /etc/ceph:/etc/ceph \
-    --net=host --name ceph --restart=always \
-    ceph/demo
-    ~~~~~~
-3. 安装 zookeeper 镜像，命令如下
+2. 安装 zookeeper 镜像，命令如下
 
     ~~~~~~
     docker pull mesoscloud/zookeeper:3.4.6-ubuntu-14.04
@@ -35,7 +23,7 @@
     mesoscloud/zookeeper:3.4.6-ubuntu-14.04
     ~~~~~~
     详细的配置 zookeeper, mesos 配置安装，请参考 `doc/install mesos.md`
-4. 启动 mesos master 镜像，命令如下
+3. 启动 mesos master 镜像，命令如下
 
     ~~~~~~
     docker pull mesoscloud/mesos-master:0.24.1-ubuntu-14.04
@@ -51,7 +39,7 @@
     --name master --net=host --restart always \
     mesoscloud/mesos-master:0.24.1-ubuntu-14.04
     ~~~~~~
-5. 启动 mesos slave 镜像，可以启动多台， 命令如下
+4. 启动 mesos slave 镜像，可以启动多台， 命令如下
 
     ~~~~~~
     docker pull mesoscloud/mesos-slave:0.24.1-ubuntu-14.04
@@ -72,7 +60,7 @@
     --restart always \
     mesoscloud/mesos-slave:0.24.1-ubuntu-14.04
     ~~~~~~
-6. 启动 kubernetes master （etcd 都在也打包到里面了）
+5. 启动 kubernetes master （etcd 都在也打包到里面了）
 
     ~~~~~~
     docker pull mesosphere/kubernetes:v0.7.0-v1.1.1-alpha
