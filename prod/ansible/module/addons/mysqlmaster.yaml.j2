@@ -31,24 +31,24 @@ spec:
               mountPath: /var/lib/mysql
       volumes:
         - name: mysql-master-storage
-          hostPath:
-            path: /mnt/rdb/mysql/master
+          # hostPath:
+          #   path: /mnt/rdb/mysql/master
           # cephfs:
           #   monitors: {{ceph_mon_addrs}}
           #   user: admin
           #   secretRef:
           #     name: ceph-secret
           #   readOnly: false
-          # rbd:
-          #   pool: rbd
-          #   image: mysql
-          #   user: admin
-          #   keyring: /etc/ceph/keyring
-          #   secretRef:
-          #     name: ceph-secret
-          #   fsType: ext4
-          #   readOnly: false
-          #   monitors: {{ceph_mon_addrs}}
+          rbd:
+            pool: rbd
+            image: mysql
+            user: admin
+            keyring: /etc/ceph/keyring
+            secretRef:
+              name: ceph-secret
+            fsType: ext4
+            readOnly: false
+            monitors: {{ceph_mon_addrs}}
           # persistentVolumeClaim:
           #   claimName: cephpvc
 ---
