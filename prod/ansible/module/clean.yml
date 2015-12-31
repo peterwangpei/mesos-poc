@@ -13,16 +13,16 @@
     - kubernetes
   sudo: yes
   tasks:
-    - shell: docker rm -f `docker ps -aq`
+    - shell: if [ `docker ps -a | wc -l` -gt 1 ]; then echo ggg && docker rm -f `docker ps -aq`; fi
 
 - name: rm zookeeper
   sudo: yes
   hosts: zookeeper
   tasks:
-    - shell: docker rm -f zookeeper
+    - shell: if [ `docker ps -f name=zookeeper | wc -l` -gt 1 ]; then docker rm -f zookeeper; fi
 
 - name: rm etcd
   sudo: yes
   hosts: etcd
   tasks:
-    - shell: docker rm -f etcd
+    - shell: if [ `docker ps -f name=etcd | wc -l` -gt 1 ]; then docker rm -f etcd; fi
