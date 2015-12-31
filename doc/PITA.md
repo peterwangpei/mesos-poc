@@ -48,3 +48,8 @@ gcr.io/google_containers/skydns:2015-10-13-8c72f8c
 - **期望**：能够打开Slaves的Sandbox的页面
 - **问题**：kubernetes默认所有Slave的机器名都已经写在`/etc/hosts`里面
 - **对策**：可以修改`/etc/hosts`，也可以在mesos slave的启动参数中把主机名修改成IP地址。我们现在用的是后一种方案
+
+---
+
+- **现象**：ansible运行playboox.yml后，在这一行停住了：`TASK: [mesos-slave | shell if [ ! -f /dev/rbd/rbd/mysql ]; then rbd map mysql --pool rbd --name client.admin; fi] ***`
+- **对策**：重启cepf容器
