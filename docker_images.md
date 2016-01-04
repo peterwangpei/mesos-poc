@@ -22,7 +22,7 @@ zhpooer/skydns:2015-10-13-8c72f8c
 其他镜像
 
 ~~~~~~
-zhpooer/tomcat-demo:0.1
+zhpooer/tomcat-demo:0.0.1
 ceph/demo:latest
 zhpooer/k8s_lb_haproxy:1.0.3
 ~~~~~~

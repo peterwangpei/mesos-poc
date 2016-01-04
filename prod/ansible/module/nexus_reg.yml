@@ -1,5 +1,5 @@
 - name: install nexus-docker registry
-  hosts: nexus
+  hosts: registry
   sudo: yes
   tasks:
     - docker:

@@ -102,7 +102,14 @@ gro/pause
 kubectl
 kubelet
 
-zenge 的包
+
+docker-machine create -d virtualbox \
+--engine-storage-driver "aufs" \
+--engine-opt dns=223.5.5.5
+--engine-insecure-registry "192.168.33.10" \
+--engine-registry-mirror "http://192.168.33.10:5000" \
+default
+
 
 zookeeper mesoscloud/zookeeper:3.4.6-ubuntu-14.04
 -->
