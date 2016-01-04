@@ -7,6 +7,9 @@ localhost ansible_connection=local
 [registry]
 192.168.33.10
 
+[nexus]
+192.168.33.9
+
 [misc]
 192.168.33.11
 

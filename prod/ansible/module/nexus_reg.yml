@@ -1,0 +1,12 @@
+- name: install nexus-docker registry
+  hosts: nexus
+  sudo: yes
+  tasks:
+    - docker:
+        name: reg
+        net: host
+        image: baselibrary/nexus:3.0
+        state: started
+        restart_policy: always
+        volumes:
+          - /usr/share/nexus/data:/usr/share/nexus/data
