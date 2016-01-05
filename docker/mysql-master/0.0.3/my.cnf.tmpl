@@ -41,10 +41,9 @@ tmpdir		= /tmp
 lc-messages-dir	= /usr/share/mysql
 explicit_defaults_for_timestamp
 
-read-only=1
-super-read-only=1
-server-id=2
-replicate-ignore-db=mysql
+log-bin=mysql-bin
+binlog-ignore-db=mysql
+server-id=1
 
 # Instead of skip-networking the default is now to listen only on
 # localhost which is more compatible and is not less secure.
