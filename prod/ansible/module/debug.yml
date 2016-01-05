@@ -1,0 +1,13 @@
+- name: debug
+  hosts: zookeeper
+  tasks:
+    - debug: var=mesos_zk_addrs
+    - debug: var=etcd_servers
+    - debug: var=k8s_api_servers
+    - debug: var=k8s_api_servers_ips
+    - debug: var=mesos_quorum
+    - debug: var=zk_servers
+    - debug: var=k8s_api_server_lb_ip
+    - debug: var=ipaddr
+    - debug: var=hostname
+    - debug: var=etcd_cluster

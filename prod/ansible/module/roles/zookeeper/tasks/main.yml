@@ -15,4 +15,4 @@
       - "3888:3888"
     env:
       MYID: "{{ zookeeper_id }}"
-      SERVERS: "{{ servers }}"
+      SERVERS: "{{ zk_servers }}"

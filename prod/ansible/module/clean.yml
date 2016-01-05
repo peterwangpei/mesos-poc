@@ -5,6 +5,7 @@
   sudo: yes
   tasks:
     - service: name=kubelet state=stopped
+      ignore_errors: True
 
 - name: clean mesos master/slave, k8s
   hosts:
@@ -15,6 +16,7 @@
   tasks:
     - shell: if [ `docker ps -a | wc -l` -gt 1 ]; then docker rm -f `docker ps -aq`; fi
     - shell: if [ `rbd showmapped | wc -l` -gt 1 ]; then rbd unmap /dev/rbd1; fi
+
 
 - name: rm zookeeper
   sudo: yes

@@ -32,7 +32,7 @@
 - name: run mesos slave container
   docker:
     name: mesos-slave
-    image: peterwang115/mesos-slave-dind:0.0.1
+    image: mesosphere/mesos-slave-dind:0.2.4_mesos-0.24.0_docker-1.8.2_ubuntu-14.04.3
     net: host
     pid: host
     privileged: yes

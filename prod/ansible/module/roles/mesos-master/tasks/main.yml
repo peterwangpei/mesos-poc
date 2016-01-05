@@ -14,5 +14,5 @@
       MESOS_HOSTNAME: "{{ ipaddr }}"
       MESOS_IP: "{{ ipaddr }}"
       MESOS_ZK: "{{ mesos_zk_addrs }}"
-      MESOS_QUORUM: "{{ quorum }}"
+      MESOS_QUORUM: "{{ mesos_quorum }}"
       MESOS_LOG_DIR: /var/log/mesos

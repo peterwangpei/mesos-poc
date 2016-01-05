@@ -1,3 +1,5 @@
+
+
 #------------------------------------------- Declare Machine ------------------------------------------- #
 
 [localhost]
@@ -21,7 +23,6 @@ localhost ansible_connection=local
 
 [ms3]
 192.168.33.33
-
 
 
 #------------------------------------------- Group set ------------------------------------------- #
@@ -57,43 +58,14 @@ ms3
 
 #------------------------------------------- Machine variable ------------------------------------------- #
 
-[misc:vars]
-ipaddr=192.168.33.11
-
-[ms1:vars]
-ipaddr=192.168.33.31
-
-[ms2:vars]
-ipaddr=192.168.33.32
-
-[ms3:vars]
-ipaddr=192.168.33.33
-
 [mk1:vars]
-ipaddr=192.168.33.21
-hostname=mk1
 zookeeper_id=1
 
 #------------------------------------------- Group variable ------------------------------------------- #
 
 [all:vars]
 docker_opts='--insecure-registry 192.168.33.10 --registry-mirror http://192.168.33.10:5000'
-mesos_zk_addrs=zk://192.168.33.21:2181/mesos
-etcd_servers=http://192.168.33.21:4001
-etcd_cluster="mk1=http://192.168.33.21:2380"
-
-k8s_cluster_ip_range=10.10.10.0/24
-k8s_dns_server=10.10.10.10
-
-k8s_dns_replicas=1
-k8s_dns_domain=cluster.local
-
 k8s_api_server_lb_port=8888
-k8s_api_server_lb_ip=192.168.33.21
-k8s_api_server_lb_url=http://192.168.33.21:8888
-
-k8s_api_servers=http://192.168.33.21:8888
-k8s_api_servers_ips=["192.168.33.21"]
 k8s_api_port=8888
 
 # 部署完 ceph-demo 之后，进入到部署ceph机子里面，运行如下命令，获取 编码
@@ -102,12 +74,6 @@ k8s_api_port=8888
 ceph_client_secret=QVFCRitvQldEYlJuTHhBQURoUFB1UmwycDNrc0dUYkxYVUorWHc9PQo=
 ceph_network=192.168.33.0/24
 ceph_mon_addrs=["192.168.33.11:6789"]
-
-[mesosmaster:vars]
-quorum=1
-
-[zookeeper:vars]
-servers=192.168.33.21
 
 [k8_addons:vars]
 mysql_root_password=123456
@@ -119,4 +85,4 @@ deploy=["skydns", "kube-ui"]
 # deploy=["ceph-secret", "mysql-ceph", "tomcat-demo"]
 # deploy=["pxc-cluster-svc"]
 # deploy=["skydns"]
-#deploy=["mysql-ceph", "tomcat-demo"]
+# deploy=["mysql-ceph", "tomcat-demo"]
