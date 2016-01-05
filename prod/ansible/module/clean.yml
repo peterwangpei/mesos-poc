@@ -13,7 +13,8 @@
     - kubernetes
   sudo: yes
   tasks:
-    - shell: if [ `docker ps -a | wc -l` -gt 1 ]; then echo ggg && docker rm -f `docker ps -aq`; fi
+    - shell: if [ `docker ps -a | wc -l` -gt 1 ]; then docker rm -f `docker ps -aq`; fi
+    - shell: if [ `rbd showmapped | wc -l` -gt 1 ]; then rbd unmap /dev/rbd1; fi
 
 - name: rm zookeeper
   sudo: yes
@@ -26,3 +27,9 @@
   hosts: etcd
   tasks:
     - shell: if [ `docker ps -f name=etcd | wc -l` -gt 1 ]; then docker rm -f etcd; fi
+
+- name: rm ceph lock
+  sudo: yes
+  hosts: ceph
+  tasks:
+    - shell: if [ `rbd lock list mysql | wc -l` -gt 1 ]; then rbd lock remove mysql `rbd lock list mysql | awk '(NR>2){print $2}'` `rbd lock list mysql | awk '(NR>2){print $1}'`; fi
