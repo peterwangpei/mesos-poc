@@ -1,6 +1,11 @@
 ---
 
-# - shell: wget https://storage.googleapis.com/kubernetes-release/release/v1.1.2/bin/linux/amd64/kubectl && chmod a+x kubectl && mv kubectl /usr/local/bin
+- stat: path=/usr/local/bin/kubectl
+  register: kubectl_installed
+- command: "docker run --rm -v /tmp:/stores k8smesos/kubelet-pack:v1.1.2"
+  when: not kubectl_installed.stat.exists
+- shell: mv /tmp/kubectl /usr/local/bin/
+  when: not kubectl_installed.stat.exists
 - template: src=../../../addons/{{item}}.yaml.j2 dest=/tmp/{{item}}.yaml
   with_items:
     "{{deploy}}"
