@@ -3,9 +3,6 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-
-  config.vm.box = "minimum/ubuntu-trusty64-docker"
-
   if Vagrant.has_plugin?("vagrant-cachier")
     # Configure cached packages to be shared between instances of the same base box.
     # More info on http://fgrehm.viewdocs.io/vagrant-cachier/usage
@@ -15,20 +12,44 @@ Vagrant.configure(2) do |config|
   config.ssh.insert_key = false
 
   cluster = {
-    "reg" => { :ip => "192.168.33.10", :mem => 1024,  :cpu => 1},
+    "reg" => { :ip => "192.168.33.10", :mem => 1024, :cpu => 1 },
 
-    "misc" => { :ip => "192.168.33.11", :mem => 512,  :cpu => 1},
+    "misc" => { :ip => "192.168.33.11", :mem => 512, :cpu => 1 },
 
-    "mk1" => { :ip => "192.168.33.21", :mem => 512,  :cpu => 1},
-    "mk2" => { :ip => "192.168.33.22", :mem => 512,  :cpu => 1},
-    "mk3" => { :ip => "192.168.33.23", :mem => 512,  :cpu => 1},
+    "mk1" => { :ip => "192.168.33.21", :mem => 512, :cpu => 1 },
+    # "mk2" => { :ip => "192.168.33.22", :mem => 512, :cpu => 1 },
+    # "mk3" => { :ip => "192.168.33.23", :mem => 512, :cpu => 1 },
+  }
 
-    "ms1" => { :ip => "192.168.33.31", :mem => 1248, :cpu => 1},
-    "ms2" => { :ip => "192.168.33.32", :mem => 2048,  :cpu => 2},
-    "ms3" => { :ip => "192.168.33.33", :mem => 1248,  :cpu => 1},
+  ms_cluster = {
+    "ms1" => { :ip => "192.168.33.31", :mem => 1248, :cpu => 1 },
+    "ms2" => { :ip => "192.168.33.32", :mem => 2048, :cpu => 2 },
+    "ms3" => { :ip => "192.168.33.33", :mem => 1248, :cpu => 1 },
   }
 
   cluster.each_with_index do | (hostname, info), index |
+    config.vm.box = "minimum/ubuntu-trusty64-docker"
+    config.vm.define hostname do | host |
+      host.vm.provider "virtualbox" do |v|
+        # v.name   = "kubernetes-mesos-#{hostname}"
+        v.memory = info[:mem]
+        v.cpus = info[:cpu]
+      end
+      host.vm.hostname = hostname
+      host.vm.network "private_network", ip: info[:ip]
+      # if index == cluster.size - 1
+      #   config.vm.provision :ansible do |ansible|
+      #     # Disable default limit to connect to all the machines
+      #     ansible.limit = 'all'
+      #     ansible.playbook = "provisioning/playbook.yml"
+      #     ansible.inventory_path = "ansible_inventory"
+      #   end
+      # end
+    end
+  end
+
+  ms_cluster.each_with_index do | (hostname, info), index |
+    config.vm.box = "ubuntu-docker-ceph"
     config.vm.define hostname do | host |
       host.vm.provider "virtualbox" do |v|
         v.name   = "k8s-mesos-#{hostname}"
