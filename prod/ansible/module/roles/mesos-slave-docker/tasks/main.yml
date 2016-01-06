@@ -1,0 +1,61 @@
+---
+
+# - name: run mesos slave container
+#   docker:
+#     name: mesos-slave
+#     image: mesoscloud/mesos-slave:0.24.1-ubuntu-14.04
+#     net: host
+#     pid: host
+#     privileged: yes
+#     state: started
+#     restart_policy: always
+#     volumes:
+#       - /usr/bin/docker:/usr/bin/docker
+#       - /dev:/dev
+#       - /usr/lib/x86_64-linux-gnu/libapparmor.so.1:/usr/lib/x86_64-linux-gnu/libapparmor.so.1:ro
+#       - /var/run/docker.sock:/var/run/docker.sock
+#       - /var/log/mesos:/var/log/mesos
+#       - /tmp/mesos:/tmp/mesos
+#     env:
+#       MESOS_HOSTNAME: "{{ipaddr}}"
+#       MESOS_IP: "{{ipaddr}}"
+#       MESOS_MASTER: "{{mesos_zk_addrs}}"
+#       MESOS_ISOLATION: cgroups/cpu,cgroups/mem
+#       MESOS_LOG_DIR: /var/log/mesos
+# - copy: src=../../../../ceph dest=/etc/
+# - shell: if [ -z `dpkg -l | grep ceph-common | awk '{print $2}'` ]; then apt-get install -y ceph-common; fi
+# - shell: if [ ! -f /dev/rbd/rbd/mysql ]; then rbd map mysql --pool rbd --name client.admin; fi
+# - shell: mkdir -p /mnt/rdb/mysql
+# - shell: if [ -z `mount | grep /mnt/rdb/mysql | awk '{print $1}'` ]; then mount -t ext4 /dev/rbd/rbd/mysql /mnt/rdb/mysql; else umount -l /mnt/rdb/mysql && mount -t ext4 /dev/rbd/rbd/mysql /mnt/rdb/mysql; fi
+
+
+- name: run mesos slave container
+  docker:
+    name: mesos-slave
+    image: mesosphere/mesos-slave-dind:0.2.4_mesos-0.24.0_docker-1.8.2_ubuntu-14.04.3
+    net: host
+    pid: host
+    privileged: yes
+    state: started
+    restart_policy: always
+    volumes:
+      - /var/log/mesos:/var/log/mesos
+      - /lib/modules:/lib/modules
+      # - /dev:/dev
+    env:
+      MESOS_HOSTNAME: "{{ ipaddr }}"
+      MESOS_IP: "{{ipaddr}}"
+      MESOS_MASTER: "{{mesos_zk_addrs}}"
+      MESOS_SWITCH_USER: 0
+      MESOS_CONTAINERIZERS: docker,mesos
+      MESOS_ISOLATION: cgroups/cpu,cgroups/mem
+      MESOS_LOG_DIR: /var/log/mesos
+      DOCKER_DAEMON_ARGS: "{{docker_opts}}"
+-  copy: src=../images/pause.tar dest=/tmp/
+- name: import docker images
+  shell: docker load -i /tmp/pause.tar && docker tag 2c40b0526b63 gcr.io/google_containers/pause:0.8.0
+  ignore_errors: True
+
+- shell: sleep 3s
+- shell: docker cp /tmp/pause.tar `docker ps -f name=mesos-slave -q`:/pause.tar
+- shell: docker exec `docker ps -f name=mesos-slave -q` docker load -i /pause.tar

@@ -11,3 +11,9 @@
     - debug: var=ipaddr
     - debug: var=hostname
     - debug: var=etcd_cluster
+    - command: lsb_release -is
+      register: distro
+    - command: lsb_release -cs
+      register: codename
+    - debug: var=codename.stdout
+    - debug: var=distro.stdout

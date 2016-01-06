@@ -1,0 +1,8 @@
+HOSTNAME={{ ipaddr }}
+IP={{ipaddr}}
+MASTER={{mesos_zk_addrs}}
+SWITCH_USER=0
+CONTAINERIZERS=docker,mesos
+ISOLATION=cgroups/cpu,cgroups/mem
+LOG_DIR=/var/log/mesos
+DOCKER_DAEMON_ARGS="{{docker_opts}}"

@@ -5,11 +5,10 @@
   serial: 1
   sudo: yes
   gather_facts: yes
-  # tasks:
-  #   - command: /usr/bin/docker
-  #     register: result
-  #     ignore_errors: True
+  tasks:
+    - stat: /usr/bin/docker
+      register: docker_installed
   roles:
-    - docker
-      # when: result | failed
-    - docker-configuration
+    - role: docker
+      when: not docker_installed.stat.exists
+    - role: docker-configuration
