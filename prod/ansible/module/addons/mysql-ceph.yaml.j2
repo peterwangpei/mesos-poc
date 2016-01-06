@@ -42,12 +42,23 @@ spec:
               name: cephfs
       volumes:
         - name: cephfs
-          cephfs:
-            monitors: {{ceph_mon_addrs}}
+          rbd:
+            pool: rbd-demo
+            image: mysql
             user: admin
+            keyring: ""
             secretRef:
               name: ceph-secret
+            fsType: ext4
             readOnly: false
+            monitors: {{ceph_mon_addrs}}
+
+          # cephfs:
+          #   monitors: {{ceph_mon_addrs}}
+          #   user: admin
+          #   secretRef:
+          #     name: ceph-secret
+          #   readOnly: false
 
 
 ---

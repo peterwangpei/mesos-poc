@@ -1,0 +1,13 @@
+- name: init ceph rbd demo
+  hosts: ceph
+  sudo: yes
+  tasks:
+    - apt: name=ceph-common update_cache=yes cache_valid_time=3600
+    - command: ceph osd pool create rbd-demo 128
+    - command: rbd create rbd-demo/mysql --size 1024
+    - command: rbd map rbd-demo/mysql
+    - shell: "rbd showmapped | awk ' { if ( NR == 2) print $NF }'"
+      register: rbd_device
+    - command: mkfs.ext4 -m0 {{rbd_device.stdout}}
+    - shell: mkdir -p /mnt/rbd/sql && mount {{rbd_device.stdout}} /mnt/rbd/sql
+    - shell: rm -fr /mnt/rbd/sql/lost+found

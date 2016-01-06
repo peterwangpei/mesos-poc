@@ -22,3 +22,4 @@
   shell: docker load -i /tmp/pause.tar && docker tag 2c40b0526b63 gcr.io/google_containers/pause:0.8.0
   ignore_errors: True
 - service: name=mesos-slave state=restarted enabled=true
+- apt: name=ceph-common update_cache=yes cache_valid_time=3600
