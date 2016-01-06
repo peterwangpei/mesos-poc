@@ -1,16 +1,23 @@
 ---
 
-- apt_key: keyserver=keyserver.ubuntu.com id=E56151BF
-- command: lsb_release -is
-  register: distro
-- command: lsb_release -cs
-  register: codename
-- shell: echo "deb http://repos.mesosphere.io/{{distro.stdout | lower}} {{codename.stdout}} main" | tee /etc/apt/sources.list.d/mesosphere.list
 - stat: path=/usr/sbin/mesos-slave
   register: mesos_installed
-- apt: name=mesos=0.24.1-0.2.35.ubuntu1404 update_cache=yes cache_valid_time=3600
+# - apt_key: keyserver=keyserver.ubuntu.com id=E56151BF
+# - command: lsb_release -is
+#   register: distro
+# - command: lsb_release -cs
+#   register: codename
+# - shell: echo "deb http://repos.mesosphere.io/{{distro.stdout | lower}} {{codename.stdout}} main" | tee /etc/apt/sources.list.d/mesosphere.list
+# - apt: name=mesos=0.24.1-0.2.35.ubuntu1404 update_cache=yes cache_valid_time=3600
+#   when: not mesos_installed.stat.exists
+
+- command: "docker run --rm -v /tmp:/stores k8smesos/mesos-pack:mesos_0.24.1-ubuntu1404_amd64"
+- command: dpkg -i /tmp/mesos.deb
+  ignore_errors: True
   when: not mesos_installed.stat.exists
+- command: apt-get install -fy
 - template: src=../templates/mesos-slave.j2 dest=/etc/default/mesos-slave
+- copy: src=../images/pause.tar dest=/tmp/
 - name: import docker images
   shell: docker load -i /tmp/pause.tar && docker tag 2c40b0526b63 gcr.io/google_containers/pause:0.8.0
   ignore_errors: True
