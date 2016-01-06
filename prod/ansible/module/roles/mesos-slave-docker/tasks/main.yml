@@ -41,7 +41,8 @@
     volumes:
       - /var/log/mesos:/var/log/mesos
       - /lib/modules:/lib/modules
-      # - /dev:/dev
+      - /dev:/dev
+      - /sys:/sys
     env:
       MESOS_HOSTNAME: "{{ ipaddr }}"
       MESOS_IP: "{{ipaddr}}"
