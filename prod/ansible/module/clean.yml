@@ -7,6 +7,14 @@
     - service: name=kubelet state=stopped
       ignore_errors: True
 
+- name: clean mesos-slave
+  sudo: yes
+  hosts: mesosslave
+  tasks:
+    - service: name=mesos-slave state=stopped
+    - shell: rm -fr /tmp/mesos/meta
+    - shell: pkill km
+
 - name: clean mesos master/slave, k8s
   hosts:
     - mesosmaster
