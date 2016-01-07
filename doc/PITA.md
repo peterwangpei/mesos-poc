@@ -22,7 +22,6 @@ docker push 10.229.51.58:5050/nginx:latest
 docker rmi nginx:latest 10.229.51.58:5050/nginx:latest
 ```
 
-
 ---
 
 - **问题**：gcr.io被墙
@@ -57,12 +56,17 @@ gcr.io/google_containers/skydns:2015-10-13-8c72f8c
 ---
 
 - **现象**：ansible运行`mysql-replication.yml`后，mysql-master pod起不来，describe pod显示：`rbd: image mysql is locked by other nodes`
-- **对策**：运行`rbd lock list mysql`，将会看见mysql镜像上的锁。用`rbd lock remove mysql <ID> <Locker>`将锁删除即可。
+- **对策**：运行`rbd lock list mysql`，将会看见mysql镜像上的锁。用`rbd lock remove mysql <ID> <Locker>`将锁删除即可
+
+---
+
+- **现象**：ansible运行`mysql-replication.yml`后，mysql-master pod起不来，describe pod显示：`exit status 1`
+- **对策**：确认ansible变量里的`ceph_client_secret`是base64之后的secret
 
 ---
 
 - **现象**：ansible运行`mysql-replication.yml`后，mysql-master pod起不来，describe pod显示：`Could not map image: Timeout after 10s`
-- **对策**：到所有mesos-slave-dind的容器里，运行`lsblk`，如果看到一堆的rbd加数字，就把它们全部解除映射。
+- **对策**：到所有mesos-slave-dind的容器里，运行`lsblk`，如果看到一堆的rbd加数字，就把它们全部解除映射
 
  ```
 rbd unmap /dev/rbd2
