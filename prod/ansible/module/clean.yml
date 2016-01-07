@@ -11,7 +11,10 @@
   sudo: yes
   hosts: mesosslave
   tasks:
+    - stat: path=/etc/init.d/mesos-slave
+      register: service_status
     - service: name=mesos-slave state=stopped
+      when: service_status.stat.exists is defined and service_status.stat.exists
     - shell: rm -fr /tmp/mesos/meta
     - shell: pkill km
       ignore_errors: True
