@@ -14,6 +14,7 @@
     - service: name=mesos-slave state=stopped
     - shell: rm -fr /tmp/mesos/meta
     - shell: pkill km
+      ignore_errors: True
 
 - name: clean mesos master/slave, k8s
   hosts:
