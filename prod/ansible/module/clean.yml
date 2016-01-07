@@ -1,5 +1,11 @@
 ---
 
+- name: delete all k8s object
+  hosts: k8_addons
+  tasks:
+    - shell: /usr/local/bin/kubectl delete --all namespaces -s {{k8s_api_server_lb_url}}
+      ignore_errors: True
+
 - name: stop kubelet
   hosts: kubernetes
   sudo: yes
