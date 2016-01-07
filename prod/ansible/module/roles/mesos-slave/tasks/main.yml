@@ -12,10 +12,10 @@
 #   when: not mesos_installed.stat.exists
 
 - command: "docker run --rm -v /tmp:/stores k8smesos/mesos-pack:mesos_0.24.1-ubuntu1404_amd64"
-- command: dpkg -i /tmp/mesos.deb
+- command: dpkg -iy /tmp/mesos.deb
   ignore_errors: True
   when: not mesos_installed.stat.exists
-- command: apt-get install -fy
+- command: apt-get install -f -y --force-yes
 - template: src=../templates/mesos-slave.j2 dest=/etc/default/mesos-slave
 - copy: src=../images/pause.tar dest=/tmp/
 - name: import docker images

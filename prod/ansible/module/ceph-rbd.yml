@@ -3,9 +3,9 @@
   sudo: yes
   tasks:
     - apt: name=ceph-common update_cache=yes cache_valid_time=3600
-    - command: ceph osd pool create rbd-demo 128
-    - command: rbd create rbd-demo/mysql --size 1024
-    - command: rbd map rbd-demo/mysql
+    - command: ceph osd pool create {{ceph_poll}} 128
+    - command: rbd create {{ceph_poll}}/{{ceph_image}} --size 1024
+    - command: rbd map {{ceph_poll}}/{{ceph_image}}
     - shell: "rbd showmapped | awk ' { if ( NR == 2) print $NF }'"
       register: rbd_device
     - command: mkfs.ext4 -m0 {{rbd_device.stdout}}

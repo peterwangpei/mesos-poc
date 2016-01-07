@@ -16,6 +16,9 @@ zhpooer/kube2sky:1.11
 zhpooer/exechealthz:1.0
 zhpooer/kube-ui:v2
 zhpooer/skydns:2015-10-13-8c72f8c
+
+k8smesos/mesos-pack:mesos_0.24.1-ubuntu1404_amd64
+k8smesos/kubelet-pack:v1.1.2
 ~~~~~~
 
 
@@ -26,3 +29,5 @@ zhpooer/tomcat-demo:0.0.1
 ceph/demo:latest
 zhpooer/k8s_lb_haproxy:1.0.3
 ~~~~~~
+
+

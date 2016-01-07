@@ -1,10 +1,3 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ceph-secret
-data:
-  key: {{ceph_client_secret}}
-
 ---
 ## mysql
 
@@ -43,8 +36,8 @@ spec:
       volumes:
         - name: cephfs
           rbd:
-            pool: rbd-demo
-            image: mysql
+            pool: {{ceph_poll}}
+            image: {{ceph_image}}
             user: admin
             keyring: ""
             secretRef:
