@@ -1,8 +1,7 @@
 #------------------------------------------- Declare Machine ------------------------------------------- #
 
 [zk1]
-# 10.229.51.58
-localhost ansible_connection=local
+10.229.51.58 ansible_connection=local
 
 [mm1]
 10.229.50.219 ansible_user=root ansible_ssh_pass=

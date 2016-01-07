@@ -28,5 +28,5 @@
 - service: name=mesos-slave state=restarted enabled=true
 - stat: path=/usr/bin/ceph
   register: ceph_installed
-- apt: name=ceph-common update_cache=yes cache_valid_time=3600
+- apt: name=ceph-common
   when: not ceph_installed.stat.exists
