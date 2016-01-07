@@ -1,0 +1,10 @@
+- name: unmap ceph rbd demo
+  hosts: ceph
+  sudo: yes
+  tasks:
+    - shell:  umount /mnt/rbd/sql
+    - shell: "rbd showmapped | awk ' { if ( NR == 2) print $NF }'"
+      register: rbd_device
+    - shell: rbd unmap {{rbd_device.stdout}}
+    - shell: rbd rm {{ceph_poll}}/{{ceph_image}}
+    - shell: ceph osd pool delete {{ceph_poll}}

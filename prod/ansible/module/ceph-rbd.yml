@@ -2,7 +2,10 @@
   hosts: ceph
   sudo: yes
   tasks:
+    - stat: path=/usr/bin/ceph
+      register: ceph_installed
     - apt: name=ceph-common update_cache=yes cache_valid_time=3600
+      when: not ceph_installed.stat.exists
     - command: ceph osd pool create {{ceph_poll}} 128
     - command: rbd create {{ceph_poll}}/{{ceph_image}} --size 1024
     - command: rbd map {{ceph_poll}}/{{ceph_image}}

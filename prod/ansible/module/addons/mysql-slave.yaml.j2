@@ -14,7 +14,7 @@ spec:
         name: mysql-slave
     spec:
       containers:
-        - image: capttofu/mysql_slave_kubernetes:latest
+        - image: k8smesos/mysql-replication:slave
           name: mysql-slave
           resources:
             limits:
@@ -27,8 +27,6 @@ spec:
               value: "123456"
             - name: MYSQL_DATABASE
               value: "sample"
-            - name: MYSQL_ROOT_PASSWORD
-              value: "root"
             - name: MYSQL_REPLICATION_PASSWORD
               value: "repl"
           ports:

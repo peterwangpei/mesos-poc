@@ -14,7 +14,7 @@ spec:
         name: mysql-master
     spec:
       containers:
-        - image: capttofu/mysql_master_kubernetes:latest
+        - image: k8smesos/mysql-replication:master
           name: mysql-master
           resources:
             limits:
@@ -27,13 +27,26 @@ spec:
               value: "123456"
             - name: MYSQL_DATABASE
               value: "sample"
-            - name: MYSQL_ROOT_PASSWORD
-              value: "root"
             - name: MYSQL_REPLICATION_PASSWORD
               value: "repl"
           ports:
             - containerPort: 3306
               name: mysql-master
+          volumeMounts:
+            - mountPath: "/var/lib/mysql"
+              name: cephfs
+      volumes:
+        - name: cephfs
+          rbd:
+            pool: {{ceph_poll}}
+            image: {{ceph_image}}
+            user: admin
+            keyring: ""
+            secretRef:
+              name: ceph-secret
+            fsType: ext4
+            readOnly: false
+            monitors: {{ceph_mon_addrs}}
 ---
 apiVersion: v1
 kind: Service
