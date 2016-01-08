@@ -42,6 +42,7 @@ metadata:
   name: mysql-slave
 spec:
   ports:
-    - port: 3306
+    - name: mysql-slave
+      port: 3306
   selector:
     name: mysql-slave

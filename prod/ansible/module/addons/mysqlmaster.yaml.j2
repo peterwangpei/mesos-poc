@@ -60,6 +60,7 @@ metadata:
   name: mysql-master
 spec:
   ports:
-    - port: 3306
+    - name: mysql-master
+      port: 3306
   selector:
     name: mysql-master
