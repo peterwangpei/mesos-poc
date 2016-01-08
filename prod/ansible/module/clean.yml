@@ -5,6 +5,7 @@
   tasks:
     - shell: /usr/local/bin/kubectl delete --all namespaces -s {{k8s_api_server_lb_url}}
       ignore_errors: True
+    - shell: sleep 5
 
 - name: stop kubelet
   hosts: kubernetes
