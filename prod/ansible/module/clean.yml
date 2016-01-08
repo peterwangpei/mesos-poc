@@ -34,8 +34,8 @@
   sudo: yes
   tasks:
     - shell: if [ `docker ps -a | wc -l` -gt 1 ]; then docker rm -f `docker ps -aq`; fi
+    - shell: if [ `mount | grep mesos | grep rbd | wc -l` -gt 1 ]; then  umount `mount | grep mesos | grep rbd | awk '{print $3}'`; fi
     - shell: if [ `rbd showmapped | wc -l` -gt 1 ]; then rbd unmap /dev/rbd1; fi
-
 
 - name: rm zookeeper
   sudo: yes
