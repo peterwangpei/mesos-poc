@@ -87,6 +87,9 @@ mesoscloud/mesos-master:0.24.1-ubuntu-14.04
     DOCKER_OPTS="{{docker_opts}}"
     ~~~~~~
 5. 每台机子 slave 机子加载 pause.tar `docker load -i pause.tar`, [pause.tar 下载地址](https://github.com/peterwangpei/mesos-poc/raw/master/prod/ansible/module/roles/mesos-slave/images/pause.tar)
+6. 启动 mesos-slave, `service mesos-slave start`
+
+
 
 参数说明
 
@@ -95,6 +98,8 @@ mesoscloud/mesos-master:0.24.1-ubuntu-14.04
 * `docker_opts`, 设置在 slave 当中启动 docker 时，需要用到的参数, 如设置 registry 地址 `--insecure-registry 192.168.33.10:5000 --registry-mirror http://192.168.33.10:5000`
 
 通过访问地址 `http://#{mesosmaster ip}:5050` 来查看安装的 mesos slave 节点
+
+调试方法，使用 `service mesos-slave status` 来查看 mesos-slave 运行状态， 可以通过 `/var/log/mesos/` 来查看运行日志
 
 ## 四、etcd 集群的搭建
 
