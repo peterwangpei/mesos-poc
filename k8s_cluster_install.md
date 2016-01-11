@@ -58,25 +58,35 @@ mesoscloud/mesos-master:0.24.1-ubuntu-14.04
 
 ## 三、搭建 mesos slave 集群 ##
 
-> 注意：因为要用到动态加载网络磁盘，所以换了一个镜像，跟搭建单节点 不同
+> 注意： 考虑到 ceph fs 以 rbd 方式运行在 mesos 上，如果使用 docker 方式运行 mesos-slave 会产生一些各种问题，所以最终我们决定使用 以 mesos-slave 运行在进程上， 安装方式如下：
 
-~~~~~~
-docker pull mesosphere/mesos-slave-dind:0.2.4_mesos-0.24.0_docker-1.8.2_ubuntu-14.04.3
+1. 运行脚本
 
-docker run -d \
--e MESOS_HOSTNAME=#{ipaddr} \
--e MESOS_IP=#{ipaddr} \
--e MESOS_MASTER=#{mesos_zk_addrs} \
--e MESOS_SWITCH_USER=0 \
--e MESOS_CONTAINERIZERS=docker,mesos \
--e DOCKER_DAEMON_ARGS=#{docker_opts} \
--e MESOS_ISOLATION=cgroups/cpu,cgroups/mem \
--e MESOS_LOG_DIR=/var/log/mesos \
--v /var/log/mesos:/var/log/mesos \
---name slave --pid host --net host --privileged \
---restart always \
-mesosphere/mesos-slave-dind:0.2.4_mesos-0.24.0_docker-1.8.2_ubuntu-14.04.3
-~~~~~~
+    ~~~~~~
+    wget http://downloads.mesosphere.io/master/ubuntu/14.04/mesos_0.24.0-1.0.27.ubuntu1404_amd64.deb
+    sudo dpkg -i mesos_0.24.0-1.0.27.ubuntu1404_amd64.deb
+    sudo apt-get install -f
+    ~~~~~~
+2. 配置 `/etc/default/mesos-slave`， 内容如下
+    
+    ~~~~~~
+    MASTER={{mesos_zk_addrs}}
+    SWITCH_USER=0
+    CONTAINERIZERS=docker,mesos
+    ISOLATION=cgroups/cpu,cgroups/mem
+    LOGS=/var/log/mesos
+    ~~~~~~
+3. 配置文件 `/etc/mesos-slave/ip`， `/etc/mesos-slave/hostname`
+
+    ~~~~~~
+    {{ipaddr}}
+    ~~~~~~
+4. 配置 docker 启动参数, 配置文件 `/etc/default/docker`
+    
+    ~~~~~~
+    DOCKER_OPTS="{{docker_opts}}"
+    ~~~~~~
+5. 每台机子 slave 机子加载 pause.tar `docker load -i pause.tar`, `[pause.tar](https://github.com/peterwangpei/mesos-poc/blob/master/prod/ansible/module/roles/mesos-slave/images/pause.tar)`
 
 参数说明
 
