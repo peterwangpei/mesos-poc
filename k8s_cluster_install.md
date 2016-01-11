@@ -86,7 +86,7 @@ mesoscloud/mesos-master:0.24.1-ubuntu-14.04
     ~~~~~~
     DOCKER_OPTS="{{docker_opts}}"
     ~~~~~~
-5. 每台机子 slave 机子加载 pause.tar `docker load -i pause.tar`, `[pause.tar](https://github.com/peterwangpei/mesos-poc/blob/master/prod/ansible/module/roles/mesos-slave/images/pause.tar)`
+5. 每台机子 slave 机子加载 pause.tar `docker load -i pause.tar`, [pause.tar](https://github.com/peterwangpei/mesos-poc/blob/master/prod/ansible/module/roles/mesos-slave/images/pause.tar)
 
 参数说明
 
