@@ -2,14 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="com.mysql.jdbc.Driver" %>
 <%@ page import="java.sql.*" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: ezeng
-  Date: 12/22/15
-  Time: 9:56 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html>
 <head>
     <title>MySQl Demo</title>
@@ -25,12 +19,10 @@
             margin: 6px;
             vertical-align: middle;
         }
-
-
     </style>
 </head>
-<body>
 
+<body>
 <sql:query var="rs" dataSource="jdbc/slave">
     select user_id, user_name, user_pass, email from  users
 </sql:query>
@@ -60,7 +52,6 @@
             </tr>
         </c:forEach>
     </table>
-
 </div>
 
 <%--<%--%>
@@ -102,4 +93,5 @@
         <%--out.print(e1);--%>
     <%--}--%>
     <%--%>--%>
-    </body></html>
+</body>
+</html>

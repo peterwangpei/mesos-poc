@@ -19,7 +19,7 @@
 
     <servlet>
         <servlet-name>user_delete</servlet-name>
-        <servlet-class>demo.user_delete</servlet-class>
+        <servlet-class>demo.Delete</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
@@ -29,7 +29,7 @@
 
     <servlet>
         <servlet-name>user_create</servlet-name>
-        <servlet-class>demo.user_create</servlet-class>
+        <servlet-class>demo.Create</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
