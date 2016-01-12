@@ -58,25 +58,38 @@ mesoscloud/mesos-master:0.24.1-ubuntu-14.04
 
 ## 三、搭建 mesos slave 集群 ##
 
-> 注意：因为要用到动态加载网络磁盘，所以换了一个镜像，跟搭建单节点 不同
+> 注意： 考虑到 ceph fs 以 rbd 方式运行在 mesos 上，如果使用 docker 方式运行 mesos-slave 会产生一些各种问题，所以最终我们决定使用 以 mesos-slave 运行在进程上， 安装方式如下：
 
-~~~~~~
-docker pull mesosphere/mesos-slave-dind:0.2.4_mesos-0.24.0_docker-1.8.2_ubuntu-14.04.3
+1. 运行脚本
 
-docker run -d \
--e MESOS_HOSTNAME=#{ipaddr} \
--e MESOS_IP=#{ipaddr} \
--e MESOS_MASTER=#{mesos_zk_addrs} \
--e MESOS_SWITCH_USER=0 \
--e MESOS_CONTAINERIZERS=docker,mesos \
--e DOCKER_DAEMON_ARGS=#{docker_opts} \
--e MESOS_ISOLATION=cgroups/cpu,cgroups/mem \
--e MESOS_LOG_DIR=/var/log/mesos \
--v /var/log/mesos:/var/log/mesos \
---name slave --pid host --net host --privileged \
---restart always \
-mesosphere/mesos-slave-dind:0.2.4_mesos-0.24.0_docker-1.8.2_ubuntu-14.04.3
-~~~~~~
+    ~~~~~~
+    wget http://downloads.mesosphere.io/master/ubuntu/14.04/mesos_0.24.0-1.0.27.ubuntu1404_amd64.deb
+    sudo dpkg -i mesos_0.24.0-1.0.27.ubuntu1404_amd64.deb
+    sudo apt-get install -f
+    ~~~~~~
+2. 配置 `/etc/default/mesos-slave`， 内容如下
+    
+    ~~~~~~
+    MASTER={{mesos_zk_addrs}}
+    SWITCH_USER=0
+    CONTAINERIZERS=docker,mesos
+    ISOLATION=cgroups/cpu,cgroups/mem
+    LOGS=/var/log/mesos
+    ~~~~~~
+3. 配置文件 `/etc/mesos-slave/ip`， `/etc/mesos-slave/hostname`
+
+    ~~~~~~
+    {{ipaddr}}
+    ~~~~~~
+4. 配置 docker 启动参数, 配置文件 `/etc/default/docker`
+    
+    ~~~~~~
+    DOCKER_OPTS="{{docker_opts}}"
+    ~~~~~~
+5. 每台机子 slave 机子加载 pause.tar `docker load -i pause.tar`, [pause.tar 下载地址](https://github.com/peterwangpei/mesos-poc/raw/master/prod/ansible/module/roles/mesos-slave/images/pause.tar)
+6. 启动 mesos-slave, `service mesos-slave start`
+
+
 
 参数说明
 
@@ -85,6 +98,8 @@ mesosphere/mesos-slave-dind:0.2.4_mesos-0.24.0_docker-1.8.2_ubuntu-14.04.3
 * `docker_opts`, 设置在 slave 当中启动 docker 时，需要用到的参数, 如设置 registry 地址 `--insecure-registry 192.168.33.10:5000 --registry-mirror http://192.168.33.10:5000`
 
 通过访问地址 `http://#{mesosmaster ip}:5050` 来查看安装的 mesos slave 节点
+
+调试方法，使用 `service mesos-slave status` 来查看 mesos-slave 运行状态， 可以通过 `/var/log/mesos/` 来查看运行日志
 
 ## 四、etcd 集群的搭建
 
@@ -242,3 +257,14 @@ library/haproxy:1.6.2
 ~~~~~~
 
 验证脚本 `kubectl get pod events ep  --server=http://#{负载均衡地址}:#{k8s_api_server_lb_port}`
+
+
+# Docker 安装 #
+
+~~~~~~
+apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+echo 'deb https://apt.dockerproject.org/repo ubuntu-trusty main' > /etc/apt/sources.list.d/docker.list
+apt-get update
+apt-get install linux-image-extra-`uname -r`
+apt-get install docker-engine=1.9.1-0~trusty
+~~~~~~
