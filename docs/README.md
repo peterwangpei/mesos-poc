@@ -1,5 +1,10 @@
 # Kubernetes-Mesos #
 
+* [安装Mesos](./Mesos安装.md)
+* [kubernetes 安装](./k8s安装.md)
+* [安装 Kube-ui Kube-dns](./install-skydns-kubeui.md)
+
+
 # Kubernetes #
 
 当我们需要做一个集群（scale）网络应用，如果这放在几年前，我们必须先创建 VM 镜像，对 虚拟机实例 进行编排，进行负载均衡等等。
@@ -7,7 +12,6 @@
 
 相比于虚拟机，容器更加轻量级，构建起来更加有效率。但是 容器 需要更好的管理和调度系统， 如当一个容器崩溃时，他需要被平滑地替换掉。
 Kubernetes 就是为了解决这样的问题而被创造的。
-
 
 The challenge shifts from configuration management to orchestration, scheduling, and isolation. A failure of one computing unit cannot take down another (isolation), resources should be reasonably well balanced geographically to distribute load (orchestration), and you need to detect and replace failures near instantaneously (scheduling).
 
@@ -163,8 +167,6 @@ In order to decide which resources can be offered to which frameworks, Mesos inc
 ## Task and Excutors
 
 When a scheduler wants to do some work, it launches an executor. The executor is simply the scheduler’s worker: the scheduler can decide to send one or more tasks to an executor, which will work on those tasks independently, sending status updates to the scheduler until the tasks are complete.
-
-
 
 ## 案例 ##
 
