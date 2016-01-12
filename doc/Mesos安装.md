@@ -1,4 +1,7 @@
+
 # Mesos 集群搭建
+
+[参考](./install mesos.md)
 
 请现在需要搭建的集群上安装 docker, 请移步 [安装docker](../doc/docker-install/)
 

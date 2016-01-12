@@ -1,10 +1,12 @@
 # Kubernetes-Mesos #
 
-* [安装Mesos](./Mesos安装.md)
-* [kubernetes 安装](./k8s安装.md)
+* [搭建 Mesos 集群](./Mesos安装.md)
+* [搭建 kubernetes 集群](./k8s安装.md)
+* [k8s yaml 文件格式说明](./k8s-yaml-format)
 * [安装 Kube-ui Kube-dns](./install-skydns-kubeui.md)
-* [装载 ceph](./mount-ceph.md)
-* [mysql主从](./run-mysql-cluster.md)
+* [安装过程遇到的问题](./PITA.md)
+* [装载 ceph TODO](./mount-ceph.md)
+* [mysql主从 TODO](./run-mysql-cluster.md)
 
 
 
