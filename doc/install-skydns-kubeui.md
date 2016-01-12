@@ -12,7 +12,7 @@ zhpooer/skydns:2015-10-13-8c72f8c
 zhpooer/kube-ui:v2
 ~~~~~~
 
-# install Kubeui
+# install skydns
 
 [官方参考文档](https://github.com/kubernetes/kubernetes/blob/master/docs/getting-started-guides/mesos.md#launching-kube-dns)
 

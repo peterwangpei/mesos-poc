@@ -7,6 +7,7 @@
 * [mysql主从](./run-mysql-cluster.md)
 
 
+
 # Kubernetes #
 
 当我们需要做一个集群（scale）网络应用，如果这放在几年前，我们必须先创建 VM 镜像，对 虚拟机实例 进行编排，进行负载均衡等等。
