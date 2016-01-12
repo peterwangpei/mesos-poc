@@ -33,7 +33,7 @@ Mesos通过引入预定（Reservation）的概念来将资源关联到角色，�
 
 例如,下面的语句则将该Slave的所有可用资源默认指定给角色`role1`:
       
-    mesos-slave --default=role1
+    mesos-slave --default_role=role1
 ###将角色关联到Framework
 在默认情况下，所有的Framework都默认被指定了角色`*`，对于K8s而言，可以通过`--mesos-role`启动参数来指定角色。
 例如，使用如下语句，则将K8s的Mesos角色指定为`role1`:
@@ -41,18 +41,34 @@ Mesos通过引入预定（Reservation）的概念来将资源关联到角色，�
     km scheduler --mesos-role=role1
 ##实施指南
 1. 定义角色
-根据K8s Framework的个数，定义同等数量的Mesos角色，假设有两个K8s Framework，则使用如下方式定义: 
+根据K8s Framework的个数，定义同等数量的Mesos角色，假设有两个K8s Framework，则使用如下方式启动Mesos Master: 
 
-        mesos-master --roles="kubernate1,kubernete2"
+        非Docker环境
+        mesos-master --roles="kubernete1,kubernete2" ...
+        
+        Docker环境
+        docker run \
+        -e MESOS_ROLES="kubernete1,kubernete2"
+        ...
+        
 2. 将Slave的可用资源分配到不同的角色
-根据需求，通过指定slave的默认角色，将Slave的资源分配到不同的角色，例如：
+根据需求，通过指定slave的默认角色，将Slave的资源分配到不同的角色，将设将两个Slave分配给不同的角色，则使用如下方式分别启动Mesos Slave：
 
         mesos-slave --default_role="kubernete1"
         或者
         mesos-slave --default_role="kubernete2"
 3. 指定K8s的Mesos角色
-通过指定K8s的Mesos角色，将指定Mesos角色的资源指定给特定的K8s Framework，例如:
-
+通过指定K8s的Mesos角色，将指定Mesos角色的资源指定给特定的K8s Framework，假设两个K8s Master分配不同的角色，则使用如下方式启动K8s Scheduler:
+        
+        非Docker环境
         km scheduler --mesos-role="kubernete1"
         或者
         km scheduler --mesos-role="kubernete2"
+        
+        Docker环境
+        docker run --net host -v /etc/kubernetes:/etc/kubernetes \
+        --name kube-sche \
+        zhpooer/kubernetes-mesos:v1.1.3_ubuntu_14 \
+        km scheduler \
+        --mesos-role=kubernete1 \
+        ...
