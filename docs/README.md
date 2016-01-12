@@ -3,6 +3,8 @@
 * [安装Mesos](./Mesos安装.md)
 * [kubernetes 安装](./k8s安装.md)
 * [安装 Kube-ui Kube-dns](./install-skydns-kubeui.md)
+* [装载 ceph](./mount-ceph.md)
+* [mysql主从](./run-mysql-cluster.md)
 
 
 # Kubernetes #
@@ -168,10 +170,4 @@ In order to decide which resources can be offered to which frameworks, Mesos inc
 
 When a scheduler wants to do some work, it launches an executor. The executor is simply the scheduler’s worker: the scheduler can decide to send one or more tasks to an executor, which will work on those tasks independently, sending status updates to the scheduler until the tasks are complete.
 
-## 案例 ##
 
-### skydns，kubeui 核心组件运行
-
-### nfs ceph 盘加载
-
-### mysql 主从配置
