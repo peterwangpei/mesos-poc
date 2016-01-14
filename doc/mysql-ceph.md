@@ -1,4 +1,4 @@
-# 配置 ceph
+# 配置 ceph 及 mysql 主从
 如果ceph环境是由其他部门提供的，我们就可以忽略下面自己创建ceph环境的部分。
 
 ## 创建ceph环境
@@ -27,7 +27,7 @@ sudo rm -rf /mnt/rbd/mysql/lost+found
 sudo umount /mnt/rbd/qqq
 ```
 
-##
+## 运行 mysql 主从
 不管ceph环境是怎么来的，我们都应该都有一个`/etc/ceph`文件夹。运行`cat /etc/ceph/ceph.client.admin.keyring`可以看到`key`，如`AQBF+oBWDbRnLxAADhPPuRl2p3ksGTbLXUJ+Xw==`。再运行下面的命令得到base64编码的`key`：
 ```sh
 echo AQBF+oBWDbRnLxAADhPPuRl2p3ksGTbLXUJ+Xw== | base64
@@ -38,4 +38,12 @@ echo AQBF+oBWDbRnLxAADhPPuRl2p3ksGTbLXUJ+Xw== | base64
 - [mysqlmaster.yaml](https://github.com/peterwangpei/mesos-poc/blob/master/prod/ansible/module/addons/mysqlmaster.yaml.j2)
 - [mysqlslave.yaml](https://github.com/peterwangpei/mesos-poc/blob/master/prod/ansible/module/addons/mysqlslave.yaml.j2)
 - [mysql-tomcat.yaml](https://github.com/peterwangpei/mesos-poc/blob/master/prod/ansible/module/addons/mysql-tomcat.yaml.j2)
-- 
+
+其中用到的镜像可以用`make`命令构建，位置如下：
+
+- [mysql-master](https://github.com/peterwangpei/mesos-poc/tree/master/docker/mysql-master)
+- [mysql-slave](https://github.com/peterwangpei/mesos-poc/tree/master/docker/mysql-slave)
+- [tomcat](https://github.com/peterwangpei/mesos-poc/tree/master/docker/tomcat)
+
+## 验证结果
+镜像启动后，可以通过`http://TOMCAT_ENDPOINT/demo/select`来访问tomcat。其中页面先示使用`mysql-slave`，用户增删使用`mysql-master`。

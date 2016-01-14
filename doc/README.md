@@ -5,7 +5,7 @@
 * [k8s yaml 文件格式说明](./k8s-yaml-format)
 * [安装 Kube-ui Kube-dns](./install-skydns-kubeui.md)
 * [安装过程遇到的问题](./PITA.md)
-* [配置 ceph 及 mysql主从](./mysql-ceph.md)
+* [配置 ceph 及 mysql 主从](./mysql-ceph.md)
 
 
 # Kubernetes #
