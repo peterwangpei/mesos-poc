@@ -1,12 +1,11 @@
 package demo;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
+import demo.util.Util;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,10 +21,8 @@ public class Create extends HttpServlet {
         Connection conn = null;
         Statement statement = null;
         try {
-            InitialContext initContext = new InitialContext();
-            Context envContext  = (Context)initContext.lookup("java:/comp/env");
-            DataSource ds = (DataSource)envContext.lookup("jdbc/master");
-            conn = ds.getConnection();
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = Util.getMasterConnection(getServletContext());
             statement = conn.createStatement();
             statement.execute(String.format("INSERT INTO users VALUES( null, '%s', '%s', '%s' )", new Object[]{user_name,user_pass,email}));
             conn.commit();
@@ -50,7 +47,7 @@ public class Create extends HttpServlet {
             }
         }
 
-        response.sendRedirect("index.jsp");
+        response.sendRedirect("select");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

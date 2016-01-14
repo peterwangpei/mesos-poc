@@ -1,7 +1,6 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="com.mysql.jdbc.Driver" %>
-<%@ page import="java.sql.*" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="demo.model.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
@@ -23,12 +22,10 @@
 </head>
 
 <body>
-<sql:query var="rs" dataSource="jdbc/slave">
-    select user_id, user_name, user_pass, email from  users
-</sql:query>
 <div>
     <h2>Results</h2>
     <a href="create.jsp" target="_self">Create</a>
+    <% ArrayList<User> users = (ArrayList<User>) request.getAttribute("users"); %>
     <table border="1" cellpadding="0" cellspacing="0">
         <tr>
             <th>user_id</th>
@@ -37,15 +34,15 @@
             <th>email</th>
             <th>operation</th>
         </tr>
-        <c:forEach var="row" items="${rs.rows}">
+        <c:forEach var="user" items="${users}">
             <tr>
-                <td>${row.user_id}</td>
-                <td>${row.user_name}</td>
-                <td>${row.user_pass}</td>
-                <td>${row.email}</td>
+                <td>${user.getId()}</td>
+                <td>${user.getName()}</td>
+                <td>${user.getPassword()}</td>
+                <td>${user.getEmail()}</td>
                 <td>
                     <form method="post" target="_self" action="delete">
-                        <input type="hidden" value="${row.user_id}" name="user_id">
+                        <input type="hidden" value="${user.getId()}" name="user_id">
                         <input type="submit" value="Delete"/>
                     </form>
                 </td>

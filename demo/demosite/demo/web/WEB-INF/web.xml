@@ -3,20 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-
-    <resource-ref>
-        <description>DB Connection</description>
-        <res-ref-name>jdbc/master</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-    </resource-ref>
-    <resource-ref>
-        <description>DB Connection</description>
-        <res-ref-name>jdbc/slave</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-    </resource-ref>
-
     <servlet>
         <servlet-name>user_delete</servlet-name>
         <servlet-class>demo.Delete</servlet-class>
@@ -35,5 +21,15 @@
     <servlet-mapping>
         <servlet-name>user_create</servlet-name>
         <url-pattern>/create</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>user_select</servlet-name>
+        <servlet-class>demo.Select</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>user_select</servlet-name>
+        <url-pattern>/select</url-pattern>
     </servlet-mapping>
 </web-app>
