@@ -59,8 +59,11 @@ metadata:
     name: mysql-master
   name: mysql-master
 spec:
+  type: NodePort
   ports:
     - name: mysql-master
       port: 3306
+      targetPort:3306
+      nodePort:30099
   selector:
     name: mysql-master

@@ -35,7 +35,9 @@ metadata:
   name: mysql-tomcat
 spec:
   ports:
-    - port: 8080
+  - port: 80
+    targetPort: 8080
+    nodePort: 30088
   selector:
     name: mysql-tomcat
-  type: LoadBalancer
+  type: NodePort
