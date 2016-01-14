@@ -1,0 +1,57 @@
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: heapster
+  namespace: kube-system
+  labels:
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "Heapster"
+spec:
+  ports:
+    - port: 80
+      targetPort: 8082
+  selector:
+    k8s-app: heapster
+
+---
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: heapster-v10
+  namespace: kube-system
+  labels:
+    k8s-app: heapster
+    version: v10
+    kubernetes.io/cluster-service: "true"
+spec:
+  replicas: 1
+  selector:
+    k8s-app: heapster
+    version: v10
+  template:
+    metadata:
+      labels:
+        k8s-app: heapster
+        version: v10
+        kubernetes.io/cluster-service: "true"
+    spec:
+      containers:
+        - image: kubernetes/heapster:v0.19.0
+          name: heapster
+          resources:
+            limits:
+              cpu: 100m
+              memory: 300Mi
+          ports:
+            - containerPort: 8082
+          command:
+            - /heapster
+            # - --source=kubernetes:https://kubernetes
+            - --source=kubernetes:{{k8s_api_server_lb_url}}
+            # - --source=kubernetes:{{k8s_api_server_lb_url}}?inClusterConfig=false&kubeletHttps=true&useServiceAccount=true
+            - --sink=influxdb:http://monitoring-influxdb:8086
+            - --stats_resolution=30s
+            - --sink_frequency=1m

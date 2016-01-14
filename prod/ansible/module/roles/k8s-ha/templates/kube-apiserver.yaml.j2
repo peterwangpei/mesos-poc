@@ -15,11 +15,16 @@ spec:
         - apiserver
         - --address=0.0.0.0
         - --etcd-servers={{etcd_servers}}
+        - --admission-control=ServiceAccount
+        - --authorization-mode=AlwaysAllow
         - --service-cluster-ip-range=10.10.10.0/24
         - --port={{k8s_api_port}}
         - --cloud-provider=mesos
         - --cloud-config=/etc/kubernetes/mesos-cloud.cfg
         - --secure-port=0
+        - --client-ca-file=/etc/kubernetes/auth/ca.crt
+        - --tls-private-key-file=/etc/kubernetes/auth/server.key
+        - --tls-cert-file=/etc/kubernetes/auth/server.crt
         - --v=1
       ports:
         - containerPort: 6443

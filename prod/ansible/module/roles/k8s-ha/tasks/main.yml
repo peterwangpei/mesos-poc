@@ -1,7 +1,13 @@
 ---
 
-- shell: mkdir -p /var/log/k8s /etc/kubernetes/
+
+- shell: mkdir -p /var/log/k8s /etc/kubernetes/auth
 - template: src=../templates/mesos-cloud.cfg.j2 dest=/etc/kubernetes/mesos-cloud.cfg mode=0644
+- copy: src=../keys/{{item}} dest=/etc/kubernetes/auth/
+  with_items:
+    - ca.crt
+    - server.key
+    - server.crt
 
 - command: "docker run --rm -v /tmp:/stores k8smesos/kubelet-pack:v1.1.2"
 - shell: mv /tmp/kubelet /usr/local/bin/
@@ -98,7 +104,7 @@
 
   # openssl genrsa -out /tmp/serviceaccount.key 2048
   # openssl genrsa -out ca.key 2048
-  # openssl req -x509 -new -nodes -key ca.key -subj "/CN=cluster.local" -days 5000 -out ca.crt
+  # openssl req -x509 -new -nodes -key ca.key -subj "/CN=huawei.com" -days 5000 -out ca.crt
   # openssl genrsa -out server.key 2048
-  # openssl req -new -key server.key -subj "/CN=cluster.local" -out server.csr
+  # openssl req -new -key server.key -subj "/CN=kubernetes-master" -out server.csr
   # openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 5000

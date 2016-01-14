@@ -13,6 +13,8 @@ spec:
     - --master=http://{{ipaddr}}:{{k8s_api_port}}
     - --cloud-provider=mesos
     - --cloud-config=/etc/kubernetes/mesos-cloud.cfg
+    - --root-ca-file=/etc/kubernetes/auth/ca.crt
+    - --service-account-private-key-file=/etc/kubernetes/auth/server.key
     - --v=1
     livenessProbe:
       httpGet:
