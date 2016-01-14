@@ -8,4 +8,7 @@ all: build
 build: $(VERSIONS)
 
 $(VERSIONS):
+	../../demo/demosite/demo/build.sh
+	cp -f ../../demo/demosite/demo/target/demo.war $@
 	docker build --rm=true -t $(NAME):$@ $@
+	rm $@/demo.war
