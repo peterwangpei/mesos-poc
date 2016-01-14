@@ -10,7 +10,7 @@ metadata:
     version: v1
     kubernetes.io/cluster-service: "true"
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     k8s-app: elasticsearch-logging
     version: v1
@@ -22,14 +22,15 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       containers:
-      - image: k8smesos/elasticsearch:1.8
+      - image: elasticsearch:1.5.2
         name: elasticsearch-logging
         resources:
           # keep request = limit to keep this container in guaranteed class
           limits:
-            cpu: 100m
+            cpu: 300m
+            memory: 500Mi
           requests:
-            cpu: 100m
+            cpu: 300m
         ports:
         - containerPort: 9200
           name: db
@@ -39,7 +40,7 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: es-persistent-storage
-          mountPath: /data
+          mountPath: /usr/share/elasticsearch/data
       volumes:
       - name: es-persistent-storage
         emptyDir: {}

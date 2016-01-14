@@ -49,7 +49,7 @@ spec:
             - containerPort: 8082
           command:
             - /heapster
-            # - --source=kubernetes:https://kubernetes
+            # - --source=kubernetes:http://kubernetes
             - --source=kubernetes:{{k8s_api_server_lb_url}}
             # - --source=kubernetes:{{k8s_api_server_lb_url}}?inClusterConfig=false&kubeletHttps=true&useServiceAccount=true
             - --sink=influxdb:http://monitoring-influxdb:8086

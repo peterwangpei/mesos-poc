@@ -25,6 +25,7 @@ spec:
         - --client-ca-file=/etc/kubernetes/auth/ca.crt
         - --tls-private-key-file=/etc/kubernetes/auth/server.key
         - --tls-cert-file=/etc/kubernetes/auth/server.crt
+        - --service-node-port-range=30000-32767
         - --v=1
       ports:
         - containerPort: 6443
