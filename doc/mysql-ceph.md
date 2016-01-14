@@ -32,7 +32,7 @@ sudo umount /mnt/rbd/qqq
 ```sh
 echo AQBF+oBWDbRnLxAADhPPuRl2p3ksGTbLXUJ+Xw== | base64
 ```
-得到的结果`QVFCRitvQldEYlJuTHhBQURoUFB1UmwycDNrc0dUYkxYVUorWHc9PQo=`就是`ceph_client_secret`。接着运行`cat /etc/ceph/ceph.conf`可以看到`mon host`，这是个ip地址，如：`192.168.33.11`。有了它就能组装出`ceph_mon_addrs`：["192.168.33.11:6789"]。6789是默认的ceph端口。现在我们有了两个变量：`ceph_client_secret`和`ceph_mon_addrs`。使用下面几个yaml，就可以用`kubectl create -f`命令来构建自己的mysql replication主从环境了。
+得到的结果`QVFCRitvQldEYlJuTHhBQURoUFB1UmwycDNrc0dUYkxYVUorWHc9PQo=`就是`ceph_client_secret`。接着运行`cat /etc/ceph/ceph.conf`可以看到`mon host`，这是个ip地址，如：`192.168.33.11`。有了它就能组装出`ceph_mon_addrs`：`["192.168.33.11:6789"]`。6789是默认的ceph端口。现在我们有了两个变量：`ceph_client_secret`和`ceph_mon_addrs`。使用下面几个yaml（里面的变量替换成上面的两个值并删除.j2后缀名），就可以用`kubectl create -f`命令来构建自己的mysql replication主从环境了。
 
 - [ceph-secret.yaml](https://github.com/peterwangpei/mesos-poc/blob/master/prod/ansible/module/addons/ceph-secret.yaml.j2)
 - [mysqlmaster.yaml](https://github.com/peterwangpei/mesos-poc/blob/master/prod/ansible/module/addons/mysqlmaster.yaml.j2)
@@ -46,4 +46,4 @@ echo AQBF+oBWDbRnLxAADhPPuRl2p3ksGTbLXUJ+Xw== | base64
 - [tomcat](https://github.com/peterwangpei/mesos-poc/tree/master/docker/tomcat)
 
 ## 验证结果
-镜像启动后，可以通过`http://TOMCAT_ENDPOINT/demo/select`来访问tomcat。其中页面先示使用`mysql-slave`，用户增删使用`mysql-master`。
+镜像启动后，可以通过`http://TOMCAT_ENDPOINT/demo/select`来访问tomcat。其中页面显示使用`mysql-slave`，用户增删使用`mysql-master`。
