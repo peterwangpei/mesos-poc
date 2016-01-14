@@ -1,5 +1,4 @@
-- shell: mkdir -p /etc/ceph
-# - template: src=../templates/ceph.client.admin.keyring.j2 dest=/etc/ceph/ceph.client.admin.keyring
+- copy: src=../../../../ceph dest=/etc/
 - name: run ceph-demo
   docker:
     name: ceph

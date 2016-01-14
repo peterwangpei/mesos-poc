@@ -71,7 +71,7 @@ k8s_api_port=8888
 # 部署完 ceph-demo 之后，进入到部署ceph机子里面，运行如下命令，获取 编码
 # grep key /etc/ceph/ceph.client.admin.keyring |awk '{printf "%s", $NF}'| base64
 # https://github.com/kubernetes/kubernetes/tree/master/examples/rbd
-ceph_client_secret=QVFBeHlZeFdVWFJPRVJBQU5LTHoya01wVzc1OU82dEVudjJVb0E9PQ==
+ceph_client_secret=QVFCRitvQldEYlJuTHhBQURoUFB1UmwycDNrc0dUYkxYVUorWHc9PQo=
 ceph_network=192.168.33.0/24
 ceph_mon_addrs=["192.168.33.11:6789"]
 ceph_poll=rbd-demo
