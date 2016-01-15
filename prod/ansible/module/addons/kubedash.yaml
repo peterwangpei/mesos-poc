@@ -1,0 +1,58 @@
+---
+  apiVersion: "v1"
+  kind: "ReplicationController"
+  metadata: 
+    labels: 
+      name: "kubedash"
+    name: "kubedash"
+    namespace: "kube-system"
+  spec: 
+    replicas: 1
+    selector: 
+      name: "kubedash"
+    template: 
+      metadata: 
+        labels: 
+          name: "kubedash"
+      spec: 
+        containers: 
+          - 
+            image: "k8smesos/kubedash:v0.2.1"
+            name: "kubedash"
+            command: 
+              - "/kubedash"
+            resources:
+              limits:
+                cpu: 50m
+                memory: 100Mi
+            ports: 
+              - 
+                containerPort: 8289
+            volumeMounts: 
+              - 
+                name: "ssl-certs"
+                mountPath: "/etc/ssl/certs"
+                readOnly: true
+        volumes: 
+          - 
+            name: "ssl-certs"
+            hostPath: 
+              path: "/etc/ssl/certs"
+
+---
+  apiVersion: "v1"
+  kind: "Service"
+  metadata: 
+    labels: 
+      name: "kubedash"
+    name: "kubedash"
+    namespace: "kube-system"
+  spec:
+    type: "NodePort"
+    ports: 
+      - 
+        port: 80
+        targetPort: 8289
+        nodePort: 30098
+    selector: 
+      name: "kubedash"
