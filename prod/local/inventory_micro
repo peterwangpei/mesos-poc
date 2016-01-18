@@ -33,11 +33,15 @@ localhost
 [api_server_lb_ha:children]
 misc
 
+
 [ceph:children]
 misc
 
 [nfs:children]
 misc
+
+
+
 
 [etcd:children]
 mk1
@@ -49,6 +53,9 @@ mk1
 mk1
 
 [mesosmaster:children]
+mk1
+
+[influxdb:children]
 mk1
 
 [mesosslave:children]
@@ -90,8 +97,8 @@ mysql_root_password=123456
 # deploy=["skydns"]
 # deploy=["ceph-secret", "mysql-master"]
 # deploy=["busybox"]
-# deploy=["elasticsearch", "kibana"]
-deploy=["serviceaccount", "skydns", "influxdb_grafana"]
-# deploy=["heapster"]
-# deploy=["kubedash"]
-# deploy=["logging-demo"]
+# deploy=["elasticsearch", "kibana", "logging-demo"]
+# deploy=["serviceaccount", "skydns", "heapster", "influxdb_grafana"]
+# deploy=["heapster", "influxdb_grafana"]
+deploy=[""]
+

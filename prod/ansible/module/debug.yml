@@ -17,3 +17,6 @@
       register: codename
     - debug: var=codename.stdout
     - debug: var=distro.stdout
+    - debug: var=influxdb_joined_1
+    - debug: var=influxdb_joined_2
+    - debug: var=influxdb_joined_3

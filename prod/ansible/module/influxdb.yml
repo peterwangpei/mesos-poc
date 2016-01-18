@@ -1,0 +1,27 @@
+- name: start influxdb cluster
+  hosts: influxdb[0]
+  sudo: yes
+  roles:
+    - role: influxdb
+      influxd_join: ""
+
+- name: start influxdb cluster
+  hosts: influxdb[1]
+  sudo: yes
+  roles:
+    - role: influxdb
+      influxd_join: "{{influxdb_joined_1}}"
+
+- name: start influxdb cluster
+  hosts: influxdb[2]
+  sudo: yes
+  roles:
+    - role: influxdb
+      influxd_join: "{{influxdb_joined_2}}"
+
+- name: start influxdb cluster
+  hosts: influxdb_data[3:]
+  sudo: yes
+  roles:
+    - role: influxdb
+      influxd_join: "{{influxdb_joined_3}}"

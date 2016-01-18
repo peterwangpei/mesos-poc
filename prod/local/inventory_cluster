@@ -44,6 +44,11 @@ misc
 [nfs:children]
 misc
 
+[influxdb:children]
+mk1
+mk2
+mk3
+
 [etcd:children]
 mk1
 mk2

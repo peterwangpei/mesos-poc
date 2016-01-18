@@ -14,6 +14,13 @@ hostname: "{{ ipaddr | replace('.', '-') }}"
 etcd_cluster: >
   {%- for item in groups.etcd %}{{ item | replace('.', '-') }}=http://{{ item }}:2380{{"" if loop.last else ","  }} {%- endfor %}
 
+influxdb_joined_1: "{{groups.influxdb | first}}:8088"
+influxdb_joined_2: >-
+  {%- for item in groups.influxdb %}{% if loop.index <= 2 %}{{ item }}:8088{{"" if loop.index==2 else ","  }}{% endif %} {%- endfor %}
+influxdb_joined_3: >-
+  {%- for item in groups.influxdb %}{% if loop.index <= 3 %}{{ item }}:8088{{"" if loop.index==3 else ","  }}{% endif %} {%- endfor %}
+
+
 k8s_cluster_ip_range: 10.10.10.0/24
 k8s_dns_server: 10.10.10.10
 k8s_dns_replicas: 1

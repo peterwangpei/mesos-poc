@@ -54,3 +54,9 @@
   hosts: ceph
   tasks:
     - shell: if [ `rbd lock list mysql | wc -l` -gt 1 ]; then rbd lock remove mysql `rbd lock list mysql | awk '(NR>2){print $2}'` `rbd lock list mysql | awk '(NR>2){print $1}'`; fi
+
+- name: rm influxdb
+  sudo: yes
+  hosts: influxdb
+  tasks:
+    - shell: if [ `docker ps -f name=influxdb | wc -l` -gt 1 ]; then docker rm -f influxdb; fi

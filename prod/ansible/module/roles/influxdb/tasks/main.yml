@@ -1,0 +1,19 @@
+---
+# TODO make influx
+- shell: mkdir -p /etc/influxdb
+- name: run influxdb containter
+  docker:
+    name: influxdb
+    image: tutum/influxdb:0.9
+    net: host
+    state: started
+    restart_policy: always
+    ports:
+      - 8083:8083
+      - 8086:8086
+      - 8088:8088
+    volumes:
+      - /var/influxdb:/data
+    env:
+      FORCE_HOSTNAME: "{{ipaddr}}:8088"
+      JOIN: "{{influxd_join}}"
