@@ -85,7 +85,7 @@
 
 # TODO
 
-[ ] influxdb 前端负载均衡
+[] influxdb 前端负载均衡
 
 <!--
 apt-get install nfs-common

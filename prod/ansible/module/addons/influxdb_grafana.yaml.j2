@@ -18,25 +18,27 @@ spec:
   selector:
     k8s-app: influxGrafana
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: monitoring-influxdb
-  namespace: kube-system
-  labels:
-    kubernetes.io/cluster-service: "true"
-    kubernetes.io/name: "InfluxDB"
-spec:
-  ports:
-    - name: http
-      port: 8083
-      targetPort: 8083
-    - name: api
-      port: 8086
-      targetPort: 8086
-  selector:
-    k8s-app: influxGrafana
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: monitoring-influxdb
+#   namespace: kube-system
+#   labels:
+#     kubernetes.io/cluster-service: "true"
+#     kubernetes.io/name: "InfluxDB"
+# spec:
+#   type: LoadBalancer
+#   ports:
+#     - name: http
+#       port: 8083
+#       targetPort: 8083
+#     - name: api
+#       port: 8086
+#       targetPort: 8086
+#   selector:
+#     k8s-app: influxGrafana
+
 
 ---
 
@@ -63,20 +65,20 @@ spec:
         kubernetes.io/cluster-service: "true"
     spec:
       containers:
-        - image: kubernetes/heapster_influxdb:v0.6
-          name: influxdb
-          resources:
-            limits:
-              cpu: 100m
-              memory: 200Mi
-          ports:
-            - containerPort: 8083
-              name: name
-            - containerPort: 8086
-              name: api
-          volumeMounts:
-          - name: influxdb-persistent-storage
-            mountPath: /data
+        # - image: kubernetes/heapster_influxdb:v0.6
+        #   name: influxdb
+        #   resources:
+        #     limits:
+        #       cpu: 100m
+        #       memory: 200Mi
+        #   ports:
+        #     - containerPort: 8083
+        #       name: name
+        #     - containerPort: 8086
+        #       name: api
+        #   volumeMounts:
+        #   - name: influxdb-persistent-storage
+        #     mountPath: /data
         - image: kubernetes/heapster_grafana:v2.5.0
           name: grafana
           env:
@@ -86,11 +88,11 @@ spec:
               memory: 100Mi
           ports:
             - containerPort: 3000
-              name: port3
+              name: api
           env:
             # This variable is required to setup templates in Grafana.
             - name: INFLUXDB_SERVICE_URL
-              value: http://monitoring-influxdb:8086
+              value: http://{{ groups.influxdb | first }}:8086
               # The following env variables are required to make Grafana accessible via
               # the kubernetes api-server proxy. On production clusters, we recommend
               # removing these env variables, setup auth for grafana, and expose the grafana
@@ -108,7 +110,7 @@ spec:
             mountPath: /var
 
       volumes:
-      - name: influxdb-persistent-storage
-        emptyDir: {}
+      # - name: influxdb-persistent-storage
+      #   emptyDir: {}
       - name: grafana-persistent-storage
         emptyDir: {}

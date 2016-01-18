@@ -20,6 +20,7 @@
 ## all in master kubernets demo
 # - include: ./k8s_apiserver_lb.yml
 - include: ./k8s_ha.yml
+- include: ./influxdb.yml
 
 ## local should install kubernetes-cli or can run command `kubectl`
 # - include: ./nfs.yml
