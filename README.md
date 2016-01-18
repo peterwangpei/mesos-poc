@@ -83,6 +83,10 @@
 2. 验证 mesos master 和 mesos slave， 打开网页 `http://<mesosmaster>:5050`, 查看 master、slave 和 framework 的运行情况
 3. 验证 kubernetes， 打开网页 `http://<mesosmaster>:8888`, 查看 kubernetes 的运行界面
 
+# TODO
+
+[ ] influxdb 前端负载均衡
+
 <!--
 apt-get install nfs-common
 apt-get install -qq -y linux-image-extra-`uname -r`
