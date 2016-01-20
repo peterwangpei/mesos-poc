@@ -100,4 +100,4 @@ mysql_root_password=123456
 # deploy=["elasticsearch", "kibana", "logging-demo"]
 # deploy=["serviceaccount", "skydns", "heapster", "influxdb_grafana"]
 # deploy=["heapster", "influxdb_grafana"]
-deploy=[""]
+deploy=["kubedash"]

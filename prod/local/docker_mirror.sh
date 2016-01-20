@@ -2,7 +2,7 @@
 
 set -e
 
-TAG_WITH_DEST=192.168.33.10:5000/k8smesos/$1
+TAG_WITH_DEST=192.168.33.10/k8smesos/$1
 
 GOO_SRC=gcr.io/google_containers/$1
 REPO_DES=k8smesos/$1
