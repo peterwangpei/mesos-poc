@@ -1,0 +1,9 @@
+---
+
+- copy: src=../templates/docker.repo dest=/etc/yum.repos.d/docker.repo
+- yum: name={{item}} state=present
+  with_items:
+    - docker-engine-1.9.1-1.el7.centos
+    - python-pip
+- service: name=docker state=restarted enabled=true
+- pip: name=docker-py state=present

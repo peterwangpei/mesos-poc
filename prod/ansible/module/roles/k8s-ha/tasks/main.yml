@@ -1,6 +1,5 @@
 ---
 
-
 - shell: mkdir -p /var/log/k8s /etc/kubernetes/auth
 
 - copy: src=../keys/{{item}} dest=/etc/kubernetes/auth/

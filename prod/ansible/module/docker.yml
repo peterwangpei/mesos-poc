@@ -1,14 +1,13 @@
 ---
 
 - name: init docker env
-  hosts: all
+  hosts: ms3
   serial: 1
   sudo: yes
   gather_facts: yes
   tasks:
-    - stat: /usr/bin/docker
+    - stat: path=/usr/bin/docker
       register: docker_installed
   roles:
     - role: docker
-      when: not docker_installed.stat.exists
     - role: docker-configuration
