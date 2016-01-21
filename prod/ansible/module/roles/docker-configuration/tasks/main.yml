@@ -1,5 +1,19 @@
 ---
 
+- apt: name={{item}} state=present
+  with_items:
+    - python-pip
+  when: isubuntu
+
+- yum: name=epel-release state=present
+  when: iscentos
+
+- yum: name={{item}} state=present
+  with_items:
+    - python-pip
+  when: iscentos
+
+- pip: name=docker-py state=present
 - template: src=../templates/docker.ubuntu.j2 dest=/etc/default/docker mode=0644
   when: isubuntu
 - include: ./centos.yml
