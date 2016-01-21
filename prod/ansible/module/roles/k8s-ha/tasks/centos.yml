@@ -1,0 +1,5 @@
+---
+
+- template: src=../templates/kubelet.service.j2 dest=/usr/lib/systemd/system/kubelet.service mode=0644
+- shell: systemctl daemon-reload
+- service: name=kubelet state=restarted enabled=true

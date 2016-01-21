@@ -1,0 +1,5 @@
+---
+
+- template: src=../templates/kubelet.init.j2  dest=/etc/init.d/kubelet mode=0755
+- shell: update-rc.d kubelet defaults
+- service: name=kubelet state=restarted enabled=true

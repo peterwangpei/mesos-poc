@@ -27,7 +27,7 @@ Vagrant.configure(2) do |config|
 
   cluster.each_with_index do | (hostname, info), index |
     # config.vm.box = "minimum/ubuntu-trusty64-docker"
-    config.vm.box = "centos-docker"
+    config.vm.box = "williamyeh/centos7-docker"
     # config.vm.box = "ubuntu-docker-ceph"
     config.vm.define hostname do | host |
       host.vm.provider "virtualbox" do |v|

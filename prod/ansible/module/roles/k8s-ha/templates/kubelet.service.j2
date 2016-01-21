@@ -1,0 +1,15 @@
+
+[Unit]
+Description=Kubernetes Kubelet Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=docker.service
+Requires=docker.service
+
+[Service]
+EnvironmentFile=/etc/default/kubelet
+ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
+ExecStart=/usr/local/bin/kubelet $DAEMON_ARGS
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
