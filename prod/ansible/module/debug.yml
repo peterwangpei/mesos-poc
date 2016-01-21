@@ -8,15 +8,22 @@
     - debug: var=mesos_quorum
     - debug: var=zk_servers
     - debug: var=k8s_api_server_lb_ip
-    - debug: var=ipaddr
-    - debug: var=hostname
+
     - debug: var=etcd_cluster
-    - command: lsb_release -is
-      register: distro
-    - command: lsb_release -cs
-      register: codename
-    - debug: var=codename.stdout
-    - debug: var=distro.stdout
+    # - command: lsb_release -is
+    #   register: distro
+    # - command: lsb_release -cs
+    #   register: codename
+    # - debug: var=codename.stdout
+    # - debug: var=distro.stdout
     - debug: var=influxdb_joined_1
     - debug: var=influxdb_joined_2
     - debug: var=influxdb_joined_3
+    - debug: var=isubuntu
+    - debug: var=iscentos
+    # - debug: var=ansible_enp0s3
+
+    - debug: var=ipaddr
+    - debug: var=hostname
+    - debug: var=ansible_all_ipv4_addresses[2]
+    # - debug: var=hostvars[inventory_hostname]

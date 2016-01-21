@@ -1,4 +1,7 @@
 ---
 
-- template: src=../templates/docker.j2 dest=/etc/default/docker mode=0644
+- template: src=../templates/docker.ubuntu.j2 dest=/etc/default/docker mode=0644
+  when: isubuntu
+- include: ./centos.yml
+  when: iscentos
 - service: name=docker state=restarted enabled=true

@@ -1,0 +1,9 @@
+---
+
+- copy: src=../images/mesosphere-el-repo-7-1.noarch.rpm dest=/tmp/mesosphere.rpm
+# - shell: rpm -Uvh /tmp/mesosphere.rpm
+- yum: name=/tmp/mesosphere.rpm state=present
+- yum: name={{item}} state=present
+  with_items:
+    - mesos-0.24.1-0.2.35.centos701406
+    - ceph-common

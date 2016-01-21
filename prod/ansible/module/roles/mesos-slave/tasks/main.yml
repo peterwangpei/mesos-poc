@@ -1,30 +1,16 @@
 ---
 
-- stat: path=/usr/sbin/mesos-slave
-  register: mesos_installed
-# - apt_key: keyserver=keyserver.ubuntu.com id=E56151BF
-# - command: lsb_release -is
-#   register: distro
-# - command: lsb_release -cs
-#   register: codename
-# - shell: echo "deb http://repos.mesosphere.io/{{distro.stdout | lower}} {{codename.stdout}} main" | tee /etc/apt/sources.list.d/mesosphere.list
-# - apt: name=mesos=0.24.1-0.2.35.ubuntu1404 update_cache=yes cache_valid_time=3600
-#   when: not mesos_installed.stat.exists
-- shell: echo "oracle-java9-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
-- command: "docker run --rm -v /tmp:/stores k8smesos/mesos-pack:mesos_0.24.1-ubuntu1404_amd64"
-- command: dpkg -iy /tmp/mesos.deb
-  ignore_errors: True
-  when: not mesos_installed.stat.exists
-- command: apt-get install -f -y --force-yes
-- template: src=../templates/mesos-slave.j2 dest=/etc/default/mesos-slave
+- include: ./centos.yml
+  when: iscentos
+- include: ./ubuntu.yml
+  when: isubuntu
+
 - copy: src=../images/pause.tar dest=/tmp/
 - name: import docker images
   shell: docker load -i /tmp/pause.tar
   ignore_errors: True
+
+- template: src=../templates/mesos-slave.j2 dest=/etc/default/mesos-slave
 - shell: echo {{ipaddr}} | tee /etc/mesos-slave/ip
 - shell: cp /etc/mesos-slave/ip /etc/mesos-slave/hostname
 - service: name=mesos-slave state=restarted enabled=true
-- stat: path=/usr/bin/ceph
-  register: ceph_installed
-- apt: name=ceph-common
-  when: not ceph_installed.stat.exists

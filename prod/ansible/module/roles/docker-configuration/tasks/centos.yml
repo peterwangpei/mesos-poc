@@ -1,0 +1,5 @@
+---
+
+- template: src=../templates/docker.centos.j2 dest=/etc/sysconfig/docker mode=0644
+- template: src=../templates/docker.service.j2 dest=/usr/lib/systemd/system/docker.service mode=0644
+- shell: systemctl daemon-reload

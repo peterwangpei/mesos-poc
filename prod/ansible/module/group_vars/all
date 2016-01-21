@@ -1,5 +1,9 @@
 ---
 # http://jinja.pocoo.org/docs/dev/templates/
+
+isubuntu: "{{ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'}}"
+iscentos: "{{ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'}}"
+
 mesos_zk_addrs: zk://{{ groups.zookeeper | join(':2181,') }}:2181/mesos
 etcd_servers: http://{{ groups.etcd | join(':4001,') }}:4001
 k8s_api_servers: http://{{groups.kubernetes | join( k8s_api_port ~ ',' )}}:{{k8s_api_port}}
@@ -9,7 +13,7 @@ mesos_quorum:  "{{  ((groups.zookeeper | length)/2)  | round | int  }}"
 k8s_api_server_lb_ip: "{{ groups.api_server_lb_ha | first}}"
 k8s_api_server_lb_url: http://{{k8s_api_server_lb_ip}}:{{k8s_api_server_lb_port}}
 ipaddr: >-
-  {{ ansible_eth1.ipv4.address if ansible_virtualization_type == "virtualbox" else ansible_eth0.ipv4.address }}
+  {{ ansible_all_ipv4_addresses[2] if ansible_virtualization_type == "virtualbox" else ansible_default_ipv4.address }}
 hostname: "{{ ipaddr | replace('.', '-') }}"
 etcd_cluster: >
   {%- for item in groups.etcd %}{{ item | replace('.', '-') }}=http://{{ item }}:2380{{"" if loop.last else ","  }} {%- endfor %}
