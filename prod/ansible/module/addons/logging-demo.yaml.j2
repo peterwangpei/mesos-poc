@@ -8,7 +8,7 @@ spec:
   containers:
   - name: synthetic-logger
     image: ubuntu:14.04
-    command: ["bash", "-c", "i=\"0\"; while true; do echo \"`hostname`: $i \" >> /var/log/synthetic-count.log; date --rfc-3339 ns >> /var/log/synthetic-dates.log; sleep 4; i=$[$i+1]; done"]
+    command: ["bash", "-c", "i=\"0\"; while true; do echo \"`hostname`: $i \" >> /var/log/synthetic-count.log; date --rfc-3339 ns >> /var/log/synthetic-dates.log; echo $[$RANDOM%10] >> /var/log/synthetic-random.log; sleep 5; i=$[$i+1]; done"]
     volumeMounts:
     - name: log-storage
       mountPath: /var/log
@@ -16,7 +16,7 @@ spec:
     image: k8smesos/fluentd-sidecar-es:1.1
     env:
     - name: FILES_TO_COLLECT
-      value: "/mnt/log/synthetic-count.log /mnt/log/synthetic-dates.log"
+      value: "/mnt/log/synthetic-count.log /mnt/log/synthetic-dates.log /mnt/log/synthetic-random.log"
     volumeMounts:
     - name: log-storage
       readOnly: true
