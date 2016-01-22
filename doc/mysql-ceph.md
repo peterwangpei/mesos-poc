@@ -24,7 +24,7 @@ sudo mkdir -p /mnt/rbd/mysql
 sudo mount /dev/rbd1 /mnt/rbd/mysql
 ls /mnt/rbd/mysql/
 sudo rm -rf /mnt/rbd/mysql/lost+found
-sudo umount /mnt/rbd/qqq
+sudo umount /mnt/rbd/mysql
 ```
 
 ## 运行 mysql 主从
