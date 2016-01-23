@@ -1,18 +1,18 @@
 - name: install docker 1.10rc0 for centos
-  hosts: all
+  hosts: mesosslave
   sudo: yes
   tasks:
     - service: name=docker state=started
       when: iscentos
     - shell: docker run --rm -v /tmp:/stores k8smesos/mesos-pack:mesos_0.24.1-ubuntu1404_centos7
       when: iscentos
-    - service: name=docker state=stopped
-      when: iscentos
+    # - service: name=docker state=stopped
+    #   when: iscentos
     - command: "{{item}}"
       when: iscentos
       with_items:
         - mv /usr/bin/docker /usr/bin/docker.old
         - mv /tmp/docker /usr/bin/docker
         - chmod +x /usr/bin/docker
-    - service: name=docker state=started enabled=yes
+    - service: name=docker state=reloaded enabled=yes
       when: iscentos
