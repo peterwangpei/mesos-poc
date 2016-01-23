@@ -4,7 +4,8 @@
 - yum: name=epel-release state=present
 - yum: name={{item}} state=present
   with_items:
-    - docker-engine-1.9.1-1.el7.centos
+    - docker-engine
+    - device-mapper-libs
     - python-pip
 - service: name=docker state=restarted enabled=true
 - pip: name=docker-py state=present

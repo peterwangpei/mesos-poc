@@ -9,7 +9,8 @@ Requires=docker.service
 EnvironmentFile=/etc/default/kubelet
 ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
 ExecStart=/usr/local/bin/kubelet $DAEMON_ARGS
-Restart=always
+Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target

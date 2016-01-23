@@ -1,1 +1,2 @@
-DAEMON_ARGS="$DAEMON_ARGS --enable-debugging-handlers=true --config=/etc/kubernetes/manifests --allow-privileged=false --pod-infra-container-image=zhpooer/pause:0.8.0"
+DAEMON_ARGS="$DAEMON_ARGS --enable-debugging-handlers=true --config=/etc/kubernetes/manifests --allow-privileged=true --pod-infra-container-image=zhpooer/pause:0.8.0"
+# DAEMON_ARGS="$DAEMON_ARGS --enable-debugging-handlers=true --config=/etc/kubernetes/manifests --allow-privileged=true --system-container=/system --cgroup-root=/ --pod-infra-container-image=zhpooer/pause:0.8.0"
