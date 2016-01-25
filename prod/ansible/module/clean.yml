@@ -29,17 +29,17 @@
     - shell: pkill km
       ignore_errors: True
 
-# - name: clean mesos master/slave, k8s
-#   hosts:
-#     - mesosmaster
-#     - mesosslave
-#     - kubernetes
-#   sudo: yes
-#   gather_facts: no
-#   tasks:
-#     - shell: if [ `docker ps -a | wc -l` -gt 1 ]; then docker rm -f `docker ps -aq`; fi
-#     - shell: if [ `mount | grep mesos | grep rbd | wc -l` -gt 1 ]; then  umount `mount | grep mesos | grep rbd | awk '{print $3}'`; fi
-#     - shell: if [ `rbd showmapped | wc -l` -gt 1 ]; then rbd unmap /dev/rbd1; fi
+- name: clean mesos master/slave, k8s
+  hosts:
+    - mesosmaster
+    - mesosslave
+    - kubernetes
+  sudo: yes
+  gather_facts: no
+  tasks:
+    - shell: if [ `docker ps -a | wc -l` -gt 1 ]; then docker rm -f `docker ps -aq`; fi
+    - shell: if [ `mount | grep mesos | grep rbd | wc -l` -gt 1 ]; then  umount `mount | grep mesos | grep rbd | awk '{print $3}'`; fi
+    - shell: if [ `rbd showmapped | wc -l` -gt 1 ]; then rbd unmap /dev/rbd1; fi
 
 - name: rm zookeeper
   sudo: yes
@@ -55,12 +55,12 @@
   tasks:
     - shell: if [ `docker ps -f name=etcd | wc -l` -gt 1 ]; then docker rm -f etcd; fi
 
-# - name: rm ceph lock
-#   sudo: yes
-#   gather_facts: no
-#   hosts: ceph
-#   tasks:
-#     - shell: if [ `rbd lock list mysql | wc -l` -gt 1 ]; then rbd lock remove mysql `rbd lock list mysql | awk '(NR>2){print $2}'` `rbd lock list mysql | awk '(NR>2){print $1}'`; fi
+- name: rm ceph lock
+  sudo: yes
+  gather_facts: no
+  hosts: ceph
+  tasks:
+    - shell: if [ `rbd lock list mysql | wc -l` -gt 1 ]; then rbd lock remove mysql `rbd lock list mysql | awk '(NR>2){print $2}'` `rbd lock list mysql | awk '(NR>2){print $1}'`; fi
 
 - name: rm influxdb
   sudo: yes

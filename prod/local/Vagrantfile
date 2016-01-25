@@ -26,9 +26,6 @@ Vagrant.configure(2) do |config|
 
   cluster.each_with_index do | (hostname, info), index |
 
-    config.vm.box = "minimum/ubuntu-trusty64-docker"
-
-    config.vm.box = "williamyeh/centos7-docker" if info[:os] and info[:os] == :centos
     # config.vm.box = "williamyeh/centos7-docker"
     # config.vm.box = "ubuntu-docker-ceph"
 
@@ -36,6 +33,8 @@ Vagrant.configure(2) do |config|
     # config.vm.synced_folder ".", "/vagrant", disabled: true
 
     config.vm.define hostname do | host |
+      host.vm.box = "minimum/ubuntu-trusty64-docker"
+      host.vm.box = "williamyeh/centos7-docker" if :centos == info[:os]
       host.vm.provider "virtualbox" do |v|
         v.name   = "k8s-mesos-#{hostname}"
         v.memory = info[:mem]
