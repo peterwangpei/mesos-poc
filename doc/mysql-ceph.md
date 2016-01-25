@@ -21,7 +21,7 @@ sudo mkfs.ext4 -m0 /dev/rbd/rbd/mysql
 加载并删除里面的`lost+found`文件夹（mysql可能因为文件夹不是空的而拒绝启动）：
 ```sh
 sudo mkdir -p /mnt/rbd/mysql
-sudo mount /dev/rbd1 /mnt/rbd/mysql
+sudo mount /dev/rbd/rbd/mysql /mnt/rbd/mysql
 ls /mnt/rbd/mysql/
 sudo rm -rf /mnt/rbd/mysql/lost+found
 sudo umount /mnt/rbd/mysql
