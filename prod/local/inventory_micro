@@ -40,11 +40,11 @@ misc
 [nfs:children]
 misc
 
-
-
-
 [etcd:children]
 mk1
+
+[etcd_event:children]
+misc
 
 [zookeeper:children]
 mk1

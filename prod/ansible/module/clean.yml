@@ -51,7 +51,9 @@
 - name: rm etcd
   sudo: yes
   gather_facts: no
-  hosts: etcd
+  hosts:
+    - etcd
+    - etcd_event
   tasks:
     - shell: if [ `docker ps -f name=etcd | wc -l` -gt 1 ]; then docker rm -f etcd; fi
 

@@ -35,6 +35,9 @@ zk1
 [etcd:children]
 zk1
 
+[etcd_event:children]
+misc
+
 [zookeeper:children]
 zk1
 

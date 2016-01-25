@@ -8,6 +8,7 @@ iscentos: >
 
 mesos_zk_addrs: zk://{{ groups.zookeeper | join(':2181,') }}:2181/mesos
 etcd_servers: http://{{ groups.etcd | join(':4001,') }}:4001
+etcd_event_servers: http://{{ groups.etcd_event | join(':4001,') }}:4001
 k8s_api_servers: http://{{groups.kubernetes | join( k8s_api_port ~ ',' )}}:{{k8s_api_port}}
 k8s_api_servers_ips: "{{groups.kubernetes}}"
 zk_servers: "{{ groups.zookeeper | join(',') }}"
@@ -21,6 +22,9 @@ ipaddr: >-
 hostname: "{{ ipaddr | replace('.', '-') }}"
 etcd_cluster: >
   {%- for item in groups.etcd %}{{ item | replace('.', '-') }}=http://{{ item }}:2380{{"" if loop.last else ","  }} {%- endfor %}
+
+etcd_event_cluster: >
+  {%- for item in groups.etcd_event %}{{ item | replace('.', '-') }}=http://{{ item }}:2380{{"" if loop.last else ","  }} {%- endfor %}
 
 influxdb_joined_1: "{{groups.influxdb | first}}:8088"
 influxdb_joined_2: >-

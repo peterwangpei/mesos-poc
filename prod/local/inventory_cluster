@@ -54,6 +54,9 @@ mk1
 mk2
 mk3
 
+[etcd_event:children]
+misc
+
 [zookeeper:children]
 mk1
 mk2
