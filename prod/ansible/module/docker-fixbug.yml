@@ -16,3 +16,4 @@
         - chmod +x /usr/bin/docker
     - service: name=docker state=restarted enabled=yes
       when: iscentos
+      ignore_errors: true

@@ -10,12 +10,12 @@
 #   when: not mesos_installed.stat.exists
 - shell: echo "oracle-java9-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
 - command: "docker run --rm -v /tmp:/stores k8smesos/mesos-pack:mesos_0.24.1-ubuntu1404_centos7"
-- command: dpkg -iy /tmp/mesos.deb
+- command: dpkg -i /tmp/mesos.deb
   ignore_errors: True
   when: not mesos_installed.stat.exists
 - command: apt-get install -f -y --force-yes
 
 - stat: path=/usr/bin/ceph
   register: ceph_installed
-- apt: name=ceph-common
+- apt: name=ceph-common state=present force=yes
   when: not ceph_installed.stat.exists

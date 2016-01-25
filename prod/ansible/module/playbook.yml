@@ -1,8 +1,10 @@
 ---
 
 ## docker must install in all machine
-# - include: ./docker-configuration.yml
 # - include: ./docker.yml
+- include: ./docker-configuration.yml
+- include: ./docker-fixbug.yml
+
 # - include: ./registry.yml
 
 ## mesos cluster

@@ -25,5 +25,5 @@
 
     - debug: var=ipaddr
     - debug: var=hostname
-    - debug: var=ansible_all_ipv4_addresses[2]
+    - debug: var=ansible_all_ipv4_addresses
     # - debug: var=hostvars[inventory_hostname]
