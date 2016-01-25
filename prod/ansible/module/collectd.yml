@@ -1,0 +1,5 @@
+- name: install collectd
+  hosts: mk1
+  roles:
+    # - collectd
+    - logstash
