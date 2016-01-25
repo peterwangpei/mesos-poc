@@ -14,5 +14,5 @@
         - mv /usr/bin/docker /usr/bin/docker.old
         - mv /tmp/docker /usr/bin/docker
         - chmod +x /usr/bin/docker
-    - service: name=docker state=reloaded enabled=yes
+    - service: name=docker state=restarted enabled=yes
       when: iscentos
