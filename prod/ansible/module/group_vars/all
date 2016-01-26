@@ -16,7 +16,7 @@ mesos_quorum:  "{{  ((groups.zookeeper | length)/2)  | round | int  }}"
 k8s_api_server_lb_ip: "{{ groups.api_server_lb_ha | first}}"
 k8s_api_server_lb_url: http://{{k8s_api_server_lb_ip}}:{{k8s_api_server_lb_port}}
 vagrant_ip: >-
-  {{ ansible_all_ipv4_addresses[2] if iscentos | bool else ansible_all_ipv4_addresses[1] }}
+  {{ ansible_all_ipv4_addresses | last if iscentos | bool else ansible_all_ipv4_addresses[1] }}
 ipaddr: >-
   {{ vagrant_ip if ansible_virtualization_type == "virtualbox" else ansible_default_ipv4.address }}
 hostname: "{{ ipaddr | replace('.', '-') }}"
