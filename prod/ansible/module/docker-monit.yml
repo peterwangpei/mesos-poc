@@ -1,0 +1,35 @@
+- name: install docker 1.10rc0 for centos performance env
+  hosts: all:!ansi
+  sudo: yes
+  tasks:
+    - yum: name={{item}} state=present
+      with_items:
+        - epel-release
+        - python-docker-py
+      when: iscentos
+    - lineinfile:
+        dest: /var/mwc/jobs/packages/docker/docker_ctl
+        state: present
+        regexp: ^.*--insecure-registry.*$
+        line: >
+          {{docker_opts}} \\
+    - shell: /var/mwc/monit/bin/monit restart docker
+      when: iscentos
+    - shell: sleep 30s
+    - shell: docker run --rm -v /tmp:/stores k8smesos/mesos-pack:mesos_0.24.1-ubuntu1404_centos7
+      when: iscentos
+    - lineinfile:
+        dest: /var/mwc/jobs/packages/docker/docker_ctl
+        state: present
+        regexp: ^.*--daemon.*$
+        line: >
+          /var/mwc/jobs/packages/docker/docker daemon -s devicemapper \
+    - command: "{{item}}"
+      when: iscentos
+      with_items:
+        - /var/mwc/monit/bin/monit stop docker
+        - mv /var/mwc/jobs/package/docker/docker /var/mwc/jobs/package/docker/docker.old
+        - mv /tmp/docker /var/mwc/jobs/package/docker/docker
+        - chmod +x /var/mwc/jobs/package/docker/docker
+        - sleep 30s
+        - /var/mwc/monit/bin/monit start docker
