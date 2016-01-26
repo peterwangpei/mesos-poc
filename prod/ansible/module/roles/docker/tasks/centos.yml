@@ -6,6 +6,5 @@
   with_items:
     - docker-engine
     - device-mapper-libs
-    - python-pip
+    - python-docker-py
 - service: name=docker state=restarted enabled=true
-- pip: name=docker-py state=present
