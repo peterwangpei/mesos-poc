@@ -89,8 +89,9 @@ ceph_image=mysql
 mysql_root_password=123456
 # nfs_server=192.168.33.11
 # nfs_path=/var/nfs/mysql
-deploy=["skydns", "kube-ui"]
+# deploy=["skydns", "kube-ui"]
 # deploy=["tomcat", "mysql-pv", "wordpress", "nginx"]
 # deploy=["wordpress", "k8s-lb-ha"]
 # deploy=["nginx"]
+deploy=["serviceaccount", "tomcat-perf"]
 
