@@ -94,4 +94,4 @@ mysql_root_password=123456
 # deploy=["wordpress", "k8s-lb-ha"]
 # deploy=["nginx"]
 deploy=["serviceaccount", "tomcat-perf"]
-
+# deploy=["tomcat-perf", "golang-perf", "diego-perf"]
