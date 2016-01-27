@@ -22,8 +22,7 @@
         dest: /var/mwc/jobs/packages/docker/docker_ctl
         state: present
         regexp: ^.*--daemon.*$
-        line: >
-          /var/mwc/jobs/packages/docker/docker daemon -s devicemapper \\
+        line: /var/mwc/jobs/packages/docker/docker daemon -s devicemapper \
     - command: "{{item}}"
       when: iscentos
       with_items:
