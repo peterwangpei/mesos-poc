@@ -1,0 +1,37 @@
+{
+  "kind": "ReplicationController",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "nginx",
+    "labels": {
+      "name": "nginx_controller",
+      "state": "serving"
+    }
+  },
+  "spec": {
+    "replicas": 5,
+    "selector": {
+      "app": "nginx"
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "nginx"
+        }
+      },
+      "spec": 
+      {
+        "containers": 
+        [
+          {
+            "name": "demo-nginx",
+            "image": "kubernetes/pause",
+            "imagePullPolicy": "IfNotPresent"
+          }
+        ],
+        "restartPolicy": "Always",
+        "dnsPolicy": "Default"
+      }
+    }
+  }
+}
