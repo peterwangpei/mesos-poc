@@ -4,31 +4,25 @@
 10.63.119.36 ansible_connection=local
 
 [lb]
-10.63.119.37 ansible_user=root ansible_ssh_pass=
+10.63.119.37
 
 [zk1]
-10.63.119.38 ansible_user=root ansible_ssh_pass=
+10.63.119.38
 
 [etcd1]
-10.63.119.39 ansible_user=root ansible_ssh_pass=
+10.63.119.39
 
 [etcd2]
-10.63.119.40 ansible_user=root ansible_ssh_pass=
+10.63.119.40
 
 [mm1]
-10.63.119.41 ansible_user=root ansible_ssh_pass=
+10.63.119.41
 
 [km1]
-10.63.119.42 ansible_user=root ansible_ssh_pass=
+10.63.119.42
 
-[ms1]
-10.63.119.46 ansible_user=root ansible_ssh_pass=
-
-[ms2]
-10.63.119.47 ansible_user=root ansible_ssh_pass=
-
-[ms3]
-10.63.119.48 ansible_user=root ansible_ssh_pass=
+[ms]
+10.63.119.[46:145]
 
 #------------------------------------------- Group set ------------------------------------------- #
 
@@ -60,9 +54,7 @@ km1
 mm1
 
 [mesosslave:children]
-ms1
-ms2
-ms3
+ms
 
 #------------------------------------------- Machine variable ------------------------------------------- #
 
@@ -75,6 +67,9 @@ zookeeper_id=1
 docker_opts='--insecure-registry 10.98.101.47:5000 --registry-mirror http://10.98.101.47:5000'
 k8s_api_server_lb_port=8888
 k8s_api_port=8888
+ansible_connection=ssh
+ansible_ssh_user=root
+ansible_ssh_pass=
 
 # 部署完 ceph-demo 之后，进入到部署ceph机子里面，运行如下命令，获取 编码
 # grep key /etc/ceph/ceph.client.kube.keyring |awk '{printf "%s", $NF}'|base64
