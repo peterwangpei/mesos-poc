@@ -1,0 +1,65 @@
+---
+
+- name: create kubernetes script directory
+  sudo: yes
+  file: path={{ item }} state=directory
+  with_items:
+    - /var/log/k8s
+    - /etc/kubernetes/auth
+
+- copy: src={{item}} dest=/etc/kubernetes/auth/
+  with_items:
+    - ca.crt
+    - server.key
+    - server.crt
+
+- name: enable capability for kube-apiserver to bind to port below 1024
+  sudo: yes
+  capabilities:
+    capability: cap_net_bind_service+ep
+    path: /usr/bin/kube-apiserver
+    state: present
+  when: "{{ k8s_api_port | int  }} < 1024"
+  tags:
+    - master
+
+- name: stop k8s
+  service: name={{item}} state=stopped
+  with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+    - kube-proxy
+
+- name: write the config files for api server
+  sudo: yes
+  template: src={{item.src}} dest={{item.dest}}
+  with_items:
+    - src: kube-apiserver.service.j2
+      dest: /usr/lib/systemd/system/kube-apiserver.service
+    - src: kube-controller-manager.service.j2
+      dest: /usr/lib/systemd/system/kube-controller-manager.service
+    - src: kube-scheduler.service.j2
+      dest: /usr/lib/systemd/system/kube-scheduler.service
+    - src: kube-proxy.service.j2
+      dest: /usr/lib/systemd/system/kube-proxy.service
+
+
+- name: reload daemon
+  shell: systemctl daemon-reload
+  tags:
+    - master
+
+- name: Enable kubernetes
+  sudo: yes
+  service:
+    name: "{{item}}"
+    enabled: yes
+    state: restarted
+  tags:
+    - master
+  with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+    - kube-proxy

@@ -1,0 +1,9 @@
+- hosts: kubernetes
+  sudo: yes
+  roles:
+    - k8s-raw
+
+- hosts: mesosslave
+  sudo: yes
+  roles:
+    - k8s-raw

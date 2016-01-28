@@ -1,0 +1,9 @@
+---
+
+- hosts: ms3
+  roles:
+    # - common
+    # - collectd
+    # - logrotate
+    # - consul-template
+    - docker

@@ -1,0 +1,11 @@
+---
+- name: install kubernetes
+  yum:
+    name: kubernetes
+    state: present
+
+- include: master.yml
+  when: "'kubernetes' in group_names"
+
+- include: node.yml
+  when: "'mesosslave' in group_names"

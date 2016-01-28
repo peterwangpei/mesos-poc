@@ -1,0 +1,158 @@
+---
+# Workaround for https://github.com/CiscoCloud/microservices-infrastructure/issues/161
+- name: install latest device-mapper-libs
+  sudo: yes
+  yum:
+    name: device-mapper-libs
+    state: latest
+  tags:
+    - docker
+    - bootstrap
+
+- name: cp docker repo
+  sudo: yes
+  copy:
+    dest: /etc/yum.repos.d/docker.repo
+    content: |
+      [dockerrepo]
+      name=Docker Repository
+      baseurl=https://yum.dockerproject.org/repo/main/centos/7
+      enabled=1
+      gpgcheck=1
+      gpgkey=https://yum.dockerproject.org/gpg
+
+- name: install docker packages
+  sudo: yes
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - docker-engine
+  tags:
+    - docker
+    - bootstrap
+
+- name: copy docker service define file
+  sudo: yes
+  copy:
+    src: docker.service
+    dest: /usr/lib/systemd/system/docker.service
+
+# - name: check if docker storage already set up with devicemapper
+#   sudo: yes
+#   shell: "test -f /etc/sysconfig/docker-storage-setup && . /etc/sysconfig/docker-storage-setup && echo ${STORAGE_DRIVER:-NOT_SET}"
+#   register: docker_already_set_up_with_devicemapper
+
+# - name: setup docker storage
+#   sudo: yes
+#   lineinfile:
+#     dest: /etc/sysconfig/docker-storage-setup
+#     regexp: "^{{ item.var }}=.*"
+#     line: "{{ item.var }}={{ item.value }}"
+#     state: present
+#     create: yes
+#   with_items:
+#     - var: STORAGE_DRIVER
+#       value: "{{ docker_storage_driver }}"
+#     - var: DATA_SIZE
+#       value: "{{ docker_lvm_data_volume_size }}"
+#     - var: VG
+#       value: "{{ volume_group_name }}"
+#     - var: MIN_DATA_SIZE
+#       value: "{{ docker_lvm_data_volume_size_min }}"
+#     - var: AUTO_EXTEND_POOL
+#       value: "{{ docker_lvm_auto_extend_pool }}"
+#   when: docker_already_set_up_with_devicemapper.stdout == "NOT_SET"
+#   tags:
+#     - docker
+#     - bootstrap
+
+- include: lvm.yml
+  when: docker_lvm_backed_devicemapper
+
+- name: create rsyslog.d
+  sudo: yes
+  file:
+    dest: /etc/rsyslog.d
+    state: directory
+  tags:
+    - docker
+
+- name: create docker entry for syslogd
+  sudo: yes
+  copy:
+    dest: /etc/rsyslog.d/10-docker.conf
+    content: |
+      # Docker logging
+      :syslogtag, isequal, "docker:"  /var/log/docker/docker.log
+      & ~
+  notify:
+    - restart rsyslog
+  tags:
+    - docker
+
+- name: config docker file
+  template:
+    dest: "{{item.dest}}"
+    src: "{{item.src}}"
+  with_items:
+    - src: docker.j2
+      dest: /etc/sysconfig/docker
+    # - src: docker-storage-setup
+    #   dest: /etc/sysconfig/docker-storage
+  notify:
+    - restart docker
+  tags:
+    - docker
+
+# - name: configure docker consul dns
+#   sudo: yes
+#   lineinfile:
+#     dest: /etc/sysconfig/docker
+#     regexp: ^OPTIONS=
+#     line: OPTIONS='{% if docker_selinux_enabled %}--selinux-enabled {% endif %}--dns {{ private_ipv4 }} --dns-search service.{{ consul_dns_domain }} {% if kube_build is defined %}--dns-search {{ cluster_name }}{% endif %} --log-driver=syslog'
+#     state: present
+#     create: yes
+#   notify:
+#     - restart docker
+#   tags:
+#     - docker
+
+- name: ensure docker config dir exists
+  sudo: yes
+  file:
+    path: /root/.docker
+    state: directory
+  tags:
+    - docker
+
+# - name: setup private docker registry credentials
+#   sudo: yes
+#   when: do_private_docker_registry
+#   template:
+#     src: config.json.j2
+#     dest: /root/.docker/config.json
+#   tags:
+#     - docker
+#   register: docker_registry_credentials
+
+# - name: add docker registry credentials to /etc/
+#   sudo: yes
+#   when: do_private_docker_registry and docker_registry_credentials.changed
+#   command: tar cvzf /etc/docker.tar.gz .docker
+#   args:
+#     chdir: /root
+#   tags:
+#     - docker
+
+- name: enable docker
+  sudo: yes
+  service:
+    name: docker
+    enabled: yes
+    state: started
+  tags:
+    - docker
+    - bootstrap # needed to install Docker images during bootstrap
+
+- include: collectd.yml

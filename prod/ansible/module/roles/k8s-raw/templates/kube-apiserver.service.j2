@@ -1,0 +1,29 @@
+[Unit]
+Description=Kubernetes API Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+
+
+[Service]
+EnvironmentFile=-/etc/kubernetes/config
+EnvironmentFile=-/etc/kubernetes/apiserver
+User=kube
+ExecStart=/usr/bin/kube-apiserver \
+         --address=0.0.0.0 \
+         --etcd-servers={{etcd_servers}} \
+         --admission-control=ServiceAccount \
+         --authorization-mode=AlwaysAllow \
+         --service-cluster-ip-range=10.10.10.0/24 \
+         --port={{k8s_api_port}} \
+         --secure-port=0 \
+         --client-ca-file=/etc/kubernetes/auth/ca.crt \
+         --tls-private-key-file=/etc/kubernetes/auth/server.key \
+         --tls-cert-file=/etc/kubernetes/auth/server.crt \
+         --service-node-port-range=30000-32767 \
+         --v=1
+
+Restart=on-failure
+Type=notify
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

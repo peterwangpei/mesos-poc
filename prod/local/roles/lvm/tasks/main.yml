@@ -1,0 +1,9 @@
+---
+- include: volume.yml
+  when: lvm_physical_device != ""
+
+- name: save volume group name (null) as fact
+  set_fact:  volume_group_name=""
+  when: lvm_physical_device == ""
+  tags:
+    - lvm

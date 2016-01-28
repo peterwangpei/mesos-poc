@@ -1,0 +1,21 @@
+[Unit]
+Description=Kubernetes Kubelet Server
+Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+After=docker.service
+Requires=docker.service
+
+[Service]
+WorkingDirectory=/var/lib/kubelet
+EnvironmentFile=-/etc/kubernetes/config
+EnvironmentFile=-/etc/kubernetes/kubelet
+ExecStart=/usr/bin/kubelet \
+    --address=0.0.0.0 \
+    --port=10250 \
+    --hostname_override={{ipaddr}} \
+    --api_servers={{k8s_api_servers}} \
+    --pod-infra-container-image=zhpooer/pause:0.8.0
+    
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

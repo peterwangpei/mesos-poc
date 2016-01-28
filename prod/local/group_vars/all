@@ -1,0 +1,9 @@
+isubuntu: >
+  {{ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'}}
+iscentos: >
+  {{ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'}}
+  
+vagrant_ip: >-
+  {{ ansible_all_ipv4_addresses | last if iscentos | bool else ansible_all_ipv4_addresses[1] }}
+private_ipv4: >-
+  {{ vagrant_ip if ansible_virtualization_type == "virtualbox" else ansible_default_ipv4.address }}

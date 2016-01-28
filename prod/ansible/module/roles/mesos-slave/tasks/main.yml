@@ -13,4 +13,5 @@
 - template: src=../templates/mesos-slave.j2 dest=/etc/default/mesos-slave
 - shell: echo {{ipaddr}} | tee /etc/mesos-slave/ip
 - shell: cp /etc/mesos-slave/ip /etc/mesos-slave/hostname
+
 - service: name=mesos-slave state=restarted enabled=true

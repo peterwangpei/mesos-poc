@@ -16,11 +16,11 @@ Vagrant.configure(2) do |config|
 
     "misc" => { :ip => "192.168.33.11", :mem => 512, :cpu => 1 },
 
-    "mk1" => { :ip => "192.168.33.21", :mem => 512, :cpu => 1 },
+    "mk1" => { :ip => "192.168.33.21", :mem => 512, :cpu => 1, :os => :centos },
     "mk2" => { :ip => "192.168.33.22", :mem => 512, :cpu => 1 },
     "mk3" => { :ip => "192.168.33.23", :mem => 512, :cpu => 1 },
     "ms1" => { :ip => "192.168.33.31", :mem => 4096, :cpu => 2, :os => :centos },
-    "ms2" => { :ip => "192.168.33.32", :mem => 2048, :cpu => 1, :os => :ubuntu },
+    "ms2" => { :ip => "192.168.33.32", :mem => 2048, :cpu => 1, :os => :centos },
     "ms3" => { :ip => "192.168.33.33", :mem => 1024, :cpu => 1, :os => :centos }
   }
 
@@ -34,7 +34,8 @@ Vagrant.configure(2) do |config|
 
     config.vm.define hostname do | host |
       host.vm.box = "minimum/ubuntu-trusty64-docker"
-      host.vm.box = "williamyeh/centos7-docker" if :centos == info[:os]
+      # host.vm.box = "williamyeh/centos7-docker" if :centos == info[:os]
+      host.vm.box = "centos7" if :centos == info[:os]
       host.vm.provider "virtualbox" do |v|
         v.name   = "k8s-mesos-#{hostname}"
         v.memory = info[:mem]
