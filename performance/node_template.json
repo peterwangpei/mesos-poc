@@ -1,0 +1,10 @@
+{
+  "kind": "Node",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "{NODE_NAME}",
+    "labels": {
+      "kubernetes.io/hostname": "{NODE_NAME}"
+    }
+  }
+}

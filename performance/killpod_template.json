@@ -1,0 +1,7 @@
+{
+  "api_server": "{API_SERVER}",
+  "namespace": "{NAMESPACE}",
+  "gather_command": "{KUBECTL} -s {API_SERVER} --namespace={NAMESPACE} get pods | awk '{if(NR>1)print $1}'",
+  "kill_command": "{KUBECTL} -s {API_SERVER} --namespace={NAMESPACE} delete pods",
+  "pod_count": "{POD_COUNT}"
+}

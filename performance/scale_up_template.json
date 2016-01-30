@@ -1,0 +1,10 @@
+{
+  "case_name": "{CASE_NAME}",
+  "api_server": "{API_SERVER}",
+  "namespace": "{NAMESPACE}",
+  "start_command": "{KUBECTL} -s {API_SERVER} --namespace={NAMESPACE} scale --replicas={POD_COUNT} replicationcontrollers {RC_NAME}",
+  "exit_condition": "{POD_UP_COUNT}",
+  "checker": "checkCreationEvent",
+  "log_path": "{LOG_PATH}",
+  "log_name": "{LOG_NAME}"
+}
