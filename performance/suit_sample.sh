@@ -77,42 +77,42 @@ do
     echo "5:---Create $POD_COUNT pods"
     ./case.py -c $CREATE_DEFINITION
 
-    echo "6:---Generate kill pod command file"
-    ./template.sh $KILLPOD_TEMPLATE $KILLPOD_DEFINITION '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{POD_COUNT}'/$KILL_POD_COUNT
-    ./template.sh $UP_TEMPLATE $UP_DEFINITION '{CASE_NAME}'/'KILL_POD' '{STARTER}'/'' "{START_COMMAND}/$(encode $KILLPOD' -c '$KILLPOD_DEFINITION)" '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{POD_UP_COUNT}'/$KILL_POD_COUNT '{LOG_PATH}'/$(encode $LOG_PATH) '{LOG_NAME}'/$LOG_NAME
+    echo "6:---Generate kill node command file"
+    ./template.sh $KILLNODE_TEMPLATE $KILLNODE_DEFINITION '{TEMPLATE}'/$(encode $TEMPLATE) '{NODE_DEFINITION}'/$(encode $NODE_DEFINITION) '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE
+    ./template.sh $NODEUP_TEMPLATE $UPNODE_DEFINITION '{CASE_NAME}'/'KILL_NODE' '{KUBECTL}'/$(encode $KUBECTL) '{STARTER}'/'' '{NODE_DEFINITION}'/$(encode $NODE_DEFINITION) "{START_COMMAND}/$(encode $KILLNODE' -c '$KILLNODE_DEFINITION)" '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{POD_UP_COUNT}'/1 '{LOG_PATH}'/$(encode $LOG_PATH) '{LOG_NAME}'/$LOG_NAME
 
     echo "7:---Kill node"
     ./case.py -c $UPNODE_DEFINITION
 
-    echo "8:---Generate replicationController scale down command file"
-    ./template.sh $SCALE_DOWN_TEMPLATE $DOWN_DEFINITION '{CASE_NAME}'/'SCALE_DOWN' '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{RC_NAME}'/$(encode $RC_NAME) '{POD_COUNT}'/$(($POD_COUNT-$POD_DOWN_COUNT)) '{POD_DOWN_COUNT}'/$POD_DOWN_COUNT '{LOG_PATH}'/$(encode $LOG_PATH) '{LOG_NAME}'/$LOG_NAME
+    echo "8:---Generate kill pod command file"
+    ./template.sh $KILLPOD_TEMPLATE $KILLPOD_DEFINITION '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{POD_COUNT}'/$KILL_POD_COUNT
+    ./template.sh $UP_TEMPLATE $UP_DEFINITION '{CASE_NAME}'/'KILL_POD' '{STARTER}'/'' "{START_COMMAND}/$(encode $KILLPOD' -c '$KILLPOD_DEFINITION)" '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{POD_UP_COUNT}'/$KILL_POD_COUNT '{LOG_PATH}'/$(encode $LOG_PATH) '{LOG_NAME}'/$LOG_NAME
 
     echo "9:---Kill $KILL_POD_COUNT pods"
     ./case.py -c $UP_DEFINITION
 
-    echo "10:---Generate kill node command file"
-    ./template.sh $KILLNODE_TEMPLATE $KILLNODE_DEFINITION '{TEMPLATE}'/$(encode $TEMPLATE) '{NODE_DEFINITION}'/$(encode $NODE_DEFINITION) '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE
-    ./template.sh $NODEUP_TEMPLATE $UPNODE_DEFINITION '{CASE_NAME}'/'KILL_NODE' '{KUBECTL}'/$(encode $KUBECTL) '{STARTER}'/'' '{NODE_DEFINITION}'/$(encode $NODE_DEFINITION) "{START_COMMAND}/$(encode $KILLNODE' -c '$KILLNODE_DEFINITION)" '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{POD_UP_COUNT}'/1 '{LOG_PATH}'/$(encode $LOG_PATH) '{LOG_NAME}'/$LOG_NAME
+    echo "10:---Generate replicationController scale down command file"
+    ./template.sh $SCALE_DOWN_TEMPLATE $DOWN_DEFINITION '{CASE_NAME}'/'SCALE_DOWN' '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{RC_NAME}'/$(encode $RC_NAME) '{POD_COUNT}'/$(($POD_COUNT-$POD_DOWN_COUNT)) '{POD_DOWN_COUNT}'/$POD_DOWN_COUNT '{LOG_PATH}'/$(encode $LOG_PATH) '{LOG_NAME}'/$LOG_NAME
 
-    echo "9:---Scale pods from $POD_COUNT to $(($POD_COUNT-$POD_DOWN_COUNT))"
+    echo "11:---Scale pods from $POD_COUNT to $(($POD_COUNT-$POD_DOWN_COUNT))"
     ./case.py -c $DOWN_DEFINITION
 
-    echo "10:---Generate replicationController restore command file"
+    echo "12:---Generate replicationController restore command file"
     ./template.sh $SCALE_UP_TEMPLATE $RESTORE_DEFINITION '{CASE_NAME}'/'RESTORE' '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{RC_NAME}'/$(encode $RC_NAME) '{POD_COUNT}'/$POD_COUNT '{POD_UP_COUNT}'/$POD_DOWN_COUNT '{LOG_PATH}'/$(encode $LOG_PATH) '{LOG_NAME}'/$LOG_NAME
 
-    echo "11:---Scale pods from $(($POD_COUNT-$POD_DOWN_COUNT)) to $POD_COUNT"
+    echo "13:---Scale pods from $(($POD_COUNT-$POD_DOWN_COUNT)) to $POD_COUNT"
     ./case.py -c $RESTORE_DEFINITION
 
-    echo "12:---Generate replicationController restore command file"
+    echo "14:---Generate replicationController restore command file"
     ./template.sh $SCALE_UP_TEMPLATE $UP_DEFINITION '{CASE_NAME}'/'SCALE_UP' '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{RC_NAME}'/$(encode $RC_NAME) '{POD_COUNT}'/$POD_UP_COUNT '{POD_UP_COUNT}'/$(($POD_UP_COUNT-$POD_COUNT)) '{LOG_PATH}'/$(encode $LOG_PATH) '{LOG_NAME}'/$LOG_NAME
 
-    echo "13:---Scale pods from $(($POD_COUNT)) to $POD_UP_COUNT"
+    echo "15:---Scale pods from $(($POD_COUNT)) to $POD_UP_COUNT"
     ./case.py -c $UP_DEFINITION
 
-    echo "14:---Generate replicationController restore command file"
+    echo "16:---Generate replicationController restore command file"
     ./template.sh $SCALE_DOWN_TEMPLATE $DOWN_DEFINITION '{CASE_NAME}'/'RESTORE' '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{RC_NAME}'/$(encode $RC_NAME) '{POD_COUNT}'/$POD_COUNT '{POD_DOWN_COUNT}'/$(($POD_UP_COUNT-$POD_COUNT)) '{LOG_PATH}'/$(encode $LOG_PATH) '{LOG_NAME}'/$LOG_NAME
 
-    echo "15:---Scale pods from $POD_UP_COUNT to $(($POD_COUNT))"
+    echo "17:---Scale pods from $POD_UP_COUNT to $(($POD_COUNT))"
     ./case.py -c $DOWN_DEFINITION
 
     echo "18:---Generate clear command file"
