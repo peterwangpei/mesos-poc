@@ -34,8 +34,8 @@ Vagrant.configure(2) do |config|
 
     config.vm.define hostname do | host |
       host.vm.box = "minimum/ubuntu-trusty64-docker"
-      # host.vm.box = "williamyeh/centos7-docker" if :centos == info[:os]
-      host.vm.box = "centos7" if :centos == info[:os]
+      host.vm.box = "williamyeh/centos7-docker" if :centos == info[:os]
+      # host.vm.box = "centos7" if :centos == info[:os]
       host.vm.provider "virtualbox" do |v|
         v.name   = "k8s-mesos-#{hostname}"
         v.memory = info[:mem]

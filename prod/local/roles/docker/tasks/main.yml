@@ -92,6 +92,7 @@
     - docker
 
 - name: config docker file
+  sudo: yes
   template:
     dest: "{{item.dest}}"
     src: "{{item.src}}"
