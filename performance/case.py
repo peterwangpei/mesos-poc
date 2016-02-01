@@ -141,6 +141,9 @@ def checkDeletionEvent(event, beginTime, ):
         if containerDelectionTime > deletionTime:
             deletionTime = containerDelectionTime
 
+    if deletionTime < beginTime:
+        return
+
     logging.debug("%s,%s,%s,%s,%s,%s,%f", "MATCH", namespace, nodeName, podName,
                   beginTime.strftime("%Y/%m/%d %H:%M:%S.%f"),
                   deletionTime.strftime("%Y/%m/%d %H:%M:%S.%f"), (deletionTime - beginTime).total_seconds())
@@ -186,6 +189,9 @@ def checkCreationEvent(event, beginTime, ):
             startedTime = containerStartedTime
 
     startTime = datetime.datetime.strptime(status["startTime"], "%Y-%m-%dT%H:%M:%SZ")
+
+    if startedTime < beginTime:
+        return
 
     logging.debug("%s,%s,%s,%s,%s,%s,%f", "MATCH", namespace, nodeName, podName,
                   startTime.strftime("%Y/%m/%d %H:%M:%S.%f"),
