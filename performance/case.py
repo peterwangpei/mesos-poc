@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import json
 import sys
 import urllib2
@@ -14,6 +15,9 @@ from urlgrabber.keepalive import HTTPHandler
 
 
 def loadTestCase(filename):
+    if not os.path.isfile(filename):
+        return
+
     try:
         fp = open(filename, "r")
         return json.load(fp)
@@ -21,14 +25,34 @@ def loadTestCase(filename):
         fp.close()
 
 
-def execCommandWithCheck(command):
-    subprocess.check_call(command, shell=True)
+def loadOutput(output):
+    if not output:
+        return
+
+    try:
+        return json.loads(output)
+    except:
+        return
+
+
+def execCommand(command):
     print command
+    subprocess.call(command, shell=True)
+
+
+def execCommandWithCheck(command):
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True);
+    output, retcode = process.communicate()
+
+    if retcode:
+        raise subprocess.CalledProcessError(retcode, command)
+
+    return output
 
 
 def watchEvents(case, queue):
-    watchurl = "http://{0}/api/v1/namespaces/{1}/pods?watch=true".format(case["api_server"], case["namespace"])
-    stream = urllib2.urlopen(watchurl)
+    watch_url = "http://{0}/api/v1/namespaces/{1}/pods?watch=true".format(case["api_server"], case["namespace"])
+    stream = urllib2.urlopen(watch_url)
 
     event = ""
     length = -1
@@ -51,17 +75,16 @@ def watchEvents(case, queue):
             event = ""
 
 
-def execCommand(command):
-    subprocess.call(command, shell=True)
-    print command
-
-
 def outputRecord(record, target):
     print "%s---%s pods left" % (datetime.datetime.now(), target)
 
 
 def processEvents(queue, target, beginTime, checker, ):
     endTime = datetime.datetime.min
+
+    if target <= 0:
+        return
+
     while True:
         try:
             event = queue.get_nowait()
@@ -100,6 +123,12 @@ def checkDeletionEvent(event, beginTime, ):
         return
 
     metadata = object["metadata"]
+    podName = metadata["name"]
+    namespace = metadata["namespace"]
+
+    if object.has_key("spec"):
+        nodeName = object["spec"]["nodeName"]
+
     status = object["status"]
     containerStatuses = status["containerStatuses"]
     deletionTime = datetime.datetime.min
@@ -112,7 +141,11 @@ def checkDeletionEvent(event, beginTime, ):
         if containerDelectionTime > deletionTime:
             deletionTime = containerDelectionTime
 
-    logging.debug("%s,%s,%s,%f", "MATCH", beginTime.strftime("%Y/%m/%d %H:%M:%S.%f"),
+    if deletionTime < beginTime:
+        return
+
+    logging.debug("%s,%s,%s,%s,%s,%s,%f", "MATCH", namespace, nodeName, podName,
+                  beginTime.strftime("%Y/%m/%d %H:%M:%S.%f"),
                   deletionTime.strftime("%Y/%m/%d %H:%M:%S.%f"), (deletionTime - beginTime).total_seconds())
 
     return True, data, beginTime, deletionTime,
@@ -132,6 +165,13 @@ def checkCreationEvent(event, beginTime, ):
     if not object["status"].has_key("containerStatuses"):
         return
 
+    metadata = object["metadata"]
+    podName = metadata["name"]
+    namespace = metadata["namespace"]
+
+    if object.has_key("spec"):
+        nodeName = object["spec"]["nodeName"]
+
     status = object["status"]
     containerStatuses = status["containerStatuses"]
     startedTime = datetime.datetime.min
@@ -150,28 +190,24 @@ def checkCreationEvent(event, beginTime, ):
 
     startTime = datetime.datetime.strptime(status["startTime"], "%Y-%m-%dT%H:%M:%SZ")
 
-    logging.debug("%s,%s,%s,%f", "MATCH", startTime.strftime("%Y/%m/%d %H:%M:%S.%f"),
+    if startedTime < beginTime:
+        return
+
+    logging.debug("%s,%s,%s,%s,%s,%s,%f", "MATCH", namespace, nodeName, podName,
+                  startTime.strftime("%Y/%m/%d %H:%M:%S.%f"),
                   startedTime.strftime("%Y/%m/%d %H:%M:%S.%f"), (startedTime - startTime).total_seconds())
 
     return True, data, startTime, startedTime,
 
 
 def main(argv):
-    global case
-    global isachieved
-    global exit_condition
-    global queue
-    global lasttime
-
-    queue = Queue();
-
     parser = OptionParser(usage="%prog -c case")
-    parser.add_option("-c", "--case", dest="case", help="The json config file path of test case")
+    parser.add_option("-c", "--case", dest="case", help="The test case file path")
 
     (options, argv) = parser.parse_args(argv)
 
     if options.case is None:
-        parser.error("The yaml config file path of test case was not given")
+        parser.error("The test case file path was not given")
 
     handler = HTTPHandler()
     opener = urllib2.build_opener(handler)
@@ -179,29 +215,78 @@ def main(argv):
 
     case = loadTestCase(options.case)
 
-    target = int(case["exit_condition"])
-    checker = case["checker"]
+    if not case:
+        print options.case + " was not found."
+        sys.exit(1)
+
+    target = 0
+    checker = None
+    log_path = "."
+    log_name = "case"
+    api_server = "127.0.0.1:8080"
+    namespace = "default"
+    case_name = "TESTCASE"
+
+    if case.has_key("api_server"):
+        api_server = str(case["api_server"])
+
+    if case.has_key("namespace"):
+        namespace = str(case["namespace"])
+
+    os.environ["api_server"] = api_server
+    os.environ["namespace"] = namespace
+
+    if case.has_key("exit_condition"):
+        target = int(case["exit_condition"])
+
+    if case.has_key("checker"):
+        checker = case["checker"]
+
+    if case.has_key("log_path"):
+        log_path = case["log_path"]
+
+    if case.has_key("log_name"):
+        log_name = case["log_name"]
+
+    if case.has_key("case_name"):
+        case_name = case["case_name"]
 
     logging.basicConfig(level=logging.NOTSET,
                         format='%(message)s',
-                        filename="{0}_{1}.log".format(case["log_name"],
-                                                      datetime.datetime.now().strftime("%Y%m%d%H%M%S")),
-                        filemode='w')
+                        filename="{0}/{1}".format(log_path, log_name),
+                        filemode='a')
 
     try:
-        beginTime = datetime.datetime.now()
-        logging.debug("%s,%s,%s,%s", "START", beginTime.strftime("%Y/%m/%d %H:%M:%S.%f"), "", "")
+        begin_time = datetime.datetime.utcnow()
 
-        execCommandWithCheck(case["start_command"])
+        logging.debug("%s,%s,%s,%s,%s,%s,%s", "START", case_name, "", "", begin_time.strftime("%Y/%m/%d %H:%M:%S.%f"),
+                      "", "")
 
-        thread = threading.Thread(target=watchEvents, args=(case, queue,))
-        thread.daemon = True
-        thread.start()
+        if not case.has_key("start_command") or not case["start_command"]:
+            sys.exit(1)
 
-        endTime = processEvents(queue, target, beginTime, checker, )
+        if checker:
+            queue = Queue();
 
-        logging.debug("%s,%s,%s,%f", "STOP", beginTime.strftime("%Y/%m/%d %H:%M:%S.%f"),
-                      endTime.strftime("%Y/%m/%d %H:%M:%S.%f"), (endTime - beginTime).total_seconds())
+            thread = threading.Thread(target=watchEvents, args=(case, queue,))
+            thread.daemon = True
+            thread.start()
+
+        output = execCommandWithCheck(case["start_command"])
+
+        result = loadOutput(output)
+
+        if result and result.has_key("target"):
+            target = int(result["target"])
+
+        if checker:
+            end_time = processEvents(queue, target, begin_time, checker, )
+
+        if not end_time:
+            end_time = datetime.datetime.utcnow()
+
+        logging.debug("%s,%s,%s,%s,%s,%s,%f", "STOP", case_name, "", "", begin_time.strftime("%Y/%m/%d %H:%M:%S.%f"),
+                      end_time.strftime("%Y/%m/%d %H:%M:%S.%f"), (end_time - begin_time).total_seconds())
 
     finally:
         if case.has_key("clear_command") and case["clear_command"]:

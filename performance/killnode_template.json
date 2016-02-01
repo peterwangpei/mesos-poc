@@ -1,0 +1,7 @@
+{
+  "api_server": "{API_SERVER}",
+  "namespace": "{NAMESPACE}",
+  "gather_command": "{KUBECTL} -s 192.168.0.101:8080 get nodes | awk '{if(NR>1)print $1}'",
+  "kill_command": "{KUBECTL} -s 192.168.0.101:8080 delete nodes",
+  "clear_command": "{TEMPLATE} node_template.json {NODE_DEFINITION} '{NODE_NAME}'/'{NODE}'"
+}

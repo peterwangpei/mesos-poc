@@ -1,0 +1,42 @@
+{
+  "kind": "ReplicationController",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "{RC_NAME}",
+    "namespace": "{NAMESPACE}",
+    "labels": {
+      "name": "{RC_NAME}_controller",
+      "state": "serving"
+    }
+  },
+  "spec": {
+    "replicas": {POD_COUNT},
+    "selector": {
+      "app": "{RC_NAME}"
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "{RC_NAME}"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "{RC_NAME}-container",
+            "image": "{POD_IMAGE}",
+            "imagePullPolicy": "IfNotPresent",
+            "resources": {
+              "limits": {
+                "cpu": "{POD_CPU}m",
+                "memory": "{POD_MEMORY}Mi"
+              }
+            }
+          }
+        ],
+        "restartPolicy": "Always",
+        "dnsPolicy": "Default"
+      }
+    }
+  }
+}

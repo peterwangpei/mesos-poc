@@ -1,0 +1,11 @@
+{
+  "case_name": "{CASE_NAME}",
+  "api_server": "{API_SERVER}",
+  "namespace": "{NAMESPACE}",
+  "starter": "{STARTER}",
+  "start_command": "{START_COMMAND}",
+  "exit_condition": "{POD_UP_COUNT}",
+  "checker": "checkCreationEvent",
+  "log_path": "{LOG_PATH}",
+  "log_name": "{LOG_NAME}"
+}

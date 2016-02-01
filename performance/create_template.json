@@ -1,0 +1,10 @@
+{
+  "case_name": "{CASE_NAME}",
+  "api_server": "{API_SERVER}",
+  "namespace": "{NAMESPACE}",
+  "start_command": "{KUBECTL} -s {API_SERVER} --namespace={NAMESPACE} create -f {RC_DEFINITION}",
+  "exit_condition": "{POD_COUNT}",
+  "checker": "checkCreationEvent",
+  "log_path": "{LOG_PATH}",
+  "log_name": "{LOG_NAME}"
+}

@@ -1,7 +1,0 @@
-{
-  "api_server": "127.0.0.1:8080",
-  "namespace": "default",
-  "start_command": "/vagrant/kubernetes/deploy/docker/haproxy/1.0.0/kubectl create -f rc.json",
-  "exit_condition": 5,
-  "checker": "checkDeletionEvent"
-}
