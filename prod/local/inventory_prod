@@ -1,0 +1,33 @@
+#------------------------------------------- Declare Machine ------------------------------------------- #
+
+[localhost]
+# submit pods by command `kubectrl`
+localhost ansible_connection=local
+
+[registry]
+192.168.33.10
+
+[misc]
+192.168.33.11
+
+[mk1]
+192.168.33.21
+
+[ms1]
+192.168.33.31
+
+[ms2]
+192.168.33.32
+
+[ms3]
+192.168.33.33
+
+#------------------------------------------- Group set ------------------------------------------- #
+[zookeeper:children]
+
+[etcd_master:children]
+ms3
+
+[kubernetes:children]
+
+[resource:children]

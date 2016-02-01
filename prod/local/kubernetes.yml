@@ -3,9 +3,11 @@
 - hosts: ms3
   vars:
     consul_dns_domain: consul
+    cluster_name: cluster.local
     consul_servers_group: ms3
     consul_dc_group: ms3
     provider: vagrant
+    skydns_port: 5353
   # tasks:
   #   - debug: var=hostvars
   roles:
@@ -16,7 +18,8 @@
     # - docker
     # - logstash
     # - consul
-    - dnsmasq
+    # - dnsmasq
+    # - etcd
   # tasks:
   #   - sudo: yes
   #     yum:
