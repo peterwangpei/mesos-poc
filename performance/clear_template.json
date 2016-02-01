@@ -2,7 +2,9 @@
   "case_name": "{CASE_NAME}",
   "api_server": "{API_SERVER}",
   "namespace": "{NAMESPACE}",
-  "clear_command": "{KUBECTL} -s {API_SERVER} --namespace={NAMESPACE} delete rc {RC_NAME}",
+  "start_command": "{KUBECTL} -s {API_SERVER} --namespace={NAMESPACE} delete rc {RC_NAME}",
+  "exit_condition": "{POD_COUNT}",
+  "checker": "checkDeletionEvent",
   "log_path": "{LOG_PATH}",
   "log_name": "{LOG_NAME}"
 }
