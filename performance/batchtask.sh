@@ -1,4 +1,51 @@
 #!/usr/bin/env bash
+
+#服务器地址
+API_SERVER=${API_SERVER:-"192.168.0.101:8080"}
+export API_SERVER
+
+#服务器地址
+API_SERVER=${API_SERVER:-"192.168.0.101:8080"}
+export API_SERVER
+
+#Pod的CPU资源限制
+POD_CPU=${POD_CPU:-5}
+export POD_CPU
+
+#Pod的内存资源限制
+POD_MEMORY=${POD_MEMORY:-32}
+export POD_MEMORY
+
+#镜像名称
+POD_IMAGE=${POD_IMAGE:-"kubernetes/pause"}
+export POD_IMAGE
+
+#Kubectl地址
+KUBECTL=${KUBECTL:-"./kubectl"}
+export KUBECTL
+
+#命名空间名称
+NAMESPACE=${NAMESPACE:-"performance"}
+export NAMESPACE
+
+#RC的名称
+RC_NAME=${RC_NAME:-"performance"}
+export RC_NAME
+
+#设置是否生成套件的清除脚本,默认全局生成,套件不生成
+GEN_RESETSCRIPT=false
+export GEN_RESETSCRIPT
+
+echo "======Create reset script"
+./template.sh $RESET_TEMPLATE "reset.sh" '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{RC_NAME}'/$RC_NAME '{KUBECTL}'/$(encode $KUBECTL) '{CONCURRENT}'/100
+chmod a+x ./reset.sh
+
+echo "1 RC 400 Pods"
+source ./suit_1_400.sh
+
+echo "1 RC 800 Pods"
+source ./suit_1_800.sh
+
 echo "2 RC 200 Pods"
 source ./suit_2_200.sh
 
