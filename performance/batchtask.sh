@@ -36,30 +36,34 @@ export RC_NAME
 GEN_RESETSCRIPT=false
 export GEN_RESETSCRIPT
 
+function encode {
+    echo "$(echo $1 | sed -e 's/\//\\\//g')"
+}
+
 echo "======Create reset script"
-./template.sh $RESET_TEMPLATE "reset.sh" '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{RC_NAME}'/$RC_NAME '{KUBECTL}'/$(encode $KUBECTL) '{CONCURRENT}'/100
+./template.sh $RESET_TEMPLATE "./reset.sh" '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{RC_NAME}'/$RC_NAME '{KUBECTL}'/$(encode $KUBECTL) '{CONCURRENT}'/100
 chmod a+x ./reset.sh
 
 echo "1 RC 400 Pods"
-source ./suit_1_400.sh
+./suit_1_400.sh
 
 echo "1 RC 800 Pods"
-source ./suit_1_800.sh
+./suit_1_800.sh
 
 echo "2 RC 200 Pods"
-source ./suit_2_200.sh
+./suit_2_200.sh
 
 echo "5 RC 80 Pods"
-source ./suit_5_80.sh
+./suit_5_80.sh
 
 echo "10 RC 40 Pods"
-source ./suit_10_40.sh
+./suit_10_40.sh
 
 echo "20 RC 20 Pods"
-source ./suit_20_20.sh
+./suit_20_20.sh
 
 echo "50 RC 8 Pods"
-source ./suit_50_8.sh
+./suit_50_8.sh
 
 echo "100 RC 4 Pod"
-source ./suit_100_4.sh
+./suit_100_4.sh
