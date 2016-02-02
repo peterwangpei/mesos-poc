@@ -63,7 +63,7 @@ LOG_TEMPLATE_NAME="result_"$TIME_STAMP
 for index in $(seq ${#CONCURRENT_DEFINITION[*]})
 do
     echo "======Generate environment reset script"
-    ./template.sh $RESET_TEMPLATE "reset.sh" '{API_SERVER}'/$API_SERVER '{KUBECTL}'/$(encode $KUBECTL)
+    source ./template.sh $RESET_TEMPLATE "reset.sh" '{API_SERVER}'/$API_SERVER '{KUBECTL}'/$(encode $KUBECTL)
     chmod a+x ./reset.sh
 
     #重置环境
@@ -108,9 +108,9 @@ do
     export NAMESPACE
 
     #执行脚本
-    ./suit.sh
+    source ./suit.sh
 
     #重置环境
     echo "======Reset test environment"
-    ./reset.sh
+    source ./reset.sh
 done

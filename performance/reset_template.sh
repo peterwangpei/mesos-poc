@@ -3,6 +3,9 @@
 API_SERVER=${API_SERVER:-"{API_SERVER}"}
 KUBECTL=${KUBECTL:-"{KUBECTL}"}
 
+#删除所有进程
+killall python
+
 #删除RC
 $KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get rc | \
     while read line

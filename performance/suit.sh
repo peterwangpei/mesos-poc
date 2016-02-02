@@ -16,7 +16,7 @@ UP_TEMPLATE=${UP_TEMPLATE:-"./up_template.json"}
 NODEUP_TEMPLATE=${NODEUP_TEMPLATE:-"./upnode_template.json"}
 RESET_TEMPLATE=${RESET_TEMPLATE:-"./reset_template.sh"}
 
-KILLPOD_TEMPLATE=${KILLNODE_TEMPLATE:-"./killpod_template.json"}
+KILLPOD_TEMPLATE=${KILLPOD_TEMPLATE:-"./killpod_template.json"}
 KILLNODE_TEMPLATE=${KILLNODE_TEMPLATE:-"./killnode_template.json"}
 
 KILLPOD=${KILLPOD:-"./killpod.py"}
