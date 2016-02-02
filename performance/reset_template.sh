@@ -1,38 +1,43 @@
 #!/usr/bin/env bash
 
 API_SERVER=${API_SERVER:-"{API_SERVER}"}
-CONCURRENT=${CONCURRENT:-{CONCURRENT}}
 KUBECTL=${KUBECTL:-"{KUBECTL}"}
-RC_NAME=${RC_NAME:-"{RC_NAME}"}
-NAMESPACE=${NAMESPACE:-"{NAMESPACE}"}
 
-if [ -z "$API_SERVER" ]; then
-    API_SERVER="192.168.0.101:8080"
-fi
+#删除RC
+$KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get rc | \
+    while read line
+    do
+        #将行转化为数组
+        definition=($line)
 
-if [ -z "$CONCURRENT" ]; then
-    CONCURRENT=100
-fi
+        #删除RC
+        $KUBECTL -s $API_SERVER --namespace=${definition[0]} delete rc ${definition[1]}
+    done
 
-if [ -z "$KUBECTL" ]; then
-    KUBECTL="./kubectl"
-fi
+#删除命名空间
+$KUBECTL -s $API_SERVER --no-headers=true get namespaces | \
+    while read line
+    do
+        #将行转化为数组
+        definition=($line)
 
-if [ -z "$RC_NAME" ]; then
-    RC_NAME="performance"
-fi
+        #判定是否为默认命名空间
+        if [ "${definition[0]}" == "default" ]
+        then
+            continue
+        fi
 
-if [ -z "$NAMESPACE" ]; then
-    NAMESPACE="demo"
-fi
+        #删除命名空间
+        $KUBECTL -s $API_SERVER delete namespace ${definition[0]}
+    done
 
-#loop to kill all test namespace and rc
-for index in $(seq $CONCURRENT)
-do
-    #Kill all python process
-    killall python
-    #kill rc
-    $KUBECTL -s $API_SERVER --namespace=$NAMESPACE delete rc $RC_NAME
-    #kill namespace
-    $KUBECTL -s $API_SERVER --namespace=$NAMESPACE delete namespace $NAMESPACE
-done
+#删除POD
+$KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get pods | \
+    while read line
+    do
+        #将行转化为数组
+        definition=($line)
+
+        #删除POD
+        $KUBECTL -s $API_SERVER --namespace=${definition[0]} delete pod ${definition[1]}
+    done
