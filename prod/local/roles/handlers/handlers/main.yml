@@ -5,7 +5,7 @@
 
 - name: reload consul
   sudo: yes
-  command: systemctl reload consul
+  command: systemctl restart consul
   notify:
     - wait for consul to listen
 

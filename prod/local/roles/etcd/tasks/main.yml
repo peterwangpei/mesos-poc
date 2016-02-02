@@ -7,6 +7,15 @@
     state: directory
   tags: etcd
 
+- name: install etcd for master
+  sudo: yes
+  yum:
+    name: etcd-{{ etcd_version }}
+    state: present
+  when: "'etcd_master' in group_names"
+  tags:
+    - etcd
+
 - name: create etcd master service override
   sudo: yes
   template:
@@ -24,7 +33,7 @@
   template:
     dest: "/usr/lib/systemd/system/etcd.service"
     src: etcd.proxy.service.j2
-  when: not "'etcd_master' in group_names"
+  when: "not 'etcd_master' in group_names"
   notify:
     - reload systemd daemon
     - enable and start etcd

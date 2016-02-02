@@ -151,9 +151,10 @@
   service:
     name: docker
     enabled: yes
-    state: started
+    state: restarted
   tags:
     - docker
     - bootstrap # needed to install Docker images during bootstrap
 
 - include: collectd.yml
+- meta: flush_handlers

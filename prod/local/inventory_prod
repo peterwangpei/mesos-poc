@@ -26,8 +26,15 @@ localhost ansible_connection=local
 [zookeeper:children]
 
 [etcd_master:children]
-ms3
+misc
+
+[consul_master:children]
+misc
+
 
 [kubernetes:children]
 
 [resource:children]
+
+[all:vars]
+docker_opts='--insecure-registry 192.168.33.10 --registry-mirror http://192.168.33.10:5000'

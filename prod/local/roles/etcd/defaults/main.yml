@@ -2,8 +2,12 @@
 etcd_image: microbox/etcd
 etcd_image_tag: 2.1.1
 
+etcd_version: 2.1.1
+
 etcd_client_port: 2379
 etcd_peer_port: 2380
+
+etcd_group_name: etcd_master
 
 etcd_url_scheme: http
 etcd_peer_url_scheme: http

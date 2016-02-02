@@ -24,7 +24,7 @@ ExecStart=/usr/bin/docker run \
 {# Generate string like: 'member1=http://host1:port,member2=http://host2:port' #}
     --initial-cluster {% for item in groups['etcd_master'] -%}
                         {% if item != 'localhost' -%}
-                          {{ hostvars[item].inventory_hostname }}=http://{{ hostvars[item].inventory_hostname }}:{{ etcd_peer_port }}
+                          {{ hostvars[item].inventory_hostname }}={{etcd_url_scheme}}://{{ hostvars[item].inventory_hostname }}:{{ etcd_peer_port }}
                           {%- if not loop.last %},{% endif -%}
                         {%- endif -%}
                       {% endfor %}

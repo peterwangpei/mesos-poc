@@ -1,15 +1,23 @@
 ---
 
-- hosts: ms3
+- hosts:
+    - consul_master
+    - ms3
   vars:
     consul_dns_domain: consul
     cluster_name: cluster.local
-    consul_servers_group: ms3
+    consul_servers_group: consul_master
     consul_dc_group: ms3
+    etcd_group_name: etcd_master
     provider: vagrant
     skydns_port: 5353
+    overlay_network_subnet: 4.0.0.0
+    overlay_network_prefix: 16
+    overlay_network_host_prefix: 24
+
   # tasks:
-  #   - debug: var=hostvars
+  #   - debug: var=inventory_hostname
+  #     when: "not 'etcd_master' in group_names"
   roles:
     # - common
     # - collectd
@@ -20,6 +28,8 @@
     # - consul
     # - dnsmasq
     # - etcd
+    - flannel
+
   # tasks:
   #   - sudo: yes
   #     yum:
