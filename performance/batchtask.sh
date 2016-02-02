@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+#POD的总数
+POD_TOTAL=${1:-400}
+
 #服务器地址
 API_SERVER=${API_SERVER:-"192.168.0.101:8080"}
 export API_SERVER
@@ -36,34 +39,56 @@ export RC_NAME
 GEN_RESETSCRIPT=false
 export GEN_RESETSCRIPT
 
+#默认并发数
+DEFAULT_CONCURRENT_DEFINITION=(1 2 5 10 20 50 100)
+
+#设置并发数定义
+CONCURRENT_DEFINITION=(1 2 5 10 20 50 100)
+
+#重置脚本模板
+RESET_TEMPLATE=${RESET_TEMPLATE:-"./reset_template.sh"}
+
+#模板编码
 function encode {
     echo "$(echo $1 | sed -e 's/\//\\\//g')"
 }
 
 echo "======Create reset script"
-./template.sh $RESET_TEMPLATE "./reset.sh" '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{RC_NAME}'/$RC_NAME '{KUBECTL}'/$(encode $KUBECTL) '{CONCURRENT}'/100
+./template.sh $RESET_TEMPLATE "reset.sh" '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{RC_NAME}'/$RC_NAME '{KUBECTL}'/$(encode $KUBECTL) '{CONCURRENT}'/100
 chmod a+x ./reset.sh
 
-echo "1 RC 400 Pods"
-./suit_1_400.sh
+#设置日志名称
+LOG_TEMPLATE_NAME="result_"`date '+%Y%m%d_%H%M%S'`
 
-echo "1 RC 800 Pods"
-./suit_1_800.sh
+#循环调用
+for index in $(seq ${#CONCURRENT_DEFINITION[*]})
+do
+    #获得并发数目
+    CONCURRENT=${CONCURRENT_DEFINITION[$index-1]}
 
-echo "2 RC 200 Pods"
-./suit_2_200.sh
+    #计算任务POD数目
+    POD_COUNT=$(($POD_TOTAL/$CONCURRENT))
 
-echo "5 RC 80 Pods"
-./suit_5_80.sh
+    #计算比例扩容的POD数目
+    POD_UP_COUNT=$(($POD_COUNT*2))
 
-echo "10 RC 40 Pods"
-./suit_10_40.sh
+    #计算比例缩容的POD数目
+    POD_DOWN_COUNT=$(($POD_COUNT/2))
 
-echo "20 RC 20 Pods"
-./suit_20_20.sh
+    #计算固定缩放容POD数目
+    POD_SCALE_COUNT=$((200/CONCURRENT))
 
-echo "50 RC 8 Pods"
-./suit_50_8.sh
+    #设置日志名称
+    LOG_NAME=$LOG_TEMPLATE_NAME"_"$CONCURRENT"_"$POD_COUNT
 
-echo "100 RC 4 Pod"
-./suit_100_4.sh
+    #导出环境变量
+    export CONCURRENT
+    export POD_COUNT
+    export POD_UP_COUNT
+    export POD_DOWN_COUNT
+    export POD_SCALE_COUNT
+    export LOG_NAME
+
+    #执行脚本
+    ./suit.sh
+done

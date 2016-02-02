@@ -26,8 +26,13 @@ if [ -z "$NAMESPACE" ]; then
     NAMESPACE="demo"
 fi
 
+#loop to kill all test namespace and rc
 for index in $(seq $CONCURRENT)
 do
+    #Kill all python process
+    killall python
+    #kill rc
     $KUBECTL -s $API_SERVER --namespace=$NAMESPACE delete rc $RC_NAME
+    #kill namespace
     $KUBECTL -s $API_SERVER --namespace=$NAMESPACE delete namespace $NAMESPACE
 done
