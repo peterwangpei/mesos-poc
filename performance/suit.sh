@@ -87,12 +87,15 @@ do
     echo "5:---Create $POD_COUNT pods"
     ./case.py -c $CREATE_DEFINITION
 
-    echo "6:---Generate kill node command file"
-    ./template.sh $KILLNODE_TEMPLATE $KILLNODE_DEFINITION '{TEMPLATE}'/$(encode $TEMPLATE) '{NODE_DEFINITION}'/$(encode $NODE_DEFINITION) '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE
-    ./template.sh $NODEUP_TEMPLATE $UPNODE_DEFINITION '{CASE_NAME}'/'KILL_NODE' '{KUBECTL}'/$(encode $KUBECTL) '{STARTER}'/'' '{NODE_DEFINITION}'/$(encode $NODE_DEFINITION) "{START_COMMAND}/$(encode $KILLNODE' -c '$KILLNODE_DEFINITION)" '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{POD_UP_COUNT}'/1 '{LOG_PATH}'/$(encode $LOG_PATH) '{LOG_NAME}'/$LOG_NAME
+    if [ $CONCURRENT == 1 ]
+    then
+        echo "6:---Generate kill node command file"
+        ./template.sh $KILLNODE_TEMPLATE $KILLNODE_DEFINITION '{TEMPLATE}'/$(encode $TEMPLATE) '{NODE_DEFINITION}'/$(encode $NODE_DEFINITION) '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE
+        ./template.sh $NODEUP_TEMPLATE $UPNODE_DEFINITION '{CASE_NAME}'/'KILL_NODE' '{KUBECTL}'/$(encode $KUBECTL) '{STARTER}'/'' '{NODE_DEFINITION}'/$(encode $NODE_DEFINITION) "{START_COMMAND}/$(encode $KILLNODE' -c '$KILLNODE_DEFINITION)" '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{POD_UP_COUNT}'/1 '{LOG_PATH}'/$(encode $LOG_PATH) '{LOG_NAME}'/$LOG_NAME
 
-    echo "7:---Kill node"
-    ./case.py -c $UPNODE_DEFINITION
+        echo "7:---Kill node"
+        ./case.py -c $UPNODE_DEFINITION
+    fi
 
     echo "8:---Generate kill pod command file"
     ./template.sh $KILLPOD_TEMPLATE $KILLPOD_DEFINITION '{KUBECTL}'/$(encode $KUBECTL) '{API_SERVER}'/$API_SERVER '{NAMESPACE}'/$NAMESPACE '{POD_COUNT}'/$KILL_POD_COUNT
