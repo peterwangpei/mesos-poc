@@ -282,13 +282,13 @@ def main(argv):
         if checker:
             end_time = processEvents(queue, target, begin_time, checker, )
 
+    finally:
         if not end_time:
             end_time = datetime.datetime.utcnow()
 
         logging.debug("%s,%s,%s,%s,%s,%s,%f", "STOP", case_name, "", "", begin_time.strftime("%Y/%m/%d %H:%M:%S.%f"),
                       end_time.strftime("%Y/%m/%d %H:%M:%S.%f"), (end_time - begin_time).total_seconds())
 
-    finally:
         if case.has_key("clear_command") and case["clear_command"]:
             execCommand(case["clear_command"])
 
