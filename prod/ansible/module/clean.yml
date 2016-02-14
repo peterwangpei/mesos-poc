@@ -35,7 +35,7 @@
     - mesosslave
     - kubernetes
   sudo: yes
-  gather_facts: no
+  gather_facts: yes
   tasks:
     - shell: if [ `docker ps -a | wc -l` -gt 1 ]; then docker rm -f `docker ps -aq`; fi
     - shell: if [ `mount | grep mesos | grep rbd | wc -l` -gt 1 ]; then  umount `mount | grep mesos | grep rbd | awk '{print $3}'`; fi
