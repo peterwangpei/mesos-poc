@@ -3,11 +3,14 @@
 API_SERVER=${API_SERVER:-"{API_SERVER}"}
 KUBECTL=${KUBECTL:-"{KUBECTL}"}
 
-#删除所有进程
-killall python
+function getRCCount{
+    return $KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get rc | \
+           grep -c ""
+}
 
-#删除RC
-$KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get rc | \
+function killRC{
+    #删除RC
+    $KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get rc | \
     while read line
     do
         #将行转化为数组
@@ -16,9 +19,11 @@ $KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get rc | \
         #删除RC
         $KUBECTL -s $API_SERVER --namespace=${definition[0]} delete rc ${definition[1]}
     done
+}
 
-#删除命名空间
-$KUBECTL -s $API_SERVER --no-headers=true get namespaces | \
+function killNamespace{
+    #删除命名空间
+    $KUBECTL -s $API_SERVER --no-headers=true get namespaces | \
     while read line
     do
         #将行转化为数组
@@ -33,9 +38,11 @@ $KUBECTL -s $API_SERVER --no-headers=true get namespaces | \
         #删除命名空间
         $KUBECTL -s $API_SERVER delete namespace ${definition[0]}
     done
+}
 
-#删除POD
-$KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get pods | \
+function killPod{
+    #删除POD
+    $KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get pods | \
     while read line
     do
         #将行转化为数组
@@ -44,3 +51,27 @@ $KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get pods | \
         #删除POD
         $KUBECTL -s $API_SERVER --namespace=${definition[0]} delete pod ${definition[1]}
     done
+}
+
+#删除所有进程
+killall python
+
+#循环删除RC
+while true
+do
+#删除RC
+$KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get rc | \
+    while read line
+    do
+        #将行转化为数组
+        definition=($line)
+
+        #删除RC
+        $KUBECTL -s $API_SERVER --namespace=${definition[0]} delete rc ${definition[1]}
+    done
+
+killPod
+
+killNamespace
+
+#尝试恢复被删除的主机

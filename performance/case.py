@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import re
 import json
 import sys
 import urllib2
@@ -12,6 +13,9 @@ from optparse import OptionParser
 import datetime
 import logging
 from urlgrabber.keepalive import HTTPHandler
+
+DELETE_PATTERN = re.compile(r'^\{"type":"DELETED".*')
+MODIFIED_PATTERN = re.compile(r'^\{"type":"MODIFIED".*')
 
 
 def loadTestCase(filename):
@@ -109,6 +113,13 @@ def processEvents(queue, target, beginTime, checker, ):
 
 
 def checkDeletionEvent(event, beginTime, ):
+    global DELETE_PATTERN
+
+    match = DELETE_PATTERN.match(event)
+
+    if not match:
+        return
+
     data = json.loads(event)
 
     object = data["object"]
@@ -152,6 +163,13 @@ def checkDeletionEvent(event, beginTime, ):
 
 
 def checkCreationEvent(event, beginTime, ):
+    global MODIFIED_PATTERN
+
+    match = MODIFIED_PATTERN.match(event)
+
+    if not match:
+        return
+    
     data = json.loads(event)
 
     object = data["object"]
