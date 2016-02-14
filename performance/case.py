@@ -169,7 +169,7 @@ def checkCreationEvent(event, beginTime, ):
 
     if not match:
         return
-    
+
     data = json.loads(event)
 
     object = data["object"]

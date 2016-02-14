@@ -3,12 +3,8 @@
 API_SERVER=${API_SERVER:-"{API_SERVER}"}
 KUBECTL=${KUBECTL:-"{KUBECTL}"}
 
-function getRCCount{
-    return $KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get rc | \
-           grep -c ""
-}
-
-function killRC{
+function ClearRC()
+{
     #删除RC
     $KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get rc | \
     while read line
@@ -21,7 +17,8 @@ function killRC{
     done
 }
 
-function killNamespace{
+function ClearNamespaces()
+{
     #删除命名空间
     $KUBECTL -s $API_SERVER --no-headers=true get namespaces | \
     while read line
@@ -40,7 +37,8 @@ function killNamespace{
     done
 }
 
-function killPod{
+function ClearPods()
+{
     #删除POD
     $KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get pods | \
     while read line
@@ -53,25 +51,35 @@ function killPod{
     done
 }
 
-#删除所有进程
-killall python
-
-#循环删除RC
-while true
-do
-#删除RC
-$KUBECTL -s $API_SERVER --no-headers=true --all-namespaces=true get rc | \
-    while read line
+function ClearProcess()
+{
+    #删除所有Python进程
+    while true
     do
-        #将行转化为数组
-        definition=($line)
+        #查询Python进程的数目
+        count=`ps -ah | grep -c [p]ython`
 
-        #删除RC
-        $KUBECTL -s $API_SERVER --namespace=${definition[0]} delete rc ${definition[1]}
+        if [ $count -eq  "0" ]
+        then
+           return
+        fi
+
+        #删除Python进程
+        killall python
+
+        #休眠一秒
+        sleep 1
     done
+}
 
-killPod
+#删除所有Python进程
+ClearProcess
 
-killNamespace
+#删除所有RC
+ClearRC
 
-#尝试恢复被删除的主机
+#删除所有的命名空间
+ClearNamespaces
+
+#删除所有的Pods
+ClearPods
