@@ -7,6 +7,7 @@ iscentos: >
   {{ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'}}
 
 mesos_zk_addrs: zk://{{ groups.zookeeper | join(':2181,') }}:2181/mesos
+marathon_zk_addrs: zk://{{ groups.zookeeper | join(':2181,') }}:2181/marathon
 etcd_servers: http://{{ groups.etcd | join(':4001,') }}:4001
 etcd_event_servers: http://{{ groups.etcd_event | join(':4001,') }}:4001
 k8s_api_servers: http://{{groups.kubernetes | join( k8s_api_port ~ ',' )}}:{{k8s_api_port}}

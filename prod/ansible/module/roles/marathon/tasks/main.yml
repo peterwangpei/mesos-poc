@@ -1,0 +1,12 @@
+---
+
+- name: run marathon container as a mesos framework
+  docker:
+    name: marathon
+    image: mesosphere/marathon:v0.15.0
+    net: host
+    state: started
+    restart_policy: always
+    command:
+      "--master {{ mesos_zk_addrs }} \
+      --zk {{ marathon_zk_addrs }}"

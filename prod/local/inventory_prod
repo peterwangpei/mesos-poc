@@ -31,6 +31,8 @@ misc
 [consul_master:children]
 misc
 
+[marathon:children]
+mk1
 
 [kubernetes:children]
 

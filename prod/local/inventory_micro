@@ -33,7 +33,6 @@ localhost
 [api_server_lb_ha:children]
 misc
 
-
 [ceph:children]
 misc
 
@@ -47,6 +46,9 @@ mk1
 misc
 
 [zookeeper:children]
+mk1
+
+[marathon:children]
 mk1
 
 [kubernetes:children]

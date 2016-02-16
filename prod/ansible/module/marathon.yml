@@ -1,0 +1,7 @@
+---
+
+- name: start mesos master cluster
+  hosts: mesosmaster
+  sudo: yes
+  roles:
+    - role: mesos-master
