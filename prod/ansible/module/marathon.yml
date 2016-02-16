@@ -1,7 +1,7 @@
 ---
 
-- name: start mesos master cluster
-  hosts: mesosmaster
+- name: start marathon container as a mesos framework
+  hosts: marathon
   sudo: yes
   roles:
-    - role: mesos-master
+    - role: marathon
