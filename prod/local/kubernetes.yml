@@ -2,7 +2,7 @@
 
 - hosts:
     - consul_master
-    - ms3
+    # - ms3
   vars:
     consul_dns_domain: consul
     cluster_name: cluster.local
@@ -14,7 +14,6 @@
     overlay_network_subnet: 4.0.0.0
     overlay_network_prefix: 16
     overlay_network_host_prefix: 24
-
   # tasks:
   #   - debug: var=inventory_hostname
   #     when: "not 'etcd_master' in group_names"
@@ -27,8 +26,9 @@
     # - logstash
     # - consul
     # - dnsmasq
+    - zookeeper
     # - etcd
-    - flannel
+    # - flannel
 
   # tasks:
   #   - sudo: yes

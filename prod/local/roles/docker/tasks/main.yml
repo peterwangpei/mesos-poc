@@ -25,9 +25,9 @@
   sudo: yes
   yum:
     name: "{{ item }}"
-    state: latest
+    # state: latest
   with_items:
-    - docker-engine
+    - docker-engine-1.9.1-1.el7.centos
   tags:
     - docker
     - bootstrap

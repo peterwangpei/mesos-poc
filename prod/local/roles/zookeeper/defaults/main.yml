@@ -1,0 +1,16 @@
+zookeeper_image: mesoscloud/zookeeper
+zookeeper_image_tag: 3.4.6-ubuntu-14.04
+zookeeper_data_dir: /var/lib/zookeeper
+
+zk_servers: "{{ groups.zookeeper | join(',') }}"
+zookeeper_id: "
+  {%- if zk_id is defined -%}
+    {{ zk_id }}
+  {%- else -%}
+    {%- for host in groups.zookeeper|sort -%}
+      {%- if host == 'default' or host == inventory_hostname or host == ansible_fqdn or host in ansible_all_ipv4_addresses -%}
+        {{ loop.index }}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+"
