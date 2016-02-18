@@ -44,6 +44,9 @@ zk1
 [marathon:children]
 km1
 
+[bamboo:children]
+km1
+
 [kubernetes:children]
 km1
 

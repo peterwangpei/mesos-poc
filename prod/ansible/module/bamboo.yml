@@ -1,0 +1,7 @@
+---
+
+- name: start bamboo as marathon service proxy
+  hosts: bamboo
+  sudo: yes
+  roles:
+    - role: bamboo

@@ -51,6 +51,9 @@ mk1
 [marathon:children]
 mk1
 
+[bamboo:children]
+mk1
+
 [kubernetes:children]
 mk1
 

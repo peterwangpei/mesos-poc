@@ -29,12 +29,13 @@
     - shell: pkill km
       ignore_errors: True
 
-- name: clean mesos master/slave, k8s, marathon
+- name: clean mesos master/slave, k8s, marathon, bamboo
   hosts:
     - mesosmaster
     - mesosslave
     - kubernetes
     - marathon
+    - bamboo
   sudo: yes
   gather_facts: yes
   tasks:
