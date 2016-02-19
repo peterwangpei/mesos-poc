@@ -9,4 +9,5 @@
     restart_policy: always
     command:
       "--master {{ mesos_zk_addrs }} \
-      --zk {{ marathon_zk_addrs }}"
+      --zk {{ marathon_zk_addrs }} \
+      --event_subscriber http_callback"
