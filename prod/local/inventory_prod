@@ -33,6 +33,7 @@ mk1
 mk1
 
 [consul_master:children]
+mk1
 
 [marathon:children]
 mk1
@@ -41,6 +42,8 @@ mk1
 
 [resource:children]
 ms3
+ms2
+ms1
 
 [all:vars]
 docker_opts='--insecure-registry 192.168.33.10 --registry-mirror http://192.168.33.10:5000'

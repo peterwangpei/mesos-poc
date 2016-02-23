@@ -37,6 +37,9 @@
   copy:
     src: docker.service
     dest: /usr/lib/systemd/system/docker.service
+  notify:
+    - reload systemd daemon
+    - restart docker
 
 # - name: check if docker storage already set up with devicemapper
 #   sudo: yes
@@ -146,15 +149,6 @@
 #   tags:
 #     - docker
 
-- name: enable docker
-  sudo: yes
-  service:
-    name: docker
-    enabled: yes
-    state: restarted
-  tags:
-    - docker
-    - bootstrap # needed to install Docker images during bootstrap
+- meta: flush_handlers
 
 - include: collectd.yml
-- meta: flush_handlers

@@ -86,8 +86,6 @@
   tags:
     - consul
 
-- meta: flush_handlers
-
 # - include: acl.yml
 
 # - meta: flush_handlers

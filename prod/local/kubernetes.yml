@@ -1,8 +1,8 @@
 ---
 
 - hosts:
-    - consul_master
-    # - ms3
+    # - mk1
+    - ms1
   vars:
     consul_dns_domain: consul
     cluster_name: cluster.local
@@ -21,17 +21,17 @@
   #   - debug: var=inventory_hostname
   #     when: "not 'etcd_master' in group_names"
   roles:
-    # - common
-    # - collectd
-    # - logrotate
-    # - consul-template
-    # - docker
-    # - logstash
-    # - consul
-    # - dnsmasq
+    - common
+    - collectd
+    - logrotate
+    - consul-template
+    - docker
+    - logstash
+    - consul
+    - dnsmasq
     # - zookeeper
-    - mesos
-    # - etcd
+    # - mesos
+    - etcd
     # - flannel
 
   # tasks:
