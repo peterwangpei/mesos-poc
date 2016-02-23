@@ -63,8 +63,10 @@ LOG_TEMPLATE_NAME="result_"$TIME_STAMP
 for index in $(seq ${#CONCURRENT_DEFINITION[*]})
 do
     echo "======Generate environment reset script"
-    source ./template.sh $RESET_TEMPLATE "reset.sh" '{API_SERVER}'/$API_SERVER '{KUBECTL}'/$(encode $KUBECTL)
+    ./template.sh $RESET_TEMPLATE "reset.sh" '{API_SERVER}'/$API_SERVER '{KUBECTL}'/$(encode $KUBECTL)
     chmod a+x ./reset.sh
+
+    echo $index
 
     #重置环境
     echo "======Reset test environment"
@@ -74,7 +76,14 @@ do
     TIME_STAMP=`date '+%Y%m%d%H%M%S'`
 
     #获得并发数目
-    CONCURRENT=${CONCURRENT_DEFINITION[$index-1]}
+    CONCURRENT=${CONCURRENT_DEFINITION[$(($index-1))]}
+
+    #判定是否支持并发
+    if [ $CONCURRENT -gt $POD_TOTAL ]
+    then
+        echo "Thread number is great than pod number"
+        exit
+    fi
 
     #计算任务POD数目
     POD_COUNT=$(($POD_TOTAL/$CONCURRENT))
@@ -108,9 +117,9 @@ do
     export NAMESPACE
 
     #执行脚本
-    source ./suit.sh
+    ./suit.sh
 
     #重置环境
     echo "======Reset test environment"
-    source ./reset.sh
+    ./reset.sh
 done

@@ -2,7 +2,7 @@
 
 - name: start etcd
   hosts: etcd
-  gather_facts: no
+  gather_facts: yes
   sudo: yes
   roles:
     - role: etcd
@@ -10,7 +10,7 @@
 - name: start etcd for store api-server event
   hosts: etcd_event
   sudo: yes
-  gather_facts: no
+  gather_facts: yes
   vars:
     - etcd_cluster: "{{etcd_event_cluster}}"
     - cluster_token: "etcd_cluster_for_event"

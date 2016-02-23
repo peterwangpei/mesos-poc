@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import re
 import json
 import sys
 import urllib2
@@ -12,6 +13,9 @@ from optparse import OptionParser
 import datetime
 import logging
 from urlgrabber.keepalive import HTTPHandler
+
+DELETE_PATTERN = re.compile(r'^\{"type":"DELETED".*')
+MODIFIED_PATTERN = re.compile(r'^\{"type":"MODIFIED".*')
 
 
 def loadTestCase(filename):
@@ -109,6 +113,13 @@ def processEvents(queue, target, beginTime, checker, ):
 
 
 def checkDeletionEvent(event, beginTime, ):
+    global DELETE_PATTERN
+
+    match = DELETE_PATTERN.match(event)
+
+    if not match:
+        return
+
     data = json.loads(event)
 
     object = data["object"]
@@ -152,6 +163,13 @@ def checkDeletionEvent(event, beginTime, ):
 
 
 def checkCreationEvent(event, beginTime, ):
+    global MODIFIED_PATTERN
+
+    match = MODIFIED_PATTERN.match(event)
+
+    if not match:
+        return
+
     data = json.loads(event)
 
     object = data["object"]
@@ -282,13 +300,13 @@ def main(argv):
         if checker:
             end_time = processEvents(queue, target, begin_time, checker, )
 
+    finally:
         if not end_time:
             end_time = datetime.datetime.utcnow()
 
         logging.debug("%s,%s,%s,%s,%s,%s,%f", "STOP", case_name, "", "", begin_time.strftime("%Y/%m/%d %H:%M:%S.%f"),
                       end_time.strftime("%Y/%m/%d %H:%M:%S.%f"), (end_time - begin_time).total_seconds())
 
-    finally:
         if case.has_key("clear_command") and case["clear_command"]:
             execCommand(case["clear_command"])
 

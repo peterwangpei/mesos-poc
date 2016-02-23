@@ -7,6 +7,8 @@ iscentos: >
   {{ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'}}
 
 mesos_zk_addrs: zk://{{ groups.zookeeper | join(':2181,') }}:2181/mesos
+marathon_zk_addrs: zk://{{ groups.zookeeper | join(':2181,') }}:2181/marathon
+bamboo_zk_addrs: "{{ groups.zookeeper | join(':2181,') }}:2181"
 etcd_servers: http://{{ groups.etcd | join(':4001,') }}:4001
 etcd_event_servers: http://{{ groups.etcd_event | join(':4001,') }}:4001
 k8s_api_servers: http://{{groups.kubernetes | join( k8s_api_port ~ ',' )}}:{{k8s_api_port}}
@@ -15,6 +17,8 @@ zk_servers: "{{ groups.zookeeper | join(',') }}"
 mesos_quorum:  "{{  ((groups.zookeeper | length)/2)  | round | int  }}"
 k8s_api_server_lb_ip: "{{ groups.api_server_lb_ha | first}}"
 k8s_api_server_lb_url: http://{{k8s_api_server_lb_ip}}:{{k8s_api_server_lb_port}}
+marathon_url: http://{{ groups.marathon | first}}:8080
+bamboo_url: http://{{ groups.bamboo | first}}:8000
 vagrant_ip: >-
   {{ ansible_all_ipv4_addresses | last if iscentos | bool else ansible_all_ipv4_addresses[1] }}
 ipaddr: >-

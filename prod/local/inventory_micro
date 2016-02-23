@@ -33,7 +33,6 @@ localhost
 [api_server_lb_ha:children]
 misc
 
-
 [ceph:children]
 misc
 
@@ -47,6 +46,12 @@ mk1
 misc
 
 [zookeeper:children]
+mk1
+
+[marathon:children]
+mk1
+
+[bamboo:children]
 mk1
 
 [kubernetes:children]
@@ -71,7 +76,7 @@ zookeeper_id=1
 #------------------------------------------- Group variable ------------------------------------------- #
 
 [all:vars]
-docker_opts='--insecure-registry 192.168.33.10 --registry-mirror http://192.168.33.10:5000'
+docker_opts='--insecure-registry 192.168.33.10:5000 --registry-mirror http://192.168.33.10:5000'
 k8s_api_server_lb_port=8888
 k8s_api_port=8888
 

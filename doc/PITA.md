@@ -73,3 +73,13 @@ rbd unmap /dev/rbd2
 rbd unmap /dev/rbd3
 ...
 ```
+
+---
+
+- **现象**：marathon里新建的容器起不来，没有任何日志
+- **对策**：到mesos slave运行`ps -ef|grep slave`查看进程，确认mesos slave启动参数里有`containerizers=docker,mesos`
+
+---
+
+- **现象**：marathon里新建的容器起不来，mesos的sandbox日志显示**Failed to obtain the IP address**
+- **对策**：到mesos slave里确认/etc/hosts文件里有本机的主机名

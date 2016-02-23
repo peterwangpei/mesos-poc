@@ -33,6 +33,8 @@ mk1
 mk1
 
 [consul_master:children]
+
+[marathon:children]
 mk1
 
 [kubernetes:children]

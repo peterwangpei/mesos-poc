@@ -103,8 +103,8 @@ def main(argv):
     nodes = output.splitlines()
 
     if len(nodes) <= 1:
-        print "Not enough pods that can be delete."
-        exit(1)
+        print '{{"node":"{0}","target":{1}}}'.format("", 0)
+        exit(0)
 
     result = killNodes(config, nodes, 1)
 

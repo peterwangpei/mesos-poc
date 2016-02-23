@@ -1,0 +1,17 @@
+---
+
+- name: run bamboo as marathon service proxy
+  docker:
+    name: bamboo
+    image: gregory90/bamboo:0.2.11
+    ports:
+      - 80:80
+      - 8000:8000
+    state: started
+    restart_policy: always
+    env:
+      MARATHON_ENDPOINT: "{{ marathon_url }}"
+      BAMBOO_ENDPOINT: "{{ bamboo_url }}"
+      BAMBOO_ZK_HOST: "{{ bamboo_zk_addrs }}"
+      CONFIG_PATH: "config/production.example.json"
+      BAMBOO_DOCKER_AUTO_HOST: true

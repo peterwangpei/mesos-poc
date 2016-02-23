@@ -1,0 +1,7 @@
+---
+
+- name: start marathon container as a mesos framework
+  hosts: marathon
+  sudo: yes
+  roles:
+    - role: marathon
