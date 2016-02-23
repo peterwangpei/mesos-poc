@@ -13,8 +13,8 @@ ExecStartPre=-/usr/bin/docker rm -f zookeeper
 ExecStartPre=/usr/bin/docker pull {{ zookeeper_image }}:{{ zookeeper_image_tag }}
 
 ExecStart=/usr/bin/docker run \
-    --env MYID=$MYID \
-    --env SERVERS=$SERVERS \
+    --env MYID=${MYID} \
+    --env SERVERS=${SERVERS} \
     --name=zookeeper \
     --publish=2181:2181 \
     --publish=2888:2888 \

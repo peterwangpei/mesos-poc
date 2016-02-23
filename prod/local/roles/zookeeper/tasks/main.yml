@@ -76,14 +76,8 @@
   tags:
     - zookeeper
 
-# - include: collectd.yml
-
-# - debug: trigger nginx-restart
-#   notify:
-#     - reload systemd daemon
-#     - enable and restart zookeeper
-#   changed_when: true
+- include: collectd.yml
 
 - meta: flush_handlers
 
-# - include: distributive.yml
+- include: distributive.yml

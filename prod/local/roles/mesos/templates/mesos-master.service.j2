@@ -1,0 +1,37 @@
+[Unit]
+Description=mesos-master
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=on-failure
+RestartSec=20
+TimeoutStartSec=20m
+EnvironmentFile=-/etc/sysconfig/mesos-master
+
+ExecStartPre=-/usr/bin/docker rm -f mesos-master
+ExecStartPre=-/usr/bin/mkdir -p $MESOS_WORK_DIR $MESOS_LOG_DIR
+ExecStartPre=/usr/bin/docker pull {{ mesos_master_image }}:{{ mesos_image_tag }}
+
+ExecStart=/usr/bin/docker run \
+    --env MESOS_PORT=${MESOS_PORT} \
+    --env MESOS_ADVERTISE_IP=${MESOS_ADVERTISE_IP} \
+    --env MESOS_HOSTNAME=${MESOS_HOSTNAME} \
+    --env MESOS_QUORUM=${MESOS_QUORUM} \
+    --env MESOS_WORK_DIR=${MESOS_WORK_DIR} \
+    --env MESOS_ZK=${MESOS_ZK} \
+    --env MESOS_IP=0.0.0.0 \
+    --env MESOS_LOG_DIR=${MESOS_LOG_DIR} \
+    --net=host \
+    --name=mesos-master \
+    --volume=${MESOS_WORK_DIR}:${MESOS_WORK_DIR} \
+    --volume=${MESOS_LOG_DIR}:${MESOS_LOG_DIR} \
+    {{ mesos_master_image }}:{{ mesos_image_tag }}
+
+# ExecStart=/usr/bin/docker run --name mesos-master busybox sh -c "while [ true ]; do echo ${MESOS_PORT}; sleep 2; done"
+
+ExecStop=/usr/bin/docker stop mesos-master
+ExecStopPost=-/usr/bin/docker rm -f mesos-master
+
+[Install]
+WantedBy=multi-user.target

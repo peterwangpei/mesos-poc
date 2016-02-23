@@ -29,6 +29,9 @@ mk1
 [etcd_master:children]
 mk1
 
+[mesos_master:children]
+mk1
+
 [consul_master:children]
 mk1
 
