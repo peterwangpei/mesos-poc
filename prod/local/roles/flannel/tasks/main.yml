@@ -38,4 +38,6 @@
   tags:
     - flannel
 
+- meta: flush_handlers
+
 - include: iptables.yml

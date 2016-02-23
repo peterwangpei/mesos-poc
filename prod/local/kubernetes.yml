@@ -1,8 +1,8 @@
 ---
 
 - hosts:
-    # - mk1
-    - ms1
+    - mk1
+    # - ms1
   vars:
     consul_dns_domain: consul
     cluster_name: cluster.local
@@ -14,25 +14,26 @@
     mesos_leaders_group: mesos_master
     mesos_mode: "leader"
     do_mesos_iptables: no
-    # overlay_network_subnet: 4.0.0.0
-    # overlay_network_prefix: 16
-    # overlay_network_host_prefix: 24
+    overlay_network_subnet: 4.0.0.0
+    overlay_network_prefix: 16
+    overlay_network_host_prefix: 24
   # tasks:
   #   - debug: var=inventory_hostname
   #     when: "not 'etcd_master' in group_names"
   roles:
-    - common
-    - collectd
-    - logrotate
-    - consul-template
-    - docker
-    - logstash
-    - consul
-    - dnsmasq
+    # - common
+    # - collectd
+    # - logrotate
+    # - consul-template
+    # - docker
+    - flannel
+    # - logstash
+    # - consul
+    # - dnsmasq
     # - zookeeper
     # - mesos
-    - etcd
-    # - flannel
+    # - etcd
+
 
   # tasks:
   #   - sudo: yes

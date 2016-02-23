@@ -1,7 +1,7 @@
 [Unit]
 Description=etcd
-After=docker.service
-Requires=docker.service
+After=network.target
+Before=flanneld.service
 
 [Service]
 Restart=on-failure
