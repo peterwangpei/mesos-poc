@@ -1,7 +1,7 @@
 # /etc/sysconfig/docker
 
 # Modify these options if you want to change the way the docker daemon runs
-OPTIONS='{% if docker_selinux_enabled %}--selinux-enabled {% endif %}--dns {{ private_ipv4 }} --dns-search service.{{ consul_dns_domain }} {% if kube_build is defined %}--dns-search {{ cluster_name }}{% endif %} --log-driver=syslog'
+OPTIONS='{% if docker_selinux_enabled %}--selinux-enabled {% endif %}--dns {{ private_ipv4 }} --dns-search service.{{ consul_dns_domain }} {% if kube_build is defined %}--dns-search {{ cluster_name }}{% endif %}'
 
 DOCKER_CERT_PATH=/etc/docker
 

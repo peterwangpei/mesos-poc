@@ -13,7 +13,16 @@
     skydns_port: 5353
     mesos_leaders_group: mesos_master
     mesos_mode: "leader"
+    k8s_master_group: k8s_master
+    k8s_minion_group: resource
     do_mesos_iptables: no
+    kube_users:
+      kube:
+        pass: root
+        role: admin
+      root:
+        pass: root
+        role: admin
     overlay_network_subnet: 4.0.0.0
     overlay_network_prefix: 16
     overlay_network_host_prefix: 24
@@ -26,13 +35,15 @@
     # - logrotate
     # - consul-template
     # - docker
-    - flannel
+    # - flannel
     # - logstash
     # - consul
     # - dnsmasq
     # - zookeeper
     # - mesos
     # - etcd
+    # - kubernetes
+    - k8s-master
 
 
   # tasks:

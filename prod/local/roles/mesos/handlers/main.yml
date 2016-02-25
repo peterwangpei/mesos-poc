@@ -3,7 +3,6 @@
   sudo: yes
   command: systemctl daemon-reload
 
-
 - name: enable and restart mesos-master
   sudo: yes
   service:

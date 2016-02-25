@@ -73,26 +73,26 @@
 - include: lvm.yml
   when: docker_lvm_backed_devicemapper
 
-- name: create rsyslog.d
-  sudo: yes
-  file:
-    dest: /etc/rsyslog.d
-    state: directory
-  tags:
-    - docker
+# - name: create rsyslog.d
+#   sudo: yes
+#   file:
+#     dest: /etc/rsyslog.d
+#     state: directory
+#   tags:
+#     - docker
 
-- name: create docker entry for syslogd
-  sudo: yes
-  copy:
-    dest: /etc/rsyslog.d/10-docker.conf
-    content: |
-      # Docker logging
-      :syslogtag, isequal, "docker:"  /var/log/docker/docker.log
-      & ~
-  notify:
-    - restart rsyslog
-  tags:
-    - docker
+# - name: create docker entry for syslogd
+#   sudo: yes
+#   copy:
+#     dest: /etc/rsyslog.d/10-docker.conf
+#     content: |
+#       # Docker logging
+#       :syslogtag, isequal, "docker:"  /var/log/docker/docker.log
+#       & ~
+#   notify:
+#     - restart rsyslog
+#   tags:
+#     - docker
 
 - name: config docker file
   sudo: yes

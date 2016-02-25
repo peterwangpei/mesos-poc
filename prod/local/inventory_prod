@@ -38,7 +38,8 @@ mk1
 [marathon:children]
 mk1
 
-[kubernetes:children]
+[k8s_master:children]
+mk1
 
 [resource:children]
 ms3
