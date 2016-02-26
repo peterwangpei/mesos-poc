@@ -1,0 +1,36 @@
+[Unit]
+Description=etcd
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=on-failure
+RestartSec=20
+TimeoutStartSec=20m
+
+ExecStartPre=-/usr/bin/docker rm -f etcd_proxy
+ExecStartPre=/usr/bin/docker pull {{ etcd_image }}:{{ etcd_image_tag }}
+
+ExecStart=/usr/bin/docker run \
+    --name=etcd_proxy \
+    --publish=2379:{{ etcd_client_port }} \
+    --publish=2380:{{ etcd_peer_port }} \
+    --volume={{etcd_data_dir}}:/data \
+    {{ etcd_image }}:{{ etcd_image_tag }} \
+    --name {{ inventory_hostname }} \
+    --proxy on \
+    --listen-client-urls {{etcd_listen_client_urls}} \
+    --advertise-client-urls {{etcd_advertise_client_urls}} \
+{# Generate string like: 'member1=http://host1:port,member2=http://host2:port' #}
+    --initial-cluster {% for item in groups['etcd_master'] -%}
+                        {% if item != 'localhost' -%}
+                          {{ hostvars[item].inventory_hostname }}={{etcd_url_scheme}}://{{ hostvars[item].inventory_hostname }}:{{ etcd_peer_port }}
+                          {%- if not loop.last %},{% endif -%}
+                        {%- endif -%}
+                      {% endfor %}
+
+ExecStop=/usr/bin/docker stop etcd_proxy
+ExecStopPost=-/usr/bin/docker rm -f etcd_proxy
+
+[Install]
+WantedBy=multi-user.target

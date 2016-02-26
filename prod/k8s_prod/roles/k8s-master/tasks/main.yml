@@ -1,0 +1,124 @@
+---
+
+- name: get the node token values from token files
+  sudo: yes
+  slurp:
+    src: "{{ kube_token_dir }}/{{ item }}-{{ inventory_hostname }}.token"
+  with_items:
+    - "system:controller_manager"
+    - "system:scheduler"
+    - "system:kubectl"
+    - "system:proxy"
+  register: tokens
+  delegate_to: "{{ groups[k8s_master_group][0] }}"
+  tags:
+    - master
+
+- name: Set token facts
+  set_fact:
+    controller_manager_token: "{{ tokens.results[0].content|b64decode }}"
+    scheduler_token: "{{ tokens.results[1].content|b64decode }}"
+    kubectl_token: "{{ tokens.results[2].content|b64decode }}"
+    proxy_token: "{{ tokens.results[3].content|b64decode }}"
+  tags:
+    - master
+
+- name: write the config files for kubelet
+  sudo: yes
+  copy:
+    content:
+      DAEMON_ARGS="$DAEMON_ARGS --enable-debugging-handlers=true --config={{kube_manifest_dir}} --allow-privileged=true --pod-infra-container-image={{pause_image}}"
+    dest: /etc/sysconfig/kubelet
+    mode: 644
+  notify:
+    - reload daemon
+    - enable and restart kubelet
+
+- name: copy kubelet service file
+  sudo: yes
+  copy:
+    src: kubelet.service
+    dest: /usr/lib/systemd/system/kubelet.service
+  notify:
+    - reload daemon
+    - enable and restart kubelet
+
+- name: copy kubelet manifest files
+  sudo: yes
+  template:
+    src: "{{item}}.j2"
+    dest: "{{ kube_manifest_dir }}/{{item}}"
+  with_items:
+    - kube-apiserver.yaml
+    - podmaster.yaml
+
+- name: copy kubelet manifest template file
+  sudo: yes
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ kube_manifest_tmpl_dir }}/{{item}}"
+  with_items:
+    - kube-scheduler.yaml
+    - kube-controller-manager.yaml
+
+- name: write the kubecfg (auth) file for scheduler
+  sudo: yes
+  template: src=scheduler.kubeconfig.j2 dest={{ kube_config_dir }}/scheduler.kubeconfig
+  tags:
+    - master
+
+- name: write the kubecfg (auth) file for controller-manager
+  sudo: yes
+  template: src=controller-manager.kubeconfig.j2 dest={{ kube_config_dir }}/controller-manager.kubeconfig
+  tags:
+    - master
+
+- name: write the kubecfg (auth) file for kubectl
+  sudo: yes
+  template: src=kubectl.kubeconfig.j2 dest={{ kube_config_dir }}/kubectl.kubeconfig
+  tags:
+    - master
+
+- name: copy kube-proxy service file
+  sudo: yes
+  copy:
+    src: kube-proxy.service
+    dest: /usr/lib/systemd/system/
+  notify:
+    - reload daemon
+    - restart proxy
+
+- name: write the config files for proxy
+  sudo: yes
+  template: src=proxy.j2 dest={{ kube_config_dir }}/proxy
+  notify:
+    - restart proxy
+  tags:
+    - master
+
+- name: write the kubecfg (auth) file for proxy
+  sudo: yes
+  template: src=proxy.kubeconfig.j2 dest={{ kube_config_dir }}/proxy.kubeconfig
+  notify:
+    - restart proxy
+  tags:
+    - master
+
+- name: populate users for basic auth in API
+  sudo: yes
+  lineinfile:
+    dest: "{{ kube_users_dir }}/known_users.csv"
+    create: yes
+    line: '{{ item.value.pass }},{{ item.key }},{{ item.value.role }}'
+  with_dict: "{{ kube_users }}"
+  tags:
+    - master
+
+- name: Enable kube-proxy
+  sudo: yes
+  service:
+    name: kube-proxy
+    enabled: yes
+    state: started
+  tags:
+    - master

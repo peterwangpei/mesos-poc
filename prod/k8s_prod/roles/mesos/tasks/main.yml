@@ -1,0 +1,15 @@
+---
+
+- name: ensure consul.d is present
+  sudo: yes
+  file:
+    path: "{{ consul_dir }}"
+    state: directory
+  tags:
+    - mesos
+
+- include: leader.yml
+  when: mesos_mode == "leader" or mesos_mode == "mixed"
+
+- include: follower.yml
+  when: mesos_mode == "follower" or mesos_mode == "mixed"

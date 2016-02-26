@@ -1,0 +1,122 @@
+---
+
+- name: configure mesos-master
+  sudo: yes
+  template:
+    src: mesos-master.sysconfig.j2
+    dest: /etc/sysconfig/mesos-master
+  notify:
+    - enable and restart mesos-master
+  tags:
+    - mesos
+
+- name: ensure mesos master docker image is present
+  sudo: yes
+  command: /usr/bin/docker pull {{ mesos_master_image }}:{{ mesos_image_tag }}
+  tags:
+    - mesos
+    - bootstrap
+
+- name: create mesos master docker service
+  sudo: yes
+  template:
+    dest: /usr/lib/systemd/system/mesos-master.service
+    src: mesos-master.service.j2
+  notify:
+    - reload unit files
+    - enable and restart mesos-master
+
+# - name: write leader credentials
+#   sudo: yes
+#   when: do_mesos_framework_auth|bool or do_mesos_follower_auth|bool
+#   template:
+#     src: master-credentials.j2
+#     dest: /etc/sysconfig/mesos-credentials
+#     mode: 0600
+#   notify:
+#     - restart mesos leader
+#   tags:
+#     - mesos
+
+# - name: delete leader credentials
+#   sudo: yes
+#   when: not do_mesos_framework_auth|bool and not do_mesos_follower_auth|bool
+#   file:
+#     dest: /etc/sysconfig/mesos-credentials
+#     state: absent
+#   tags:
+#     - mesos
+
+- name: wait for zookeeper service to be registered
+  wait_for:
+    host: "{{ mesos_zk_dns }}"
+    port: "{{ mesos_zk_port }}"
+    delay: 10
+    timeout: 300
+    state: present
+  tags:
+    - marathon
+
+# - name: wait for zookeeper to listen
+#   command: "/usr/local/bin/zookeeper-wait-for-listen.sh localhost"
+
+# - name: create zookeeper acl
+#   sudo: yes
+#   run_once: yes
+#   command: "{{ mesos_zk_acl_cmd }}"
+#   notify:
+#     - restart mesos leader
+#   when: zk_mesos_user_secret is defined
+#   run_once: true
+#   register: zk_acl_mesos
+#   until: zk_acl_mesos.rc == 0
+#   retries: 5
+#   delay: 10
+#   tags:
+#     - mesos
+
+- name: deploy iptables configuration
+  sudo: yes
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - src: mesos-leader-consul.cfg
+      dest: /etc/consul-template/config.d
+  notify:
+    - reload consul-template
+  tags:
+    - mesos
+
+- name: deploy iptables template
+  sudo: yes
+  template:
+    src: mesos-leader-iptables.tmpl.j2
+    dest: /etc/consul-template/templates/mesos-leader-iptables.tmpl
+  notify:
+    reload consul-template
+  tags:
+    - mesos
+
+- name: install collectd mesos-master plugin
+  sudo: yes
+  copy:
+    src: mesos-master.py
+    dest: /usr/share/collectd/plugins
+    mode: 0444
+  tags:
+    - mesos
+    - collectd
+
+- name: configure collectd mesos-master plugin
+  sudo: yes
+  template:
+    src: mesos-master.conf.j2
+    dest: /etc/collectd.d/mesos-master.conf
+  notify:
+    - restart collectd
+  tags:
+    - mesos
+    - collectd
+
+# - include: nginx-proxy.yml

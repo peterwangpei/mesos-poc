@@ -1,0 +1,39 @@
+---
+
+- name: make sure kubernetes directory exists
+  sudo: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - kube_config_dir
+    - kube_script_dir
+    - kube_manifest_dir
+    - kube_users_dir
+    - kube_token_dir
+    - kube_cert_dir
+
+- name: copy kubelet & kube-proxy & kubectrl
+  shell: "{{item}}"
+  sudo: yes
+  with_items:
+    - docker run --rm -v /tmp:/stores k8smesos/kubelet-pack:v1.1.8
+    - mv /tmp/kubelet /usr/local/bin/
+    - mv /tmp/kube-proxy /usr/local/bin/
+    - mv /tmp/kubectl /usr/local/bin/
+    - mkdir -p {{kube_log_dir}} {{kube_manifest_dir}} {{kube_manifest_tmpl_dir}}
+    - rm -fr /etc/kubernetes/manifests/* /srv/kubernetes/manifests/* /etc/default/kubelet
+
+- name: write the global config file
+  sudo: yes
+  template:
+    src: config.j2
+    dest: "{{ kube_config_dir }}/config"
+  # notify:
+  #   - restart daemons
+  tags:
+    - kubernetes
+
+- include: secrets.yml
+  tags:
+    - secrets

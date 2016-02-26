@@ -5,46 +5,46 @@
 localhost ansible_connection=local
 
 [registry]
-192.168.33.10
+192.168.33.110
 
 [misc]
-192.168.33.11
+192.168.33.111
 
-[mk1]
-192.168.33.21
+[m1]
+192.168.33.121
 
-[ms1]
-192.168.33.31
+[s1]
+192.168.33.131
 
-[ms2]
-192.168.33.32
+[s2]
+192.168.33.132
 
-[ms3]
-192.168.33.33
+[s3]
+192.168.33.133
 
 #------------------------------------------- Group set ------------------------------------------- #
 [zookeeper:children]
-mk1
+m1
 
 [etcd_master:children]
-mk1
+m1
 
 [mesos_master:children]
-mk1
+m1
 
 [consul_master:children]
-mk1
+m1
 
 [marathon:children]
-mk1
+m1
 
 [k8s_master:children]
-mk1
+m1
 
 [resource:children]
-ms3
-ms2
-ms1
+s3
+s2
+s1
 
 [all:vars]
-docker_opts='--insecure-registry 192.168.33.10 --registry-mirror http://192.168.33.10:5000'
+docker_opts='--insecure-registry 192.168.33.110:5000 --registry-mirror http://192.168.33.110:5000'

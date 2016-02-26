@@ -1,8 +1,9 @@
 ---
 
+
 - hosts:
-    # - mk1
-    - ms1
+    - mk1
+    # - ms1
   vars:
     consul_dns_domain: consul
     cluster_name: cluster.local
@@ -46,8 +47,8 @@
     # - etcd
     # - kubernetes
     # - k8s-master
-    - k8s-minion
-
+    # - k8s-minion
+    # - k8s-addons
   # tasks:
   #   - sudo: yes
   #     yum:
