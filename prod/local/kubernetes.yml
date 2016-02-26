@@ -1,8 +1,8 @@
 ---
 
 - hosts:
-    - mk1
-    # - ms1
+    # - mk1
+    - ms1
   vars:
     consul_dns_domain: consul
     cluster_name: cluster.local
@@ -26,6 +26,8 @@
     overlay_network_subnet: 4.0.0.0
     overlay_network_prefix: 16
     overlay_network_host_prefix: 24
+    dns_setup: yes
+    network: flannel
   # tasks:
   #   - debug: var=inventory_hostname
   #     when: "not 'etcd_master' in group_names"
@@ -43,8 +45,8 @@
     # - mesos
     # - etcd
     # - kubernetes
-    - k8s-master
-
+    # - k8s-master
+    - k8s-minion
 
   # tasks:
   #   - sudo: yes
