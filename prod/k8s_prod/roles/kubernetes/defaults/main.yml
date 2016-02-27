@@ -1,7 +1,3 @@
-# The version of software to install for Kubernetes.
-# When testing repo is used, state is "latest", so this has no effect.
-kube_version: 1.0.3
-
 # Kubernetes services logging level, integer from 0 to 4, where 4 is highest
 # Applys to all services globally. Be carefull with highest log level,
 # log sizes are growing pretty fast even without real workload.
@@ -60,6 +56,7 @@ dns_server: "{{ private_ipv4  }}"
 
 pause_image: kubernetes/pause:latest
 
-etcd_servers: "{% for node in groups[etcd_group_name] %}{{ etcd_url_scheme }}://{{ node }}:{{ etcd_client_port }}{% if not loop.last %},{% endif %}{% endfor %}"
+# etcd_servers: "{% for node in groups[etcd_group_name] %}{{ etcd_url_scheme }}://{{ node }}:{{ etcd_client_port }}{% if not loop.last %},{% endif %}{% endfor %}"
+etcd_servers: "{{ etcd_url_scheme }}://etcd.service.{{ consul_dns_domain }}:{{ etcd_client_port }}"
 
-hyperkube_image: gcr.io/google_containers/hyperkube:v1.1.8
+hyperkube_image: k8smesos/hyperkube:v1.1.8

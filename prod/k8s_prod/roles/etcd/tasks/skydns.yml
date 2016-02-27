@@ -22,3 +22,9 @@
     group: root
   tags:
     - skydns
+
+- name: ensure SkyDNS image exists
+  sudo: yes
+  command: docker pull {{skydns_image}}
+  tags:
+    - skydns

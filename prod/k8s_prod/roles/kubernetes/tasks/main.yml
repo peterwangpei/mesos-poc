@@ -6,12 +6,12 @@
     path: "{{ item }}"
     state: directory
   with_items:
-    - kube_config_dir
-    - kube_script_dir
-    - kube_manifest_dir
-    - kube_users_dir
-    - kube_token_dir
-    - kube_cert_dir
+    - "{{ kube_config_dir }}"
+    - "{{ kube_script_dir }}"
+    - "{{ kube_manifest_dir }}"
+    - "{{ kube_users_dir }}"
+    - "{{ kube_token_dir }}"
+    - "{{ kube_cert_dir }}"
 
 - name: copy kubelet & kube-proxy & kubectrl
   shell: "{{item}}"

@@ -38,7 +38,7 @@ m1
 [k8s_master:children]
 m1
 
-[resource:children]
+[k8s_minion:children]
 s3
 s2
 s1

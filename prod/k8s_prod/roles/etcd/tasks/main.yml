@@ -28,6 +28,11 @@
   tags:
     - etcd
 
+- name: ensure etcd image exists
+  sudo: yes
+  when: "not 'etcd_master' in group_names"
+  command: docker pull {{ etcd_image }}:{{ etcd_image_tag }}
+
 - name: create etcd master service override
   sudo: yes
   template:
@@ -60,13 +65,13 @@
   tags:
     - etcd
 
+- include: skydns.yml
+
 - name: enable and start etcd
   sudo: yes
   service:
     name: etcd
     enabled: yes
     state: started
-
-- include: skydns.yml
 
 - meta: flush_handlers

@@ -9,7 +9,7 @@ RestartSec=20
 TimeoutStartSec=20m
 
 ExecStartPre=-/usr/bin/docker rm -f skydns
-ExecStartPre=/usr/bin/docker pull skynetservices/skydns:2.5.3a
+ExecStartPre=/usr/bin/docker pull {{skydns_image}}
 
 ExecStart=/usr/bin/docker run \
     --name=skydns \

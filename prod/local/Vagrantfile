@@ -12,14 +12,14 @@ Vagrant.configure(2) do |config|
   config.ssh.insert_key = false
 
   cluster = {
-    "reg" => { :ip => "192.168.33.10", :mem => 1024, :cpu => 1},
-    "misc" => { :ip => "192.168.33.11", :mem => 512, :cpu => 1, :os => :centos },
-    "mk1" =>  { :ip => "192.168.33.21", :mem => 777, :cpu => 2, :os => :centos },
-    "mk2" =>  { :ip => "192.168.33.22", :mem => 512, :cpu => 1, :os => :centos },
-    "mk3" =>  { :ip => "192.168.33.23", :mem => 512, :cpu => 1, :os => :centos },
-    "ms1" =>  { :ip => "192.168.33.31", :mem => 1024, :cpu => 2, :os => :centos },
-    "ms2" =>  { :ip => "192.168.33.32", :mem => 1024, :cpu => 1, :os => :centos },
-    "ms3" =>  { :ip => "192.168.33.33", :mem => 1024, :cpu => 1, :os => :centos }
+    "reg"  => { :ip => "192.168.33.10", :mem => 512,  :cpu => 1 },
+    "misc" => { :ip => "192.168.33.11", :mem => 512,  :cpu => 1, :os => :centos },
+    "mk1"  => { :ip => "192.168.33.21", :mem => 777,  :cpu => 2, :os => :centos },
+    "mk2"  => { :ip => "192.168.33.22", :mem => 512,  :cpu => 1, :os => :centos },
+    "mk3"  => { :ip => "192.168.33.23", :mem => 512,  :cpu => 1, :os => :centos },
+    "ms1"  => { :ip => "192.168.33.31", :mem => 1024, :cpu => 2, :os => :centos },
+    "ms2"  => { :ip => "192.168.33.32", :mem => 1024, :cpu => 1, :os => :centos },
+    "ms3"  => { :ip => "192.168.33.33", :mem => 1024, :cpu => 1, :os => :centos }
   }
 
   cluster.each_with_index do | (hostname, info), index |

@@ -2,6 +2,8 @@
 etcd_image: microbox/etcd
 etcd_image_tag: 2.1.1
 
+skydns_image: skynetservices/skydns:2.5.3a
+
 etcd_version: 2.1.1
 
 etcd_client_port: 2379
