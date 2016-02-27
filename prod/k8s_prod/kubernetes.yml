@@ -7,6 +7,9 @@
 #   zhpooer/podmaster:1.1
 #   microbox/etcd:2.1.1
 #   kubernetes/pause:latest
+#   zhpooer/kube2sky:1.11
+#   zhpooer/exechealthz:1.0
+#   zhpooer/kube-ui:v1.1
 
 # mesos build depends:
 #   mesoscloud/mesos-master:0.24.1-ubuntu-14.04
@@ -14,21 +17,22 @@
 #   ciscocloud/logstash:1.5.3, maybe
 ##########################################
 
-- name: install common dependence
-  # hosts: all:!localhost
-  hosts: k8s_minion
-  roles:
-    - common      # TODO to download a rpm
-    - collectd
-    - logrotate   # TODO customize logrotate
-    - consul-template # TODO to download a rpm
-    - docker
-    - consul      # TODO to download a rpm, comment pem file with command ca file add, set verify, adj distibutive
-    - flannel     # TODO dail etcd url, flannel pkg
-    #### - logstash
-    - dnsmasq
-    - etcd        #TODO etcd rpm
+# TODO remove google dns parser
 
+# - name: install common dependence
+#   hosts: all:!localhost
+#   ### hosts: k8s_minion
+#   roles:
+#     - common      # TODO to download a rpm
+#     - collectd
+#     - logrotate   # TODO customize logrotate
+#     - consul-template # TODO to download a rpm
+#     - docker
+#     - consul      # TODO to download a rpm, comment pem file with command ca file add, set verify, adj distibutive
+#     - flannel     # TODO dail etcd url, flannel pkg
+#     #### - logstash
+#     - dnsmasq
+#     - etcd        #TODO etcd rpm
 
 # - name: install kubernetes master
 #   hosts: k8s_master
@@ -41,12 +45,19 @@
 #         pass: root
 #         role: admin
 #   roles:
-#     - k8s-master
+#     - k8s-master      # TODO add apiserver consul status check
 
-- name: install kubernetes master
-  hosts: k8s_minion
+# - name: install kubernetes master
+#   hosts: k8s_minion
+#   vars:
+#     network: flannel   # TODO: calico surpport
+#   roles:
+#     - k8s-minion       # TODO: fluentd to collect logs?; reset server groups[k8s_master_group][0]
+#     # - k8s-addons
+
+- name: install kubernetes addons
+  hosts: k8s_mskaster
   vars:
-    network: flannel   # TODO: caligo surpport
+    enable_ui: true
   roles:
-    - k8s-minion       # TODO: fluentd to collect logs?
-    # - k8s-addons
+    - k8s-addons

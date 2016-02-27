@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: kube2sky
-        image: gcr.io/google_containers/kube2sky:1.11
+        image: zhpooer/kube2sky:1.11
         resources:
           limits:
             cpu: 100m
@@ -35,7 +35,7 @@ spec:
           - mountPath: /etc/kubernetes/
             name: kube-etc
       - name: healthz
-        image: gcr.io/google_containers/exechealthz:1.0
+        image: zhpooer/exechealthz:1.0
         resources:
           limits:
             cpu: 10m

@@ -1,15 +1,8 @@
 ---
-- name: SkyDNS | generate systemd unit file
+
+- name: ensure SkyDNS image exists
   sudo: yes
-  template:
-    src: skydns.service.j2
-    dest: /usr/lib/systemd/system/skydns.service
-    owner: root
-    group: root
-    mode: 0644
-  notify:
-    - reload systemd
-    - restart skydns
+  shell: docker pull {{ skydns_image }}
   tags:
     - skydns
 
@@ -23,8 +16,16 @@
   tags:
     - skydns
 
-- name: ensure SkyDNS image exists
+- name: SkyDNS | generate systemd unit file
   sudo: yes
-  command: docker pull {{skydns_image}}
+  template:
+    src: skydns.service.j2
+    dest: /usr/lib/systemd/system/skydns.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+    - restart skydns
   tags:
     - skydns

@@ -3,9 +3,8 @@
   sudo: yes
   template:
     src: skydns-rc.yaml.j2
-    dest: "{{ kube_manifest_dir }}/skydns-rc.yaml"
+    dest: "{{ kube_manifest_tmpl_dir }}/skydns-rc.yaml"
   register: dns_rc_def
-  when: dns_setup
   tags:
     - addons
     - skydns
@@ -14,7 +13,7 @@
 #  sudo: yes
 #  template:
 #    src: skydns-svc.yaml.j2
-#    dest: "{{ kube_manifest_dir }}/skydns-svc.yaml"
+#    dest: "{{ kube_manifest_tmpl_dir }}/skydns-svc.yaml"
 #  register: dns_svc_def
 #  when: dns_setup
 #  tags:
@@ -27,11 +26,10 @@
     namespace: kube-system
     resource: rc
     name: kube-dns-v8
-    filename: "{{ kube_manifest_dir }}/skydns-rc.yaml"
+    filename: "{{ kube_manifest_tmpl_dir }}/skydns-rc.yaml"
     state: "{{ dns_rc_def.changed | ternary('latest','present') }}"
     config: "{{ kube_config_dir }}/kubectl.kubeconfig"
-
-  delegate_to: "{{ groups[master_group_name][0] }}"
+  delegate_to: "{{ groups[k8s_master_group][0] }}"
   run_once: true
   tags:
     - addons
@@ -43,7 +41,7 @@
 #    namespace: kube-system
 #    resource: svc
 #    name: kube-dns
-#    filename: "{{ kube_manifest_dir }}/skydns-svc.yaml"
+#    filename: "{{ kube_manifest_tmpl_dir }}/skydns-svc.yaml"
 #    state: "{{ dns_svc_def.changed | ternary('latest','present') }}"
 #    config: "{{ kube_config_dir }}/kubectl.kubeconfig"
 #  when: dns_setup

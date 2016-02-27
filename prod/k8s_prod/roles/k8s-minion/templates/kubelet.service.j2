@@ -8,7 +8,7 @@ Requires=docker.service
 [Service]
 EnvironmentFile=-/etc/sysconfig/kubelet
 EnvironmentFile=-{{ kube_config_dir }}/kubelet
-ExecStart=/usr/local/bin/kubelet $DAEMON_ARGS \
+ExecStart=/usr/bin/kubelet $DAEMON_ARGS \
     $KUBELET_ADDRESS \
     $KUBELET_PORT \
     $KUBELET_HOSTNAME \

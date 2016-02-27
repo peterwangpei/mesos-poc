@@ -3,7 +3,7 @@
   sudo: yes
   copy:
     src: kibana-rc.yaml
-    dest: "{{ kube_manifest_dir }}/kibana-rc.yaml"
+    dest: "{{ kube_manifest_tmpl_dir }}/kibana-rc.yaml"
   register: kibana_rc_def
   when: enable_logging
   tags:
@@ -14,7 +14,7 @@
   sudo: yes
   copy:
     src: kibana-svc.yaml
-    dest: "{{ kube_manifest_dir }}/kibana-svc.yaml"
+    dest: "{{ kube_manifest_tmpl_dir }}/kibana-svc.yaml"
   register: kibana_svc_def
   when: enable_logging
   tags:
@@ -25,7 +25,7 @@
   sudo: yes
   copy:
     src: es-rc.yaml
-    dest: "{{ kube_manifest_dir }}/es-rc.yaml"
+    dest: "{{ kube_manifest_tmpl_dir }}/es-rc.yaml"
   register: es_rc_def
   when: enable_logging
   tags:
@@ -36,7 +36,7 @@
   sudo: yes
   copy:
     src: es-svc.yaml
-    dest: "{{ kube_manifest_dir }}/es-svc.yaml"
+    dest: "{{ kube_manifest_tmpl_dir }}/es-svc.yaml"
   register: es_svc_def
   when: enable_logging
   tags:
@@ -49,7 +49,7 @@
     namespace: kube-system
     resource: rc
     name: elasticsearch-logging-v1
-    filename: "{{ kube_manifest_dir }}/es-rc.yaml"
+    filename: "{{ kube_manifest_tmpl_dir }}/es-rc.yaml"
     state: "{{ es_rc_def.changed | ternary('latest','present') }}"
     config: "{{ kube_config_dir }}/kubectl.kubeconfig"
   when: enable_logging
@@ -65,7 +65,7 @@
     namespace: kube-system
     resource: svc
     name: elasticsearch-logging
-    filename: "{{ kube_manifest_dir }}/es-svc.yaml"
+    filename: "{{ kube_manifest_tmpl_dir }}/es-svc.yaml"
     state: "{{ es_svc_def.changed | ternary('latest','present') }}"
     config: "{{ kube_config_dir }}/kubectl.kubeconfig"
   when: enable_logging
@@ -81,7 +81,7 @@
     namespace: kube-system
     resource: rc
     name: kibana-logging-v1
-    filename: "{{ kube_manifest_dir }}/kibana-rc.yaml"
+    filename: "{{ kube_manifest_tmpl_dir }}/kibana-rc.yaml"
     state: "{{ kibana_rc_def.changed | ternary('latest','present') }}"
     config: "{{ kube_config_dir }}/kubectl.kubeconfig"
   when: enable_logging
@@ -97,7 +97,7 @@
     namespace: kube-system
     resource: svc
     name: kibana-logging
-    filename: "{{ kube_manifest_dir }}/kibana-svc.yaml"
+    filename: "{{ kube_manifest_tmpl_dir }}/kibana-svc.yaml"
     state: "{{ kibana_svc_def.changed | ternary('latest','present') }}"
     config: "{{ kube_config_dir }}/kubectl.kubeconfig"
   when: enable_logging
