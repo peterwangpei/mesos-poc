@@ -1,5 +1,6 @@
 ---
-consul_servers_group: consul_master
+
+
 consul_is_server: "{{inventory_hostname in groups[consul_servers_group]}}"
 consul_dc: dc1
 
@@ -16,7 +17,7 @@ consul_disable_remote_exec: yes
 # consul_acl_default_policy: "allow"
 # consul_acl_down_policy: "allow"
 consul_dns_domain: consul
-consul_verify_incoming: true
-consul_verify_outgoing: true
+consul_verify_incoming: false
+consul_verify_outgoing: false
 consul_allow_stale: true
 consul_max_stale: 5s

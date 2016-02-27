@@ -22,5 +22,3 @@ etcd_advertise_client_urls: "{{ etcd_url_scheme }}://{{ inventory_hostname }}:{{
 etcd_listen_client_urls: "{{ etcd_url_scheme }}://0.0.0.0:{{ etcd_client_port }}"
 
 etcd_data_dir: /var/lib/etcd
-
-skydns_port: 5353

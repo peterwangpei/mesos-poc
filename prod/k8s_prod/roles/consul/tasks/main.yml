@@ -88,9 +88,7 @@
 
 # - include: acl.yml
 
-# - meta: flush_handlers
+- meta: flush_handlers
 
-# - include: nginx_proxy.yml
-
-# symlink to distributive checklist, register check with Consul
+# symlink tao distributive checklist, register check with Consul
 # - include: distributive.yml

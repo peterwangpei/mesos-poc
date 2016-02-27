@@ -1,22 +1,25 @@
 ---
 
+# using docker images
+# k8smesos/kubelet-pack:v1.1.8
 
-- hosts:
-    - mk1
-    # - ms1
+- name: install common dependence
+  hosts: all:!localhost
+  roles:
+    # - common      # TODO to download a rpm
+    # - collectd
+    # - logrotate   # TODO customize logrotate
+    # - consul-template # TODO to download a rpm
+    # - docker
+    # - consul    # TODO to download a rpm, comment pem file with command ca file add, set verify, adj distibutive
+    # - flannel     # dail etcd url, flannel pkg
+    # - logstash
+    # - dnsmasq
+    # - etcd
+
+- name: install kubernetes master
+  hosts: k8s_master
   vars:
-    consul_dns_domain: consul
-    cluster_name: cluster.local
-    consul_servers_group: consul_master
-    consul_dc_group: ms3
-    etcd_group_name: etcd_master
-    provider: vagrant
-    skydns_port: 5353
-    mesos_leaders_group: mesos_master
-    mesos_mode: "leader"
-    k8s_master_group: k8s_master
-    k8s_minion_group: resource
-    do_mesos_iptables: no
     kube_users:
       kube:
         pass: root
@@ -24,33 +27,59 @@
       root:
         pass: root
         role: admin
-    overlay_network_subnet: 4.0.0.0
-    overlay_network_prefix: 16
-    overlay_network_host_prefix: 24
-    dns_setup: yes
-    network: flannel
-  # tasks:
-  #   - debug: var=inventory_hostname
-  #     when: "not 'etcd_master' in group_names"
   roles:
-    # - common
-    # - collectd
-    # - logrotate
-    # - consul-template
-    # - docker
-    # - flannel
-    # - logstash
-    # - consul
-    # - dnsmasq
-    # - zookeeper
-    # - mesos
-    # - etcd
-    # - kubernetes
-    # - k8s-master
+    - k8s-master
     # - k8s-minion
     # - k8s-addons
-  # tasks:
-  #   - sudo: yes
-  #     yum:
-  #       name: "https://bintray.com/artifact/download/ciscocloud/rpm/distributive-0.2.1-5.el7.centos.x86_64.rpm"
-  #       state: present
+
+# - hosts:
+#     # - ms1
+#   vars:
+#     consul_dns_domain: consul
+#     cluster_name: cluster.local
+#     consul_servers_group: consul_master
+#     consul_dc_group: ms3
+#     etcd_group_name: etcd_master
+#     provider: vagrant
+#     skydns_port: 5353
+#     mesos_leaders_group: mesos_master
+#     mesos_mode: "leader"
+#     k8s_master_group: k8s_master
+#     k8s_minion_group: resource
+#     do_mesos_iptables: no
+#     kube_users:
+#       kube:
+#         pass: root
+#         role: admin
+#       root:
+#         pass: root
+#         role: admin
+#     overlay_network_subnet: 4.0.0.0
+#     overlay_network_prefix: 16
+#     overlay_network_host_prefix: 24
+#     network: flannel
+#   # tasks:
+#   #   - debug: var=inventory_hostname
+#   #     when: "not 'etcd_master' in group_names"
+#   roles:
+#     # - common
+#     # - collectd
+#     # - logrotate
+#     # - consul-template
+#     # - docker
+#     # - flannel
+#     # - logstash
+#     # - consul
+#     # - dnsmasq
+#     # - zookeeper
+#     # - mesos
+#     # - etcd
+#     # - kubernetes
+#     # - k8s-master
+#     # - k8s-minion
+#     # - k8s-addons
+#   # tasks:
+#   #   - sudo: yes
+#   #     yum:
+#   #       name: "https://bintray.com/artifact/download/ciscocloud/rpm/distributive-0.2.1-5.el7.centos.x86_64.rpm"
+#   #       state: present

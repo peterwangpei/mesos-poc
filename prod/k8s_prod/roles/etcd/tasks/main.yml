@@ -60,6 +60,13 @@
   tags:
     - etcd
 
+- name: enable and start etcd
+  sudo: yes
+  service:
+    name: etcd
+    enabled: yes
+    state: started
+
 - include: skydns.yml
 
 - meta: flush_handlers

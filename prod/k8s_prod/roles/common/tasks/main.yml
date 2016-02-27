@@ -25,6 +25,7 @@
     state: latest
   with_items:
     - httpd-tools
+    - net-tools
     - nc
     - openssh
     - policycoreutils-python

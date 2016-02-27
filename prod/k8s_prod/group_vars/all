@@ -1,5 +1,4 @@
-test: >
-  {{hostvars}} 
+
 isubuntu: >
   {{ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'}}
 iscentos: >
@@ -11,3 +10,15 @@ private_ipv4: >-
   {{ vagrant_ip if ansible_virtualization_type == "virtualbox" else ansible_default_ipv4.address }}
 
 hostname: "{{ private_ipv4 | replace('.', '-') }}"
+
+consul_dc_group: "{{consul_servers_group}}"
+
+skydns_port: 5353
+
+consul_dns_domain: consul
+cluster_name: cluster.local
+consul_servers_group: consul_master
+
+k8s_master_group: k8s_master
+k8s_minion_group: resource
+

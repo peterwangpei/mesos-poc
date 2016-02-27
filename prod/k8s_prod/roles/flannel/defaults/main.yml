@@ -1,4 +1,11 @@
 ---
+
+overlay_network_subnet: 4.0.0.0
+
+overlay_network_prefix: 16
+
+overlay_network_host_prefix: 24
+
 flannel_version: 0.2.0
 
 flannel_backend_type: 'udp'

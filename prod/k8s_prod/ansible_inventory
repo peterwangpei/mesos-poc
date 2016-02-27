@@ -4,9 +4,6 @@
 # submit pods by command `kubectrl`
 localhost ansible_connection=local
 
-[registry]
-192.168.33.110
-
 [misc]
 192.168.33.111
 
