@@ -1,0 +1,10 @@
+- template: src=../../../../../scripts/create_images.sh dest=/tmp/create_images.sh mode=0755
+- template: src=../../../../../scripts/test_performance.sh dest=/tmp/test_performance.sh mode=0755
+- template: src=../../../../../image/Dockerfile dest=/tmp/Dockerfile mode=0644
+
+- shell: /tmp/create_images.sh {{image_count}} {{image_mb_size}}
+- shell: /tmp/test_performance.sh
+- shell: cat /tmp/milliseconds.csv
+  register: result
+
+- debug: msg="{{ result.stdout_lines }}"

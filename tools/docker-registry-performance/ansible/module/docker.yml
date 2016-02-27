@@ -1,0 +1,8 @@
+---
+
+- name: setup docker configuration
+  hosts: node
+  sudo: yes
+  roles:
+    - role: docker
+
