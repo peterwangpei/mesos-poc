@@ -1,0 +1,9 @@
+- shell: sed -i "s/#DOCKER_OPTS=\"--dns 8.8.8.8 --dns 8.8.4.4\"/DOCKER_OPTS=\"--insecure-registry {{registry_url}}\"/" /etc/default/docker
+  when: ansible_distribution == 'Ubuntu'
+
+- shell: sed -i "s/ExecStart=\/usr\/bin\/docker daemon -H fd:\/\//ExecStart=\/usr\/bin\/docker daemon --insecure-registry {{registry_url}}/" /usr/lib/systemd/system/docker.service
+  when: ansible_distribution == 'CentOS'
+- shell: systemctl daemon-reload
+  when: ansible_distribution == 'CentOS'
+
+- service: name=docker state=restarted

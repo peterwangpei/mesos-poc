@@ -1,0 +1,8 @@
+---
+
+- name: test docker registry performance
+  hosts: node
+  sudo: yes
+  roles:
+    - role: test
+
