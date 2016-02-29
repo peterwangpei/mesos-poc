@@ -24,7 +24,7 @@
 #   ### hosts: k8s_minion
 #   roles:
 #     - common      # TODO to download a rpm
-#     - collectd
+#     #### - collectd # TODO ocupy cpu
 #     - logrotate   # TODO customize logrotate
 #     - consul-template # TODO to download a rpm
 #     - docker
