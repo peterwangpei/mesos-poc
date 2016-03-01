@@ -18,13 +18,14 @@
 ##########################################
 
 # TODO remove google dns parser
+# TODO scale down etcd & skydns
 
 # - name: install common dependence
 #   hosts: all:!localhost
 #   ### hosts: k8s_minion
 #   roles:
 #     - common      # TODO to download a rpm
-#     #### - collectd # TODO ocupy cpu
+#     #### - collectd # TODO occupy cpu
 #     - logrotate   # TODO customize logrotate
 #     - consul-template # TODO to download a rpm
 #     - docker
@@ -55,9 +56,9 @@
 #     - k8s-minion       # TODO: fluentd to collect logs?; reset server groups[k8s_master_group][0]
 #     # - k8s-addons
 
-- name: install kubernetes addons
-  hosts: k8s_mskaster
-  vars:
-    enable_ui: true
-  roles:
-    - k8s-addons
+# - name: install kubernetes addons
+#   hosts: k8s_mskaster
+#   vars:
+#     enable_ui: true
+#   roles:
+#     - k8s-addons
