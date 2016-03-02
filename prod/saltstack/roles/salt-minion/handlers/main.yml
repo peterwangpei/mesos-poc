@@ -1,0 +1,7 @@
+---
+# handlers file for salt-minion
+
+- name: enable and restart salt-minion
+  service: name={{item}} state=restarted enabled=true
+  with_items:
+    - salt-minion

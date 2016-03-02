@@ -1,0 +1,6 @@
+---
+# vars file for salt-master
+
+salt_file_roots: /srv/salt/file/base
+
+salt_pillar_roots: /srv/salt/pillar/base

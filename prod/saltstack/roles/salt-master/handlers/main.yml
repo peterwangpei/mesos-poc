@@ -1,0 +1,6 @@
+---
+# handlers file for salt-master
+- name: enable and restart salt-master
+  service: name={{item}} state=restarted enabled=true
+  with_items:
+    - salt-master

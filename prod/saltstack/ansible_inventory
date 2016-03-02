@@ -4,6 +4,9 @@
 # submit pods by command `kubectrl`
 localhost ansible_connection=local
 
+[saltmaster]
+192.168.33.211
+
 [master]
 192.168.33.221
 

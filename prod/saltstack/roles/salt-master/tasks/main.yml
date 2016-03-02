@@ -1,0 +1,49 @@
+---
+# tasks file for salt-master
+
+- name: install salt-master
+  yum: name={{item}} state=present
+  with_items:
+    - salt
+    - salt-master
+
+- name: enable master.d conf
+  lineinfile:
+    dest: /etc/salt/master
+    state: present
+    create: yes
+    regexp: '^\#default_include:'
+    line: "default_include: master.d/*.conf"
+  notify:
+    - enable and restart salt-master
+
+- name: make sure salt file roots & salt master conf dir exists
+  file:
+    dest: "{{item}}"
+    state: directory
+  with_items:
+    - "{{salt_file_roots}}"
+    - "{{salt_pillar_roots}}"
+    - /etc/salt/master.d
+
+- name: set salt file roots
+  copy:
+    dest: /etc/salt/master.d/file-roots.conf
+    force: yes
+    content: >-
+      file_roots:
+        base:
+          - {{salt_file_roots}}
+  notify:
+    - enable and restart salt-master
+
+- name: set pillar roots
+  copy:
+    dest: /etc/salt/master.d/pillar_roots.conf
+    force: yes
+    content: |
+      pillar_roots:
+        base:
+          - {{salt_pillar_roots}}
+  notify:
+    - enable and restart salt-master
