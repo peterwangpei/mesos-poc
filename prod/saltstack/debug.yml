@@ -1,0 +1,4 @@
+- name: debug
+  hosts: master
+  tasks:
+    - debug: var=hostvars[groups['master'][0]]

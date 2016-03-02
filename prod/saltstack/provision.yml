@@ -1,0 +1,59 @@
+---
+
+- name: install salt stack for salt master
+  hosts: master
+  sudo: yes
+  tasks:
+    - name: install salt-master & salt-minion
+      yum: name={{item}} state=present
+      with_items:
+        - salt
+        - salt-master
+    - name: enable & start salt-master
+      service: name={{item}} state=started enabled=true
+      with_items:
+        - salt-master
+
+- name: install salt stack for salt minion
+  sudo: yes
+  hosts:
+    - slave
+    - master
+  tasks:
+    - name: install salt-minion
+      yum: name={{item}} state=present
+      with_items:
+        - salt
+        - salt-minion
+
+    - name: add master ip to hosts
+      lineinfile:
+        dest: /etc/salt/minion
+        state: present
+        create: yes
+        regexp: '^\#master: salt'
+        line: "master: {{groups['master'][0]}}"
+
+    - name: enable start salt-master
+      service: name={{item}} state=restarted enabled=true
+      with_items:
+        - salt-minion
+
+    - name: get minion id from minion
+      shell: salt-call --local grains.item id --out=key | awk 'BEGIN { FS = " " };(NR==2){print $2}'
+      register: _minion_id
+
+    - name: get minion public key
+      slurp: src=/etc/salt/pki/minion/minion.pub
+      register: _public_key
+
+    - name: set minion id & public key facts
+      set_fact:
+        minion_id: "{{_minion_id.stdout}}"
+        public_key: "{{_public_key.content|b64decode}}"
+
+    - name: set minion public key for mater
+      copy:
+        dest: /etc/salt/pki/master/minions/{{minion_id}}
+        content: "{{public_key}}"
+      delegate_to: "{{groups['master'][0]}}"

@@ -1,0 +1,14 @@
+#------------------------------------------- Declare Machine ------------------------------------------- #
+
+[localhost]
+# submit pods by command `kubectrl`
+localhost ansible_connection=local
+
+[master]
+192.168.33.221
+
+[slave]
+192.168.33.231
+
+[all:vars]
+docker_opts='--insecure-registry 192.168.33.110:5000 --registry-mirror http://192.168.33.110:5000'
