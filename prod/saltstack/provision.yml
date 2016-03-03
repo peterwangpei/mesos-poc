@@ -1,13 +1,59 @@
 ---
 
+- name: add docker-engine dependency to all
+  hosts: all:!localhost
+  tasks:
+    - name: cp docker repo to add docker engine repo
+      sudo: yes
+      copy:
+        dest: /etc/yum.repos.d/docker.repo
+        content: |
+          [dockerrepo]
+          name=Docker Repository
+          baseurl=https://yum.dockerproject.org/repo/main/centos/7
+          enabled=1
+          gpgcheck=1
+          gpgkey=https://yum.dockerproject.org/gpg
+
 - name: install salt stack for salt master
   hosts: saltmaster
   sudo: yes
   vars:
-    - salt_file_roots: /srv/salt/file/base
-    - salt_pillar_roots: /srv/salt/pillar/base
+    salt_file_roots: "/srv/salt"
+    salt_pillar_roots: "/srv/pillar"
+    tmp_dir: "/opt/k8s_salt_install"
   roles:
     - salt-master
+
+  tasks:
+    - name: make sure a directory for store salt file
+      file:
+        dest: "{{tmp_dir}}"
+        state: directory
+
+    - name: copy saltstack file
+      unarchive:
+        src: ./kubernetes-salt.tar.gz
+        dest: "{{tmp_dir}}"
+
+    - name: copy dependency tar file
+      copy:
+        src: ./kubernetes-server-linux-amd64.tar.gz
+        dest: "{{tmp_dir}}/k8s.tar.gz"
+
+    - name: run install.sh of salt provisions
+      shell: "{{tmp_dir}}/kubernetes/saltbase/install.sh {{tmp_dir}}/k8s.tar.gz"
+
+    - name: set docker-io to docker engine
+      replace:
+        dest: "{{salt_file_roots}}/docker/init.sls"
+        regexp: 'docker-io'
+        replace: 'docker-engine'
+        backup: yes
+
+    - name: restart salt master
+      service: name=salt-master state=restarted
+
 
 - name: install salt stack for salt minion
   sudo: yes
@@ -17,19 +63,38 @@
     - master
     - saltmaster
   vars:
-    - saltmaster: "{{groups['saltmaster'][0]}}"
+    saltmaster: "{{groups['saltmaster'][0]}}"
   roles:
     - salt-minion
 
-- name: set grains for master
+- name: set grains for k8s master
   sudo: yes
   hosts: master
   tasks:
-    - name: set the grains of master
+    - name: set the grains of k8s master
       copy:
         dest: /etc/salt/grains
         content: |
-          roles: master
+          etcd_servers: {{groups['master'][0]}}
+          cloud_provider: vagrant
+          roles:
+            - kubernetes-master
 
     - name: restart salt minion
-      service: name=salt-minion state=started
+      service: name=salt-minion state=restarted
+
+- name: set grains for k8s minion
+  sudo: yes
+  hosts: slave
+  tasks:
+    - name: set the grains of minion
+      copy:
+        dest: /etc/salt/grains
+        content: |
+          etcd_servers: {{groups['master'][0]}}
+          cloud_provider: vagrant
+          roles:
+            - kubernetes-pool
+
+    - name: restart salt minion
+      service: name=salt-minion state=restarted

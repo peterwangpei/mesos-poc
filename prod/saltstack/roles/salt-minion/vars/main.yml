@@ -1,4 +1,2 @@
 ---
 # vars file for salt-minion
-
-saltmaster: "{{groups['saltmaster'][0]}}"
