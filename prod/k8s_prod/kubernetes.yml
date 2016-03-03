@@ -9,7 +9,7 @@
 #   kubernetes/pause:latest
 #   zhpooer/kube2sky:1.11
 #   zhpooer/exechealthz:1.0
-#   zhpooer/kube-ui:v1.1
+#   zhpooer/kube-ui:v2
 
 # mesos build depends:
 #   mesoscloud/mesos-master:0.24.1-ubuntu-14.04
