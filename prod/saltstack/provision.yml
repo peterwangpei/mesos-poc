@@ -1,9 +1,10 @@
 ---
+#  gcr.io/google_containers/etcd:2.0.12
 
 - name: add docker-engine dependency to all
   hosts: all:!localhost
   tasks:
-    - name: cp docker repo to add docker engine repo
+    - name: cp docker repo to add docker engine repo to install latest docker
       sudo: yes
       copy:
         dest: /etc/yum.repos.d/docker.repo
@@ -15,45 +16,115 @@
           gpgcheck=1
           gpgkey=https://yum.dockerproject.org/gpg
 
+
 - name: install salt stack for salt master
-  hosts: saltmaster
+  hosts:
+    - saltmaster
   sudo: yes
   vars:
     salt_file_roots: "/srv/salt"
     salt_pillar_roots: "/srv/pillar"
-    tmp_dir: "/opt/k8s_salt_install"
+    kube_service_addresses: 10.2.0.0/16
+    kube_users:
+      kube:
+        pass: root
+        role: admin
+      root:
+        pass: root
+        role: admin
   roles:
     - salt-master
-
+    - copy-sls
   tasks:
-    - name: make sure a directory for store salt file
-      file:
-        dest: "{{tmp_dir}}"
-        state: directory
+    # - name: fix bug | set docker-io to docker engine
+    #   replace:
+    #     dest: "{{salt_file_roots}}/docker/init.sls"
+    #     regexp: 'docker-io'
+    #     replace: 'docker-engine'
+    #     backup: yes
 
-    - name: copy saltstack file
-      unarchive:
-        src: ./kubernetes-salt.tar.gz
-        dest: "{{tmp_dir}}"
+    # - name: fix bug | enable docker and kubelet
+    #   replace:
+    #     dest: "{{salt_file_roots}}/top.sls"
+    #     regexp: if grains\['cloud'\] is defined and grains\['cloud'\] in \[ 'vagrant', 'gce', 'aws' \]
+    #     replace: "if true"
 
-    - name: copy dependency tar file
-      copy:
-        src: ./kubernetes-server-linux-amd64.tar.gz
-        dest: "{{tmp_dir}}/k8s.tar.gz"
+    # - name: fix bug | replace
+    #   replace:
+    #     dest: "{{salt_file_roots}}/kubelet/default"
+    #     regexp: "{{item.reg}}"
+    #     replace: "{{item.replace}}"
+    #   with_items:
+    #     - reg: grains\.cloud
+    #       replace: "grains['cloud']"
 
-    - name: run install.sh of salt provisions
-      shell: "{{tmp_dir}}/kubernetes/saltbase/install.sh {{tmp_dir}}/k8s.tar.gz"
+    #     - reg: grains\.kubelet_api_servers
+    #       replace: "grains['kubelet_api_servers']"
 
-    - name: set docker-io to docker engine
-      replace:
-        dest: "{{salt_file_roots}}/docker/init.sls"
-        regexp: 'docker-io'
-        replace: 'docker-engine'
-        backup: yes
+    #     - reg: grains\.get\(\'cbr-cidr\'\)
+    #       replace: "grains['cbr-cidr'] is defined"
 
-    - name: restart salt master
-      service: name=salt-master state=restarted
 
+    # - name: create passwdfile for nginx
+    #   copy:
+    #     dest: "{{salt_file_roots}}/nginx/htpasswd"
+    #     content: ""
+    #     force: no
+
+    # - name: disable nginx proxy pass
+    #   replace:
+    #     dest: "{{salt_file_roots}}/nginx/kubernetes-site"
+    #     regexp: auth_basic
+    #     replace: "# auth_basic"
+
+    # - name: change kubelet to connect 443 port
+    #   replace:
+    #     dest: "{{salt_file_roots}}/kubelet/default"
+    #     regexp: ':6443'
+    #     replace: ':443'
+
+    # - name: change kube-proxy to connect 443 port
+    #   replace:
+    #     dest: "{{salt_file_roots}}/kube-proxy/default"
+    #     regexp: ':6443'
+    #     replace: ':443'
+
+    # - name: disable nginx module
+    #   replace:
+    #     dest: "{{salt_file_roots}}/top.sls"
+    #     regexp: "- nginx"
+    #     replace: "#- nginx"
+
+    # - name: add nginx pass
+    #   htpasswd:
+    #     path: "{{salt_file_roots}}/nginx/passwdfile"
+    #     name: root
+    #     password: root
+
+    # - name: add some pillar for run salt-stack
+    #   lineinfile :
+    #     dest: "{{salt_pillar_roots}}/cluster-params.sls"
+    #     line: "{{item.key}}: {{item.value}}"
+    #     state: present
+    #   with_items:
+    #     - key: cert_ip
+    #       value: "{{inventory_hostname}}"
+    #     - key: service_cluster_ip_range
+    #       value: "{{kube_service_addresses}}"
+
+    # - name: populate users for basic auth in API
+    #   sudo: yes
+    #   lineinfile:
+    #     dest: "{{ salt_file_roots }}/kube-apiserver/basic_auth.csv"
+    #     create: yes
+    #     line: '{{ item.value.pass }},{{ item.key }},{{ item.value.role }}'
+    #   with_dict: "{{ kube_users }}"
+
+    # - name: create empty known_tokens.csv, TODO add script to generate tokens
+    #   copy: content="" dest={{ salt_file_roots }}/kube-apiserver/known_tokens.csv force=no
+
+    # - name: restart salt master
+    #   service: name=salt-master state=restarted
 
 - name: install salt stack for salt minion
   sudo: yes
@@ -70,6 +141,8 @@
 - name: set grains for k8s master
   sudo: yes
   hosts: master
+  roles:
+    - copy-sls
   tasks:
     - name: set the grains of k8s master
       copy:
@@ -77,6 +150,8 @@
         content: |
           etcd_servers: {{groups['master'][0]}}
           cloud_provider: vagrant
+          cloud: vagrant
+          cbr-cidr: ""
           roles:
             - kubernetes-master
 
@@ -93,6 +168,9 @@
         content: |
           etcd_servers: {{groups['master'][0]}}
           cloud_provider: vagrant
+          cbr-cidr: ""
+          cloud: vagrant
+          api_servers: {{groups['master'][0]}}
           roles:
             - kubernetes-pool
 

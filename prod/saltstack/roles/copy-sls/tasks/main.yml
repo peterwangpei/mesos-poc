@@ -1,0 +1,20 @@
+---
+# tasks file for copy_sls
+
+- name: make sure a directory for store salt file
+  file:
+    dest: "{{tmp_dir}}"
+    state: directory
+
+- name: copy saltstack file
+  unarchive:
+    src: ./kubernetes-salt.tar.gz
+    dest: "{{tmp_dir}}"
+
+- name: copy dependency tar file
+  copy:
+    src: ./kubernetes-server-linux-amd64.tar.gz
+    dest: "{{tmp_dir}}/k8s.tar.gz"
+
+- name: run install.sh of salt provisions
+  shell: "{{tmp_dir}}/kubernetes/saltbase/install.sh {{tmp_dir}}/k8s.tar.gz"

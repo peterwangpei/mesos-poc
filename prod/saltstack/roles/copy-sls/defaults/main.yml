@@ -1,0 +1,4 @@
+---
+# defaults file for copy_sls
+
+tmp_dir: /opt/k8s_salt_install
