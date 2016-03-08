@@ -64,43 +64,6 @@
     #     - reg: grains\.get\(\'cbr-cidr\'\)
     #       replace: "grains['cbr-cidr'] is defined"
 
-
-    # - name: create passwdfile for nginx
-    #   copy:
-    #     dest: "{{salt_file_roots}}/nginx/htpasswd"
-    #     content: ""
-    #     force: no
-
-    # - name: disable nginx proxy pass
-    #   replace:
-    #     dest: "{{salt_file_roots}}/nginx/kubernetes-site"
-    #     regexp: auth_basic
-    #     replace: "# auth_basic"
-
-    # - name: change kubelet to connect 443 port
-    #   replace:
-    #     dest: "{{salt_file_roots}}/kubelet/default"
-    #     regexp: ':6443'
-    #     replace: ':443'
-
-    # - name: change kube-proxy to connect 443 port
-    #   replace:
-    #     dest: "{{salt_file_roots}}/kube-proxy/default"
-    #     regexp: ':6443'
-    #     replace: ':443'
-
-    # - name: disable nginx module
-    #   replace:
-    #     dest: "{{salt_file_roots}}/top.sls"
-    #     regexp: "- nginx"
-    #     replace: "#- nginx"
-
-    # - name: add nginx pass
-    #   htpasswd:
-    #     path: "{{salt_file_roots}}/nginx/passwdfile"
-    #     name: root
-    #     password: root
-
     # - name: add some pillar for run salt-stack
     #   lineinfile :
     #     dest: "{{salt_pillar_roots}}/cluster-params.sls"

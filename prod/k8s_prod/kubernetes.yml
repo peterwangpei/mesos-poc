@@ -27,13 +27,13 @@
 #     - common      # TODO to download a rpm
 #     #### - collectd # TODO occupy cpu
 #     - logrotate   # TODO customize logrotate
-#     - consul-template # TODO to download a rpm
+#     - consul-template # TODO to download a rpm & copy distributive file
 #     - docker
 #     - consul      # TODO to download a rpm, comment pem file with command ca file add, set verify, adj distibutive
 #     - flannel     # TODO dail etcd url, flannel pkg
 #     #### - logstash
 #     - dnsmasq
-#     - etcd        #TODO etcd rpm
+#     - etcd        #TODO etcd rpm, etcd event
 
 # - name: install kubernetes master
 #   hosts: k8s_master
