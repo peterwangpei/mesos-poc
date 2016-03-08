@@ -16,13 +16,13 @@ Vagrant.configure(2) do |config|
     "m1"   => { :ip => "192.168.33.221", :mem => 512,  :cpu => 1 },
     "m2"   => { :ip => "192.168.33.222", :mem => 512,  :cpu => 1 },
     "m3"   => { :ip => "192.168.33.223", :mem => 512,  :cpu => 1 },
-    "s1"   => { :ip => "192.168.33.231", :mem => 512, :cpu => 1 },
+    "s1"   => { :ip => "192.168.33.231", :mem => 512,  :cpu => 1 },
     "s2"   => { :ip => "192.168.33.232", :mem => 512,  :cpu => 1 },
     "s3"   => { :ip => "192.168.33.233", :mem => 1024, :cpu => 1 }
   }
 
   cluster.each_with_index do | (hostname, info), index |
-    # config.vm.synced_folder ".", "/vagrant", disabled: true
+    config.vm.synced_folder ".", "/vagrant", disabled: true
     config.vm.define hostname do | host |
       host.vm.box = "centos7"
       host.vm.provider "virtualbox" do |v|

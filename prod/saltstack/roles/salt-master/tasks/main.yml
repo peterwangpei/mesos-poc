@@ -2,9 +2,9 @@
 # tasks file for salt-master
 
 - name: install salt-master
-  yum: name={{item}} state=present
+  apt: name={{item}} state=present
   with_items:
-    - salt
+    - salt-common
     - salt-master
 
 - name: enable master.d conf

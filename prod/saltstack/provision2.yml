@@ -1,20 +1,20 @@
 ---
 #  gcr.io/google_containers/etcd:2.0.12
 
-- name: add docker-engine dependency to all
-  hosts: all:!localhost
-  tasks:
-    - name: cp docker repo to add docker engine repo to install latest docker
-      sudo: yes
-      copy:
-        dest: /etc/yum.repos.d/docker.repo
-        content: |
-          [dockerrepo]
-          name=Docker Repository
-          baseurl=https://yum.dockerproject.org/repo/main/centos/7
-          enabled=1
-          gpgcheck=1
-          gpgkey=https://yum.dockerproject.org/gpg
+# - name: add docker-engine dependency to all
+#   hosts: all:!localhost
+#   tasks:
+#     - name: cp docker repo to add docker engine repo to install latest docker
+#       sudo: yes
+#       copy:
+#         dest: /etc/yum.repos.d/docker.repo
+#         content: |
+#           [dockerrepo]
+#           name=Docker Repository
+#           baseurl=https://yum.dockerproject.org/repo/main/centos/7
+#           enabled=1
+#           gpgcheck=1
+#           gpgkey=https://yum.dockerproject.org/gpg
 
 - name: install salt stack for salt minion
   sudo: yes
@@ -31,8 +31,8 @@
 - name: set grains for k8s master
   sudo: yes
   hosts: master
-  roles:
-    - copy-sls
+  # roles:
+  #   - copy-sls
   tasks:
     - name: set the grains of k8s master
       copy:
@@ -40,6 +40,10 @@
         content: |
           roles:
             - kubernetes-master
+          cloud: hws
+          api_servers: {{groups['master'][0]}}
+          falnnel_net: 172.16.0.0/16
+          docker_opts: "{{docker_opts}}"
 
     - name: restart salt minion
       service: name=salt-minion state=restarted
@@ -54,6 +58,9 @@
         content: |
           roles:
             - kubernetes-pool
+          cloud: hws
+          api_servers: {{groups['master'][0]}}
+          docker_opts: "{{docker_opts}}"
 
     - name: restart salt minion
       service: name=salt-minion state=restarted
@@ -68,13 +75,13 @@
     tmp_dir: /opt/k8s_install
   roles:
     - salt-master
-  tasks:
-    - name: fix bug | set docker-io to docker engine
-      replace:
-        dest: "{{salt_file_roots}}/docker/init.sls"
-        regexp: 'docker-io'
-        replace: 'docker-engine'
-        backup: yes
+  # tasks:
+    # - name: fix bug | set docker-io to docker engine
+    #   replace:
+    #     dest: "{{salt_file_roots}}/docker/init.sls"
+    #     regexp: 'docker-io'
+    #     replace: 'docker-engine'
+    #     backup: yes
 
     - name: make sure a directory for store installer file
       file:
@@ -86,9 +93,9 @@
         src: ./kubernetes.tar.gz
         dest: "{{tmp_dir}}"
 
-    - name: run kube-up
-      command: "{{tmp_dir}}/kubernetes/cluster/kube-up.sh"
-      args:
-        chdir: "{{tmp_dir}}/kubernetes"
-      environment:
-        KUBERNETES_PROVIDER: vagrant
+    # - name: run kube-up
+    #   command: "{{tmp_dir}}/kubernetes/cluster/kube-up.sh"
+    #   args:
+    #     chdir: "{{tmp_dir}}/kubernetes"
+    #   environment:
+    #     KUBERNETES_PROVIDER:

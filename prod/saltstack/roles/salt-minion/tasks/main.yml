@@ -4,7 +4,7 @@
 - name: install salt-minion
   yum: name={{item}} state=present
   with_items:
-    - salt
+    - salt-common
     - salt-minion
 
 - name: add master ip to minion
@@ -28,7 +28,6 @@
   shell: salt-call --local grains.item id --out=key | awk 'BEGIN { FS = " " };(NR==2){print $2}'
   register: _minion_id
 
-
 - name: get minion public key
   slurp: src=/etc/salt/pki/minion/minion.pub
   register: _public_key
@@ -37,8 +36,6 @@
   set_fact:
     minion_id: "{{_minion_id.stdout}}"
     public_key: "{{_public_key.content|b64decode}}"
-
-
 
 - name: set minion public key for master
   copy:
