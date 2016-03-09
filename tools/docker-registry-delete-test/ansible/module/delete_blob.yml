@@ -1,0 +1,8 @@
+---
+
+- name: delete image blob
+  hosts: registry
+  sudo: yes
+  roles:
+    - role: registry
+      step: delete_blob

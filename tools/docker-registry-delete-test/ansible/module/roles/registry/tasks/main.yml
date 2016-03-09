@@ -1,0 +1,11 @@
+- include: ./start_registry.yml
+  when: step == "start_registry"
+
+- shell: docker stop registry
+  when: step == "stop_registry"
+
+- include: ./delete_blob.yml
+  when: step == "delete_blob"
+
+- include: ./collect_space.yml
+  when: step == "collect_space"

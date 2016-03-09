@@ -1,0 +1,8 @@
+---
+
+- name: collect docker registry volumn space
+  hosts: registry
+  sudo: yes
+  roles:
+    - role: registry
+      step: collect_space

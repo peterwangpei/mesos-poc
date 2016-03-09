@@ -1,0 +1,14 @@
+- template: src=../../../../../config.yml dest=/tmp/config.yml mode=0644
+- name: delete old container
+  docker:
+    name: gc
+    image: "{{gc_image}}"
+    state: absent
+- name: delete docker registry storage blob
+  docker:
+    name: gc
+    image: "{{gc_image}}"
+    volumes:
+      - "{{registry_storage}}:/var/lib/registry"
+      - /tmp/config.yml:/etc/docker/registry/config.yml
+    command: garbage-collect /etc/docker/registry/config.yml

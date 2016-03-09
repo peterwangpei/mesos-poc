@@ -1,0 +1,19 @@
+[registry]
+192.168.33.18
+#10.229.51.58 ansible_connection=local
+#10.229.45.144 ansible_user=root ansible_ssh_pass=
+#10.229.49.198 ansible_user=root ansible_ssh_pass=
+#10.229.53.29 ansible_user=root ansible_ssh_pass=
+#10.229.50.219 ansible_user=root ansible_ssh_pass=
+
+[node]
+192.168.33.19
+
+[apiclient]
+192.168.33.19
+
+[all:vars]
+registry_url='192.168.33.18:5000'
+registry_storage='/var/lib/registry'
+registry_image='registry:2.2.0'
+gc_image='registry:2.4.ggg'

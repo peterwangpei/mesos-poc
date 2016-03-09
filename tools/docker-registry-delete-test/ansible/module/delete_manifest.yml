@@ -1,0 +1,7 @@
+---
+
+- name: delete image manifest
+  hosts: apiclient
+  sudo: yes
+  roles:
+    - role: api

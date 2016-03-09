@@ -1,0 +1,5 @@
+- include: ./create_image.yml
+  when: step == "create_image"
+
+- include: ./push_image.yml
+  when: step == "push_image"
