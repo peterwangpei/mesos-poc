@@ -1,4 +1,4 @@
 - template: src=../../../../../scripts/create_images.sh dest=/tmp/create_images.sh mode=0755
 - template: src=../../../../../image/Dockerfile dest=/tmp/Dockerfile mode=0644
 
-- shell: /tmp/create_images.sh 1
+- shell: /tmp/create_images.sh {{count}}

@@ -1,8 +1,12 @@
 ---
 
+- include: ./start_registry_ro.yml
+
 - name: delete image blob
   hosts: registry
   sudo: yes
   roles:
     - role: registry
       step: delete_blob
+
+- include: ./start_registry.yml

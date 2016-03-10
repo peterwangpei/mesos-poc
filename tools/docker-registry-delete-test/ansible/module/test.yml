@@ -1,15 +1,28 @@
 ---
 
+- include: ./clean.yml
+
 - include: ./start_registry.yml
 - include: ./collect_space.yml
 
-- include: ./create_image.yml
-- include: ./push_image.yml
+- include: ./create_images.yml count=3
+- include: ./push_images.yml
 - include: ./collect_space.yml
 
-- include: ./delete_manifest.yml
+- include: ./delete_manifest.yml tag=3
 - include: ./collect_space.yml
 
-- include: ./start_registry_ro.yml
+- include: ./delete_blob.yml
+- include: ./collect_space.yml
+
+- include: ./delete_manifest.yml tag=2
+- include: ./collect_space.yml
+
+- include: ./delete_blob.yml
+- include: ./collect_space.yml
+
+- include: ./delete_manifest.yml tag=1
+- include: ./collect_space.yml
+
 - include: ./delete_blob.yml
 - include: ./collect_space.yml

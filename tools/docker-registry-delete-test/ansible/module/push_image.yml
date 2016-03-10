@@ -1,8 +1,0 @@
----
-
-- name: push image
-  hosts: node
-  sudo: yes
-  roles:
-    - role: node
-      step: push_image

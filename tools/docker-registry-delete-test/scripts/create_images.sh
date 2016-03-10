@@ -21,7 +21,9 @@ function build_images () {
 
     create_random_file
 
-    docker build -t random/delete-image:`uuidgen` .
+    docker build -t random/delete-image:$i .
+
+    sed -i '1s/.*/FROM random\/delete-image:1/' Dockerfile
   done
 }
 

@@ -1,5 +1,5 @@
-- include: ./create_image.yml
-  when: step == "create_image"
+- include: ./create_images.yml
+  when: step == "create_images"
 
-- include: ./push_image.yml
-  when: step == "push_image"
+- include: ./push_images.yml
+  when: step == "push_images"

@@ -1,0 +1,8 @@
+---
+
+- name: push docker random images
+  hosts: node
+  sudo: yes
+  roles:
+    - role: node
+      step: push_images

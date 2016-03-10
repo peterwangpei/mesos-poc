@@ -1,0 +1,8 @@
+---
+
+- name: create docker random images
+  hosts: node
+  sudo: yes
+  roles:
+    - role: node
+      step: create_images
