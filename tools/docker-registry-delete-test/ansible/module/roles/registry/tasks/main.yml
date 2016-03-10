@@ -1,6 +1,9 @@
 - include: ./start_registry.yml
   when: step == "start_registry"
 
+- include: ./start_registry_ro.yml
+  when: step == "start_registry_ro"
+
 - shell: docker stop registry
   when: step == "stop_registry"
 

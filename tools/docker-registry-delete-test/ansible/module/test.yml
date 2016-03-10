@@ -10,6 +10,6 @@
 - include: ./delete_manifest.yml
 - include: ./collect_space.yml
 
-- include: ./stop_registry.yml
+- include: ./start_registry_ro.yml
 - include: ./delete_blob.yml
 - include: ./collect_space.yml
