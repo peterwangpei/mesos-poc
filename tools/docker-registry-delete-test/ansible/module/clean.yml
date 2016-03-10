@@ -1,0 +1,8 @@
+---
+
+- name: clean registry
+  hosts: registry
+  sudo: yes
+  roles:
+    - role: registry
+      step: clean_registry

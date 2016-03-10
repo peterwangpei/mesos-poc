@@ -12,3 +12,6 @@
 
 - include: ./collect_space.yml
   when: step == "collect_space"
+
+- shell: rm -rf {{registry_storage}}
+  when: step == "clean_registry"
