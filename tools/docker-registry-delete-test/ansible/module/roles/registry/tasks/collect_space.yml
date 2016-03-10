@@ -1,4 +1,4 @@
 - shell: du -s {{registry_storage}} | awk '{print $1}'
   register: result
 
-- debug: msg="{{ result.stdout_lines }}"
+- debug: msg="{{result.stdout_lines}}k after {{msg}}"
