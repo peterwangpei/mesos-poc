@@ -101,10 +101,11 @@ EXTRA ATTRIBUTES AND METHODS
 
 # $Id: keepalive.py,v 1.17 2006/12/08 00:14:16 mstenner Exp $
 
-import urllib2
 import httplib
 import socket
 import thread
+import urllib2
+
 
 DEBUG = None
 

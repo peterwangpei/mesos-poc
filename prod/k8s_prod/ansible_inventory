@@ -44,4 +44,4 @@ s2
 s1
 
 [all:vars]
-docker_opts='--insecure-registry 192.168.33.110:5000 --registry-mirror http://192.168.33.110:5000'
+docker_opts='--insecure-registry 192.168.0.100:5000 --registry-mirror http://192.168.0.100:5555'
