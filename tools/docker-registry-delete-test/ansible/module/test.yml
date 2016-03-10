@@ -1,0 +1,15 @@
+---
+
+- include: ./start_registry.yml
+- include: ./collect_space.yml
+
+- include: ./create_image.yml
+- include: ./push_image.yml
+- include: ./collect_space.yml
+
+- include: ./delete_manifest.yml
+- include: ./collect_space.yml
+
+- include: ./stop_registry.yml
+- include: ./delete_blob.yml
+- include: ./collect_space.yml
