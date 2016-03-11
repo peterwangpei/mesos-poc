@@ -10,7 +10,7 @@
 3. 在控制台上查看运行结果
 
 ## 原理
-在客户机上创建几个（默认为3个）随机镜像，其中tag分别是1，2... Tag为1的是基础的父镜像，其他的所有镜像都是在其基础上的镜像。Push完镜像后，一个个地删除镜像的manifest和blob，查看剩余占用空间。详细步骤可以查看[test.yml](/ansible/module/test.yml)文件。
+在客户机上创建几个（默认为3个）随机镜像，其中tag分别是1，2... Tag为1的是基础的父镜像，其他的所有镜像都是在其基础上的镜像。Push完镜像后，一个个地删除镜像的manifest和blob，查看剩余占用空间。详细步骤可以查看[test.yml](/tools/docker-registry-delete-test/ansible/module/test.yml)文件。
 
 以下是一个运行结果示例（先push 3个镜像，tag分别是1，2和3。其中2和3是建立在1的基础上。先删除3的manifest，然后删除3的blob，然后是2，最后是1）：
 ```
