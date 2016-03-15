@@ -9,19 +9,19 @@
 - include: ./push_images.yml
 - include: ./collect_space.yml msg="pushed_3_images"
 
-- include: ./delete_manifest.yml tag=3
+- include: ./delete_manifest.yml image_tag=3
 - include: ./collect_space.yml msg="deleted_1_child_image_manifest"
 
 - include: ./delete_blob.yml
 - include: ./collect_space.yml msg="deleted_1_child_image_blob"
 
-- include: ./delete_manifest.yml tag=2
+- include: ./delete_manifest.yml image_tag=2
 - include: ./collect_space.yml msg="deleted_1_child_image_manifest"
 
 - include: ./delete_blob.yml
 - include: ./collect_space.yml msg="deleted_1_child_image_blob"
 
-- include: ./delete_manifest.yml tag=1
+- include: ./delete_manifest.yml image_tag=1
 - include: ./collect_space.yml msg="deleted_1_parent_image_manifest"
 
 - include: ./delete_blob.yml
