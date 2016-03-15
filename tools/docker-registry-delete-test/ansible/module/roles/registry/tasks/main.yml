@@ -4,7 +4,7 @@
 - include: ./start_registry_ro.yml
   when: step == "start_registry_ro"
 
-- shell: docker stop registry
+- shell: if [ `docker ps | grep registry | wc -l` -gt 0 ]; then docker stop registry; fi
   when: step == "stop_registry"
 
 - include: ./delete_blob.yml
