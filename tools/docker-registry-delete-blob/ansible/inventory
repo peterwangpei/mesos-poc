@@ -10,4 +10,5 @@
 [all:vars]
 registry_container_name='portus_registry_1'
 gc_image='registry:2.4.ggg'
-config_path='/vagrant/config.yml'
+registry_config_path='/vagrant/config.yml'
+ceph_config_path='/etc/ceph'

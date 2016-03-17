@@ -1,2 +1,2 @@
-- shell: "sed -i '/^  maintenance:$/{N;N;d;}' {{config_path}}"
+- shell: "sed -i '/^  maintenance:$/{N;N;d;}' {{registry_config_path}}"
 - shell: "if [ `docker ps -a | grep {{registry_container_name}} | wc -l` -gt 0 ]; then docker restart {{registry_container_name}}; fi"

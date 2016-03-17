@@ -8,5 +8,6 @@
     name: gc
     image: "{{gc_image}}"
     volumes:
-      - "{{config_path}}:/etc/docker/registry/config.yml"
+      - "{{registry_config_path}}:/etc/docker/registry/config.yml"
+      - "{{ceph_config_path}}:/etc/ceph"
     command: garbage-collect /etc/docker/registry/config.yml
