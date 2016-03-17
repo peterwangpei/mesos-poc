@@ -1,0 +1,8 @@
+- include: ./start_registry_rw.yml
+  when: step == "start_registry_rw"
+
+- include: ./start_registry_ro.yml
+  when: step == "start_registry_ro"
+
+- shell: if [ `docker ps | grep {{registry_container_name}} | wc -l` -gt 0 ]; then docker stop {{registry_container_name}}; fi
+  when: step == "stop_registry"
