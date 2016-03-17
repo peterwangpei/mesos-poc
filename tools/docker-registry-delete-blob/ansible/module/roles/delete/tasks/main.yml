@@ -1,0 +1,13 @@
+- name: delete old container
+  docker:
+    name: gc
+    image: "{{gc_image}}"
+    state: absent
+- name: delete docker registry storage blob
+  docker:
+    name: gc
+    image: "{{gc_image}}"
+    volumes:
+      - "{{registry_config_path}}:/etc/docker/registry/config.yml"
+      - "{{ceph_config_path}}:/etc/ceph"
+    command: garbage-collect /etc/docker/registry/config.yml

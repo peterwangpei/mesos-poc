@@ -1,0 +1,2 @@
+- shell: "if [ `cat {{config_path}} | grep maintenance: | wc -l` -eq 0 ]; then sed -i '/^http:$/i \\ \\ maintenance:\\n    readonly:\\n      enabled: true' {{registry_config_path}}; fi"
+- shell: "if [ `docker ps -a | grep {{registry_container_name}} | wc -l` -gt 0 ]; then docker restart {{registry_container_name}}; fi"

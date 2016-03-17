@@ -1,0 +1,11 @@
+---
+
+- include: ./start_registry_ro.yml
+
+- name: delete image blob
+  hosts: blob
+  sudo: yes
+  roles:
+    - role: delete
+
+- include: ./start_registry_rw.yml
