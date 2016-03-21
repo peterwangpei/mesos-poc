@@ -20,7 +20,7 @@ function get_milliseconds_array_from_msg_file () {
   unset IFS
 }
 
-ansible-playbook module/docker.yml
+# ansible-playbook module/docker.yml
 ansible-playbook module/test.yml | tee msg.txt
 
 get_milliseconds_array_from_msg_file

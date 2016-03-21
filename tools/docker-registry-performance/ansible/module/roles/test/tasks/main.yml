@@ -3,7 +3,7 @@
 - template: src=../../../../../image/Dockerfile dest=/tmp/Dockerfile mode=0644
 
 - shell: /tmp/create_images.sh {{image_count}} {{image_mb_size}}
-- shell: /tmp/test_performance.sh
+- shell: /tmp/test_performance.sh {{registry_url}}
 - shell: cat /tmp/milliseconds.csv
   register: result
 

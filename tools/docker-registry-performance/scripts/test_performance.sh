@@ -1,7 +1,8 @@
 #!/bin/bash
 IMAGE_TAGS_TEXT=$(docker images | grep random/block-image | awk '{print $2}')
 IMAGE_TAGS=(${IMAGE_TAGS_TEXT//\n/ })
-REGISTRY=$(ps -ef | grep "docker daemon --insecure-registry" | awk '(NR==1){print $11}')
+#REGISTRY=$(ps -ef | grep "docker daemon --insecure-registry" | awk '(NR==1){print $11}')
+REGISTRY=$1
 
 function tag_images () {
   for tag in "${IMAGE_TAGS[@]}"
