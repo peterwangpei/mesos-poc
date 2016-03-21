@@ -11,7 +11,7 @@ function remove_existing_random_delete_images () {
 }
 
 function create_file () {
-  dd if=/dev/zero of=$1 bs=1024k count=$2
+  dd if=/dev/urandom of=$1 bs=1024k count=$2
 }
 
 function build_images () {

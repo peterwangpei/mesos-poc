@@ -12,7 +12,7 @@ function remove_existing_random_block_images () {
 }
 
 function create_big_file () {
-  dd if=/dev/zero of=bigfile bs=977k count=$1
+  dd if=/dev/urandom of=bigfile bs=977k count=$1
 }
 
 function build_images () {
