@@ -12,7 +12,7 @@ function get_time_by_percent () {
 }
 
 function get_milliseconds_array_from_msg_file () {
-  local msg=$(sed -n '/"msg": /p' msg.txt | sed 's/"msg": //g' | sed 's/[[:punct:]]//g')
+  local msg=$(sed -n '/\"img_push_ms/p' msg.txt | sed 's/ *\"img_push_ms //g' | sed 's/[[:punct:]]//g')
 
   local milliseconds=(${msg// / })
   TOTAL_IMAGE_COUNT=${#milliseconds[@]}

@@ -18,7 +18,7 @@ function calculate_push_images_time_spent () {
     docker push $REGISTRY/random/block-image:$tag
     END_TIME=$(date +%s%3N)
     MILLISECONDS_SPENT=$(( $END_TIME - $START_TIME ))
-    echo $MILLISECONDS_SPENT >> /tmp/milliseconds.csv
+    echo img_push_ms $MILLISECONDS_SPENT >> /tmp/milliseconds.csv
     START_TIME=$END_TIME
   done
 }
