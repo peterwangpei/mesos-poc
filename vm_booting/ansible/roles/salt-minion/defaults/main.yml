@@ -1,0 +1,2 @@
+---
+salt_master: "{{ groups['salt-master'] }}"

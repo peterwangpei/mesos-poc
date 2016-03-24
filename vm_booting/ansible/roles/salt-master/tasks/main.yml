@@ -1,0 +1,24 @@
+---
+- name: Install salt master
+  apt: name=salt-master update_cache=yes cache_valid_time=3600 state=present
+  tags: salt
+
+- name: Stop salt master
+  service: name=salt-master state=stopped
+  tags: salt
+
+- name: Config salt master
+  template: src=master.j2 dest=/etc/salt/master owner=root mode=0644
+  tags: salt
+
+- name: Copy public key
+  copy: src=master.pub dest=/etc/salt/pki/master/master.pub owner=root group=root mode=0311
+  tags: salt
+
+- name: Copy private key
+  copy: src=master.pub dest=/etc/salt/pki/master/master.pem owner=root group=root mode=0100
+  tags: salt
+
+- name: Start salt master
+  service: name=salt-master state=started
+  tags: salt
