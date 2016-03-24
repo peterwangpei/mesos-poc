@@ -1,0 +1,2 @@
+- shell: "docker run --rm -v {{registry_config_path}}:/etc/docker/registry/config.yml -v {{ceph_config_path}}:/etc/ceph {{gc_image}} garbage-collect /etc/docker/registry/config.yml"
+  ignore_errors: True

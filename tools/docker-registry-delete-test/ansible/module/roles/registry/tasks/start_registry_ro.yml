@@ -1,0 +1,11 @@
+- template: src=../../../../../config_readonly.yml dest=/tmp/config.yml mode=0644
+- name: run docker registry container
+  docker:
+    name: registry
+    image: "{{registry_image}}"
+    net: host
+    state: started
+    restart_policy: always
+    volumes:
+      - "{{registry_storage}}:/var/lib/registry"
+      - /tmp/config.yml:/etc/docker/registry/config.yml

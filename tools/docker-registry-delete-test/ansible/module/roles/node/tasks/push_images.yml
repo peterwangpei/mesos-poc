@@ -1,0 +1,4 @@
+- template: src=../../../../../scripts/push_images.sh dest=/tmp/push_images.sh mode=0755
+- template: src=../../../../../image/Dockerfile dest=/tmp/Dockerfile mode=0644
+
+- shell: /tmp/push_images.sh {{registry_url}}

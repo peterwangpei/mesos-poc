@@ -1,0 +1,2 @@
+- template: src=../../../../../scripts/delete_manifest.sh dest=/tmp/delete_manifest.sh mode=0755
+- shell: /tmp/delete_manifest.sh {{registry_url}} {{image_tag}}

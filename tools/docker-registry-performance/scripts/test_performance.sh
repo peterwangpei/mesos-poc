@@ -1,7 +1,8 @@
 #!/bin/bash
 IMAGE_TAGS_TEXT=$(docker images | grep random/block-image | awk '{print $2}')
 IMAGE_TAGS=(${IMAGE_TAGS_TEXT//\n/ })
-REGISTRY=$(ps -ef | grep "docker daemon --insecure-registry" | awk '(NR==1){print $11}')
+#REGISTRY=$(ps -ef | grep "docker daemon --insecure-registry" | awk '(NR==1){print $11}')
+REGISTRY=$1
 
 function tag_images () {
   for tag in "${IMAGE_TAGS[@]}"
@@ -17,7 +18,7 @@ function calculate_push_images_time_spent () {
     docker push $REGISTRY/random/block-image:$tag
     END_TIME=$(date +%s%3N)
     MILLISECONDS_SPENT=$(( $END_TIME - $START_TIME ))
-    echo $MILLISECONDS_SPENT >> /tmp/milliseconds.csv
+    echo img_push_ms $MILLISECONDS_SPENT >> /tmp/milliseconds.csv
     START_TIME=$END_TIME
   done
 }

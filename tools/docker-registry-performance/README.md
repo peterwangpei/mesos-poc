@@ -4,6 +4,7 @@
 2. 需要准备用于性能测试并安装好docker的客户机。将在客户机上生成指定数量、大小的镜像并push到镜像仓库。目前支持的客户机如下：
   - Ubuntu：docker使用upstart方式启动
   - CentOS：docker使用systemd方式启动
+3. 运行test.sh命令的机器上需要安装ansible
 
 ## 用法
 1. 配置ansible/inventory文件，指定用于性能测试的客户机、镜像仓库地址、单客户机的镜像数量和镜像的大小（单位：MB）

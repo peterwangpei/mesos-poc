@@ -1,0 +1,10 @@
+---
+
+- include: ./stop_registry.yml
+
+- name: start docker registry container
+  hosts: registry
+  sudo: yes
+  roles:
+    - role: registry
+      step: start_registry

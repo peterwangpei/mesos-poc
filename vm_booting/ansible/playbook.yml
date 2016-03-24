@@ -1,0 +1,7 @@
+---
+- name: Install rabbitmq
+  hosts: rabbitmq
+  become: yes
+  become_method: sudo
+  roles:
+    - rabbitmq

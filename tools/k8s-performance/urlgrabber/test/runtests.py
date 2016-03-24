@@ -17,9 +17,13 @@ OPTIONS:
 # $Id: runtests.py,v 1.7 2004/03/31 17:02:00 mstenner Exp $
 
 import sys
-from os.path import dirname, join as joinpath
 from getopt import getopt
+from os.path import dirname, join as joinpath
 from base_test_code import *
+
+
+
+
 
 def main():
     # setup sys.path so that we can run this from the source

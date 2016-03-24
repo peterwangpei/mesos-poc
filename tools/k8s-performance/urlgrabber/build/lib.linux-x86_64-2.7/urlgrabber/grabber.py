@@ -391,22 +391,23 @@ BANDWIDTH THROTTLING
 
 # $Id: grabber.py,v 1.52 2006/12/12 19:08:46 mstenner Exp $
 
+import mimetools
 import os
 import os.path
-import sys
-import urlparse
+import pycurl
 import rfc822
-import time
 import string
+import sys
+import thread
+import time
 import urllib
 import urllib2
-import mimetools
-import thread
-from stat import *  # S_* and ST_*
-import pycurl
-from ftplib import parse150
+import urlparse
 from StringIO import StringIO
+from ftplib import parse150
+from stat import *  # S_* and ST_*
 from tempfile import mkstemp
+
 
 ########################################################################
 #                     MODULE INITIALIZATION

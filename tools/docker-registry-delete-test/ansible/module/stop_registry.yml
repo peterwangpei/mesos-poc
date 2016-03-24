@@ -1,0 +1,8 @@
+---
+
+- name: stop docker registry container
+  hosts: registry
+  sudo: yes
+  roles:
+    - role: registry
+      step: stop_registry
