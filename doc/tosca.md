@@ -1,18 +1,18 @@
 ## 简介
 [TOSCA](https://www.oasis-open.org/committees/tosca/)（Topology and Orchestration Specification for Cloud Applications）是由OASIS组织制定的云应用拓扑编排规范。通俗地说，就是制定了一个标准，用来描述云平台上应用的拓扑结构。目前支持XML和YAML，Cloudiy的蓝图就是基于这个规范而来。这个规范比较庞大，本文尽量浓缩了[TOSCA的YAML版](http://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.0/TOSCA-Simple-Profile-YAML-v1.0.html)前两章。
 
-TOSCA的基本概念只有两个：节点（node）和关系（relationship）。节点有许多类型，可以是一台服务器，一个网络，一个计算节点等等。关系描述了节点之间是如何连接的。举个栗子：一个nodejs应用（节点）部署在（关系）名为host的主机（节点）上。节点和关系都可以通过程序来扩展和实现。
+TOSCA的基本概念只有两个：节点（node）和关系（relationship）。节点有许多类型，可以是一台服务器，一个网络，一个计算节点等等。关系描述了节点之间是如何连接的。举个例子：一个nodejs应用（节点）部署在（关系）名为host的主机（节点）上。节点和关系都可以通过程序来扩展和实现。
 
 目前它的开源实现有OpenStack (Heat-Translator，Tacker，Senlin)，Alien4Cloud，Cloudify等。
 
 ## 示例
 ### Hello World
-首先是Hello World。先看下面这段描述文件：
+第一个例子是没有Hello World的Hello World。先看下面这段描述文件：
 <pre>
 tosca_definitions_version: tosca_simple_yaml_1_0
- 
+
 description: Template for deploying a single server with predefined properties.
- 
+
 topology_template:
   node_templates:
     my_server:
@@ -31,7 +31,7 @@ topology_template:
             version: 6.5 
 </pre>
 
-除了TOSCA的版本和描述信息以外，就是这个`topology_template`了。这里我们看到有一个名为`my_server`的节点，它的类型是`tosca.nodes.Compute`。这个类型预置了两个`capabilities`信息，一个是`host`，定义了硬件信息；另一个是`os`，定义了操作系统信息。
+除了TOSCA的版本`tosca_definitions_version`和描述信息`description`以外，就是这个`topology_template`了。这里我们看到有一个名为`my_server`的节点，它的类型是`tosca.nodes.Compute`。这个类型预置了两个`capabilities`信息，一个是`host`，定义了硬件信息；另一个是`os`，定义了操作系统信息。
 
 ### 输入输出
 描述文件如下：
@@ -50,7 +50,6 @@ topology_template:
       capabilities:
         host:
           properties:
-            # Compute properties
             num_cpus: { get_input: cpus }
             mem_size: 2048  MB
             disk_size: 10 GB
@@ -86,6 +85,7 @@ topology_template:
 </pre>
 
 我们看到了一个新的节点类型：`tosca.nodes.DBMS.MySQL`。这个类型允许接收`root_password`和`port`的参数。除了节点，关系也出来了。在`requirements`里定义了`mysql`这个节点需要被安装到`db_server`这个节点上。如果只想表明依赖，比如说`service_a`依赖于`service_b`，也可以直接用`- dependency: service_b`来描述。上面文件的拓扑结构如下图：
+
 ![](http://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.0/csprd02/TOSCA-Simple-Profile-YAML-v1.0-csprd02_files/image003.png)
 
 ### 初始化数据库
@@ -99,7 +99,7 @@ topology_template:
         user: { get_input: database_user }
         password: { get_input: database_password }
         port: { get_input: database_port }
-      artifacts:
+      <b style="color:magenta">artifacts</b>:
         db_content:
           file: files/my_db_content.txt
           type: tosca.artifacts.File
@@ -125,9 +125,10 @@ topology_template:
 </pre>
 
 这里的`tosca.nodes.Database.MySQL`表示一个MySQL数据库的实例。在`artifacts`的`db_content`里指定了一个文本文件，而这个文件将被`interfaces`里的`Create`所用，为`db_create.sh`脚本提供数据。`Standard`表示生命周期，可能会包含`configure`、`start`、`stop`等各种操作，而`db_create.sh`本身是对`tosca.nodes.Database.MySQL`提供的默认`create`操作的一个重写。如下图：
+
 ![](http://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.0/csprd02/TOSCA-Simple-Profile-YAML-v1.0-csprd02_files/image004.png)
 
-### 双层应用
+### 两层应用
 描述文件如下：
 <pre>
   node_templates:
@@ -199,7 +200,7 @@ topology_template:
           pre_configure_source: scripts/wp_db_configure.sh
 </pre>
 
-这里的关注点是`relationship`里的`my.types.WordpressDbConnection`。这是一个自定义的关系，在文件的下半部分描述了详细定义。这个定义也可以单独提出一个文件，就像下面这样：
+这里的关注点是`relationship`里的`my.types.WordpressDbConnection`。这是一个自定义的关系，在文件的下半部分描述了详细定义。它实际上是一个`ConnectsTo`类型，为`pre_configure_source`操作提供了一个自定义脚本。这个定义也可以单独提出一个文件，就像下面这样：
 <pre>
 tosca_definitions_version: tosca_simple_yaml_1_0
  
@@ -225,12 +226,10 @@ description: Definition of custom WordpressDbConnection relationship type
         - host:
             <b style="color:magenta">node_filter</b>:
               capabilities:
-                # Constraints for selecting “host” (Container Capability)
                 - host:
                     properties:
                       - num_cpus: { <b style="color:magenta">in_range</b>: [ 1, 4 ] }
                       - mem_size: { <b style="color:magenta">greater_or_equal</b>: 2 GB }
-                # Constraints for selecting “os” (OperatingSystem Capability)
                 - os:
                     properties:
                       - architecture: { <b style="color:magenta">equal</b>: x86_64 }
@@ -248,7 +247,6 @@ description: Definition of custom WordpressDbConnection relationship type
       requirements:
         - host: <b style="color:magenta">mysql_compute</b>
  
-    # Abstract node template (placeholder) to be selected by provider
     <b style="color:magenta">mysql_compute</b>:
       type: Compute
       node_filter:
@@ -353,7 +351,7 @@ topology_template:
       # 略
 </pre>
 
-这里的`database_endpoint`是由`database`节点提供的`database_endpoint`。两个文件联系起来看，表明了上面的`web_app`不需要管`db`是什么样子的，有什么拓扑结构，它关心的只是`database_endpoint`。而下面由`database`、`dbms`和`server`三个节点组成的模板正好可以提供`database_endpoint`，从而替换掉`db`这个抽象节点。另外，这样的替换也是可以嵌套的。
+这里的`database_endpoint`是由`database`节点提供的`database_endpoint`。两个文件联系起来看，表明了上面的`web_app`不需要管`db`是什么样子的，有什么拓扑结构，它关心的只是`database_endpoint`。而下面由`database`、`dbms`和`server`三个节点组成的模板正好可以提供`database_endpoint`，从而替换掉`db`这个抽象节点。另外，这样的替换也支持嵌套。
 
 ### 节点模板组
 描述文件如下：
@@ -443,7 +441,7 @@ topology_template:
               data_dir: { <b style="color:magenta">get_operation_output</b>: [ SELF, Standard, create, data_dir ] }
 </pre>
 
-在这个例子里有两个`get_operation_output`，前者指的是将`create`操作的环境变量`generated_url`设置到`url`里，后者是将其传递给`configure`操作。
+在这个例子里有两个`get_operation_output`，前者指的是将`create`操作的环境变量`generated_url`设置到`url`里，后者是将`data_dir`传递给`configure`操作。
 
 ### 取动态值
 描述文件如下：
@@ -459,7 +457,7 @@ node_types:
   ClientNode:
     derived_from: SoftwareComponent
     properties:
-      # omitted here for brevity
+      # 略
     requirements:
       - server:
           capability: Endpoint
