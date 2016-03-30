@@ -9,3 +9,4 @@
     # - docker
     - prometheus
     # - node-exportor
+    # - grafana

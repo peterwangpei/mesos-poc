@@ -14,7 +14,7 @@
 - name: make sure the prometheus data dir exists
   sudo: yes
   file:
-    dest: /var/prometheus/storage
+    dest: /var/lib/prometheus/storage
     state: directory
 
 - name: copy the prometheus conf file

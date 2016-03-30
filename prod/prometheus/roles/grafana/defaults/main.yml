@@ -1,0 +1,6 @@
+---
+# defaults file for grafana
+
+grafana_image: grafana/grafana:2.6.0
+grafana_pass: admin
+grafana_port: 3000

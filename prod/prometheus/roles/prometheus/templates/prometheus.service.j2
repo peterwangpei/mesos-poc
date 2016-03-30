@@ -15,7 +15,7 @@ ExecStart=/usr/bin/docker run \
     --name=prometheus \
     --publish={{prometheus_client_port}}:9090 \
     -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
-    -v /var/prometheus/storage:/prometheus \
+    -v /var/lib/prometheus/storage:/prometheus \
     {{prometheus_image}} \
 
 ExecStop=/usr/bin/docker stop prometheus

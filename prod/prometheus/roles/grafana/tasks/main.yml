@@ -1,0 +1,53 @@
+---
+# tasks file for grafana
+
+- name: ensure grafana image exists
+  sudo: yes
+  command: docker pull {{grafana_image}}
+
+- name: make sure grafana data dir exists
+  sudo: yes
+  file:
+    dest: /var/lib/grafana
+    state: directory
+
+- name: create node grafana service
+  sudo: yes
+  copy:
+    dest: /usr/lib/systemd/system/grafana.service
+    content: |
+      [Unit]
+      Description=grafana
+      After=docker.service
+      Requires=docker.service
+
+      [Service]
+      Restart=on-failure
+      RestartSec=20
+      TimeoutStartSec=20m
+
+      ExecStartPre=-/usr/bin/docker rm -f grafana
+      ExecStartPre=/usr/bin/docker pull {{grafana_image}}
+
+      ExecStart=/usr/bin/docker run \\
+          --name=grafana \\
+          -p {{grafana_port}}:3000 \\
+          -v /var/lib/grafana:/var/lib/grafana \\
+          -e "GF_SECURITY_ADMIN_PASSWORD={{grafana_pass}}" \\
+          {{grafana_image}}
+
+      ExecStop=/usr/bin/docker stop grafana
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: reload systemd daemon
+  sudo: yes
+  command: systemctl daemon-reload
+
+- name: restart and enable grafana
+  sudo: yes
+  service:
+    name: grafana
+    enabled: true
+    state: restarted
