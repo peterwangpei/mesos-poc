@@ -5,3 +5,4 @@ demo/demosite/demo/target/
 /prod/saltstack/kubernetes-salt.tar.gz
 /prod/saltstack/kubernetes-server-linux-amd64.tar.gz
 /prod/saltstack/kubernetes.tar.gz
+*.pyc
