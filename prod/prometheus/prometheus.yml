@@ -1,0 +1,11 @@
+- name: install prometheus
+  hosts: prometheus
+  vars:
+    docker_opts: '--insecure-registry 192.168.33.110:5000 --registry-mirror http://192.168.33.110:5000'
+  tasks:
+    - debug: var=docker_opts
+  roles:
+    # - common
+    # - docker
+    - prometheus
+    # - node-exportor

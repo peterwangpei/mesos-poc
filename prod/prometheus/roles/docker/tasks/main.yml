@@ -1,0 +1,51 @@
+---
+
+- name: install latest device-mapper-libs
+  sudo: yes
+  yum:
+    name: device-mapper-libs
+    state: latest
+
+- name: cp docker repo
+  sudo: yes
+  copy:
+    dest: /etc/yum.repos.d/docker.repo
+    content: |
+      [dockerrepo]
+      name=Docker Repository
+      baseurl=https://yum.dockerproject.org/repo/main/centos/7
+      enabled=1
+      gpgcheck=1
+      gpgkey=https://yum.dockerproject.org/gpg
+
+- name: install docker packages
+  sudo: yes
+  yum:
+    name: "{{ item }}"
+    # state: latest
+  with_items:
+    - docker-engine
+
+- name: copy docker service define file
+  sudo: yes
+  copy:
+    src: docker.service
+    dest: /usr/lib/systemd/system/docker.service
+  notify:
+    - reload systemd daemon
+    - restart docker
+
+- name: config docker file
+  sudo: yes
+  template:
+    dest: "{{item.dest}}"
+    src: "{{item.src}}"
+  with_items:
+    - src: docker.j2
+      dest: /etc/sysconfig/docker
+  notify:
+    - restart docker
+  tags:
+    - docker
+
+- meta: flush_handlers

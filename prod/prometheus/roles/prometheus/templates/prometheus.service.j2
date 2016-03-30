@@ -1,0 +1,24 @@
+[Unit]
+Description=prometheus
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=on-failure
+RestartSec=20
+TimeoutStartSec=20m
+
+ExecStartPre=-/usr/bin/docker rm -f prometheus
+ExecStartPre=/usr/bin/docker pull {{prometheus_image}}
+
+ExecStart=/usr/bin/docker run \
+    --name=prometheus \
+    --publish={{prometheus_client_port}}:9090 \
+    -v /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
+    -v /var/prometheus/storage:/prometheus \
+    {{prometheus_image}} \
+
+ExecStop=/usr/bin/docker stop prometheus
+
+[Install]
+WantedBy=multi-user.target

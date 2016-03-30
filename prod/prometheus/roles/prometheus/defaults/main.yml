@@ -1,0 +1,6 @@
+---
+# defaults file for prometheus
+
+prometheus_image: prom/prometheus:0.17.0
+prometheus_client_port: 9090
+node_exportor_port: 9100       # must be same as

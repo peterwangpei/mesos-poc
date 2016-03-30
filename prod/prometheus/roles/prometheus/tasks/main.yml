@@ -1,0 +1,37 @@
+---
+# tasks file for prometheus
+
+- name: ensure prometheus image exists
+  sudo: yes
+  command: docker pull {{prometheus_image}}
+
+- name: make sure the prometheus config dir exists
+  sudo: yes
+  file:
+    dest: /etc/prometheus
+    state: directory
+
+- name: make sure the prometheus data dir exists
+  sudo: yes
+  file:
+    dest: /var/prometheus/storage
+    state: directory
+
+- name: copy the prometheus conf file
+  sudo: yes
+  template:
+    dest: /etc/prometheus/prometheus.yml
+    src: prometheus.conf.yml.j2
+  notify:
+    - restart prometheus
+
+- name: create prometheus service
+  sudo: yes
+  template:
+    dest: /usr/lib/systemd/system/prometheus.service
+    src: prometheus.service.j2
+  notify:
+    - reload systemd daemon
+    - restart prometheus
+
+- meta: flush_handlers

@@ -1,0 +1,52 @@
+---
+# tasks file for node-exportor
+
+- name: ensure node-exportor image exists
+  sudo: yes
+  command: docker pull {{node_exportor_image}}
+
+- name: create node exportor service
+  sudo: yes
+  copy:
+    dest: /usr/lib/systemd/system/node-exportor.service
+    content: |
+      [Unit]
+      Description=prometheus node exportor
+      After=docker.service
+      Requires=docker.service
+
+      [Service]
+      Restart=on-failure
+      RestartSec=20
+      TimeoutStartSec=20m
+
+      ExecStartPre=-/usr/bin/docker rm -f node-exportor
+      ExecStartPre=/usr/bin/docker pull {{node_exportor_image}}
+
+      ExecStart=/usr/bin/docker run \\
+          --name=node-exportor \\
+          -p {{node_exportor_port}}:9100 \\
+          -v "/proc:/host/proc" \\
+          -v "/sys:/host/sys" \\
+          -v "/:/rootfs" \\
+          --net="host" \\
+          {{node_exportor_image}} \\
+          -collector.procfs /host/proc \\
+          -collector.sysfs /host/proc \\
+          -collector.filesystem.ignored-mount-points "^/(sys|proc|dev|host|etc)($|/)"
+
+      ExecStop=/usr/bin/docker stop node-exportor
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: reload systemd daemon
+  sudo: yes
+  command: systemctl daemon-reload
+
+- name: restart and enable prometheus node-exportor
+  sudo: yes
+  service:
+    name: node-exportor
+    enabled: true
+    state: restarted

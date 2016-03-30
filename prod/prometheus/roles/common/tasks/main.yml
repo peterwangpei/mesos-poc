@@ -1,0 +1,59 @@
+---
+- name: set timezone to etc/utc
+  sudo: yes
+  file:
+    src: /usr/share/zoneinfo/Etc/UTC
+    dest: /etc/localtime
+    state: link
+    force: yes
+
+- name: install system utilities
+  sudo: yes
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - httpd-tools
+    - net-tools
+    - nc
+    - openssh
+    - policycoreutils-python
+    - unzip
+
+- name: disable firewalld
+  sudo: yes
+  service:
+    name: firewalld
+    enabled: false
+    state: stopped
+  register: command_result
+  failed_when: "command_result|failed and 'No such file or directory' not in command_result.msg"
+
+- name: enable EPEL repo
+  sudo: yes
+  yum:
+    name: epel-release
+    state: latest
+
+- name: install pip
+  sudo: yes
+  yum:
+    name: python-pip
+    state: latest
+
+- name: update setuptools and pip
+  sudo: yes
+  pip:
+    name: "{{ item.name }}"
+    state: latest
+  with_items:
+    - name: pip
+    - name: setuptools
+
+- name: disable requiretty in sudoers
+  sudo: yes
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: ^.+requiretty$
+    line: "# Defaults	requiretty"

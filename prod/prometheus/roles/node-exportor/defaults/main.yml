@@ -1,0 +1,5 @@
+---
+# defaults file for node-exportor
+
+node_exportor_image: prom/node-exporter:latest
+node_exportor_port: 9100
