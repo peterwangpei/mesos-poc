@@ -1,7 +1,7 @@
 ---
-- name: Install rabbitmq
-  hosts: rabbitmq
+- name: Install salt
+  hosts: salt-minion
   become: yes
   become_method: sudo
   roles:
-    - rabbitmq
+    - salt-minion

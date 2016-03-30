@@ -1,0 +1,14 @@
+---
+- set_fact: version='14.04'
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "14"
+
+- set_fact: version='12.04'
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_major_version == "12"
+
+- name: Install salt apt key
+  apt_key: url="https://repo.saltstack.com/apt/ubuntu/{{ version }}/amd64/latest/SALTSTACK-GPG-KEY.pub" state=present
+  tags: salt
+
+- name: Install salt apt repository
+  apt_repository: repo="deb http://repo.saltstack.com/apt/ubuntu/{{ version }}/amd64/latest trusty main" state=present
+  tags: salt

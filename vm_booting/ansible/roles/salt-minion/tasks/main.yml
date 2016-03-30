@@ -1,0 +1,16 @@
+---
+- name: Install salt minion
+  apt: name=salt-minion update_cache=yes cache_valid_time=3600 state=present
+  tags: salt
+
+- name: Stop salt minion
+  service: name=salt-minion state=stopped
+  tags: salt
+
+- name: Config salt minion
+  template: src=minion.j2 dest=/etc/salt/minion owner=root mode=0644
+  tags: salt
+
+- name: Start salt minion
+  service: name=salt-minion state=started
+  tags: salt

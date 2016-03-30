@@ -1,0 +1,6 @@
+---
+salt_master_id: "{{ ansible_hostname }}"
+salt_interface: "{{ inventory_hostname }}"
+salt_publish_port: 4505
+salt_ret_port: 4506
+salt_user: 'root'

@@ -1,0 +1,7 @@
+---
+- name: Install salt
+  hosts: salt
+  remote_user: vagrant
+  become: yes
+  tasks:
+    - command: hostname
