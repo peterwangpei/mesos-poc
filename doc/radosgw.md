@@ -1,5 +1,5 @@
 # 使用RADOSGW提供ceph的S3和Swift接口
-由于Docker Registry在2.4版本[移除了对rados的支持](https://github.com/docker/distribution/commit/5967d333425a8dd5d36c5bb456098839654d38af)，所以如果使用ceph作为后端存储就需要利用RADOSGW了。本文介绍了通过RADOSGW来实现S3和OpenStack Swift存储接口的方法。
+由于Docker Registry在2.4版本[移除了对rados的支持](https://github.com/docker/distribution/commit/5967d333425a8dd5d36c5bb456098839654d38af)，所以如果使用ceph作为后端存储就需要利用RADOSGW了。本文参考了[官方教程](http://docs.ceph.com/docs/master/radosgw/config/)，介绍了通过RADOSGW来实现S3和OpenStack Swift存储接口的方法。
 
 ## 前提条件
 
@@ -22,14 +22,24 @@ sudo ceph auth del client.radosgw.gateway
 sudo ceph auth get-or-create client.radosgw.gateway osd 'allow rwx' mon 'allow rwx' -o /etc/ceph/ceph.client.radosgw.keyring
 ```
 
-然后需要把这个用户加到`ceph.conf`配置里，提供端口为9000的[FastCGI](https://en.wikipedia.org/wiki/FastCGI)服务：
+然后需要把这个用户加到`ceph.conf`配置里，提供端口为9000的[FastCGI](https://en.wikipedia.org/wiki/FastCGI)服务。Apache为2.4.9版以下的配置：
 ```sh
 sudo sed -i '$a [client.radosgw.gateway]' /etc/ceph/ceph.conf
-sudo sed -i '$a host = vagrant-ubuntu-trusty-64' /etc/ceph/ceph.conf
+sudo sed -i '$a host = 主机名（即运行hostname -s之后的值）' /etc/ceph/ceph.conf
 sudo sed -i '$a keyring = /etc/ceph/ceph.client.radosgw.keyring' /etc/ceph/ceph.conf
 sudo sed -i '$a rgw socket path = ""' /etc/ceph/ceph.conf
 sudo sed -i '$a log file = /var/log/radosgw/client.radosgw.gateway.log' /etc/ceph/ceph.conf
 sudo sed -i '$a rgw frontends = fastcgi socket_port=9000 socket_host=0.0.0.0' /etc/ceph/ceph.conf
+sudo sed -i '$a rgw print continue = false' /etc/ceph/ceph.conf
+```
+
+2.4.9版或以上的配置：
+```sh
+sudo sed -i '$a [client.radosgw.gateway]' /etc/ceph/ceph.conf
+sudo sed -i '$a host = 主机名（即运行hostname -s之后的值）' /etc/ceph/ceph.conf
+sudo sed -i '$a keyring = /etc/ceph/ceph.client.radosgw.keyring' /etc/ceph/ceph.conf
+sudo sed -i '$a rgw socket path = /var/run/ceph/ceph.radosgw.gateway.fastcgi.sock' /etc/ceph/ceph.conf
+sudo sed -i '$a log file = /var/log/radosgw/client.radosgw.gateway.log' /etc/ceph/ceph.conf
 sudo sed -i '$a rgw print continue = false' /etc/ceph/ceph.conf
 ```
 
@@ -43,7 +53,7 @@ sudo /etc/init.d/radosgw start
 sudo apt-get -y --force-yes install apache2
 ```
 
-接下来创建一个apache2的配置文件，监听80端口并把请求转发到radosgw提供的FastCGI 9000端口上：
+接下来创建一个apache2的配置文件，监听80端口并把请求转发到radosgw提供的FastCGI 9000端口上。Apache为2.4.9版以下的配置：
 ```sh
 cat << EOF > rgw.conf
 <VirtualHost *:80>
@@ -66,7 +76,33 @@ ProxyPass / fcgi://localhost:9000/
 </VirtualHost>
 EOF
 
-sudo mv rgw.conf /etc/apache2/conf-enabled/rgw.conf
+sudo mv rgw.conf /etc/apache2/conf-enabled/rgw.conf    # 这个路径因操作系统的发行版不同而异
+```
+
+2.4.9版或以上的配置：
+```sh
+cat << EOF > rgw.conf
+<VirtualHost *:80>
+ServerName localhost
+DocumentRoot /var/www/html
+
+ErrorLog /var/log/apache2/rgw_error.log
+CustomLog /var/log/apache2/rgw_access.log combined
+
+# LogLevel debug
+
+RewriteEngine On
+
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+
+SetEnv proxy-nokeepalive 1
+
+ProxyPass / unix:///var/run/ceph/ceph.radosgw.gateway.fastcgi.sock|fcgi://localhost:9000/
+
+</VirtualHost>
+EOF
+
+sudo mv rgw.conf /etc/apache2/conf-enabled/rgw.conf    # 这个路径因操作系统的发行版不同而异
 ```
 
 由于上述配置需要用到一些apache2默认未加载的模块，所以需要加载并重新启动apache2：
