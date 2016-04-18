@@ -17,18 +17,46 @@ rule_files:
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 scrape_configs:
+
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'k8s'
+    scrape_interval: 5s
+    scrape_timeout: 10s
+    target_groups:
+      - targets: ['192.168.33.121:8085']
+        labels:
+          group: 'k8s-1'
+    basic_auth:
+      username: 'root'
+      password: 'root'
+      
+  - job_name: 'cadvisor'
+    scrape_interval: 5s
+    scrape_timeout: 10s
+    target_groups:
+      - targets: ['192.168.33.121:4194']
+
   - job_name: 'prometheus'
 
     # Override the global default and scrape targets from this job every 5 seconds.
     scrape_interval: 5s
     scrape_timeout: 10s
+    target_groups:
+      - targets: ['localhost:9090']
+      
+  - job_name: 'jmx'
+    scrape_interval: 5s
+    scrape_timeout: 10s
+    target_groups:
+      - targets: ['{{ansible_default_ipv4.address}}:9138']
 
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
-
-    target_groups:
-      - targets: ['localhost:9090']
+  # - job_name: consul
+  #   scrape_interval: 5s
+  #   consul_sd_configs:
+  #   - server: '192.168.33.121:8500'
+      # services: []
 
   - job_name: 'nodes'
 
@@ -40,15 +68,3 @@ scrape_configs:
 {% endfor %}
         labels:
           group: 'node'
-
-  - job_name:       'example-random'
-    # Override the global default and scrape targets from this job every 5 seconds.
-    scrape_interval: 5s
-    target_groups:
-      - targets: ['192.168.33.1:8080', '192.168.33.1:8081']
-        labels:
-          group: 'production'
-
-      - targets: ['192.168.33.1:8082']
-        labels:
-          group: 'canary'

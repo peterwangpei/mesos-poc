@@ -1,0 +1,5 @@
+---
+# defaults file for jmx-exporter
+jmx_port: 8999
+jmx_host: "{{ansible_default_ipv4.address}}"
+exporter_port: 9138
