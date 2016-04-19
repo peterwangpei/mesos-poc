@@ -1,0 +1,6 @@
+---
+hostPort: "localhost:8880"
+# jmxUrl: service:jmx:rmi:///jndi/rmi://{{jmx_host}}:{{jmx_port}}/jmxrmi
+
+lowercaseOutputLabelNames: true
+lowercaseOutputName: true

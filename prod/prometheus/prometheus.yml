@@ -7,8 +7,8 @@
   roles:
     # - common
     # - docker
-    # - prometheus
+    - prometheus
     # - node-exportor
-    - node-exporter-bin
+    # - node-exporter-bin
     # - grafana
     # - jmx-exporter

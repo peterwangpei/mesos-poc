@@ -57,6 +57,15 @@ scrape_configs:
   #   consul_sd_configs:
   #   - server: '192.168.33.121:8500'
       # services: []
+      
+  - job_name: 'nodes-raw'
+
+    scrape_interval: 5s
+    target_groups:
+      - targets:
+        - "{{ansible_default_ipv4.address}}:9101"
+        labels:
+          group: 'node-bin'
 
   - job_name: 'nodes'
 
