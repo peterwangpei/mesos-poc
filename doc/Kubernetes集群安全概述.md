@@ -748,7 +748,7 @@ Kubernetes通过ServiceAccount插件、Token Controller以及Service Account Con
 	
 * Service Account Controller 
 
-   Service Account Controller用于确保每一个活动的命名空间中都存在`default`服务账号，以及确保服务账号不能跨越命名空间。
+   Service Account Controller用于管理命名空间中的服务账号，并且确保每一个活动的命名空间中都存在`default`服务账号。
    
 对于服务账号的授权，在前面的章节中已近做了一些概要的介绍，从本质上来说与用户账号的授权是一样的，只是需要注意服务账号的账号名。
 
