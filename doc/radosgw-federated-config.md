@@ -24,17 +24,19 @@ sudo apt-get -y --force-yes install apache2 libapache2-mod-fastcgi
 ```
 
 相同辖区同步暂时不需要考虑eu-east这台虚拟机。然后就可以分别启动ceph/demo这个容器来提供ceph服务。
+
 us-east：
 ```sh
 docker run -d --net=host -v /etc/ceph:/etc/ceph -e MON_IP=192.168.33.15 -e CEPH_NETWORK=192.168.33.15/24 --name=ceph ceph/demo
 ```
 
-us-west
+us-west：
 ```sh
 docker run -d --net=host -v /etc/ceph:/etc/ceph -e MON_IP=192.168.33.16 -e CEPH_NETWORK=192.168.33.16/24 --name=ceph ceph/demo
 ```
 
 然后手动在各自虚拟机上创建一些提供给域使用的存储池，这一步不是必须的，因为我们创建的网关用户有权限自动创建存储池。
+
 us-east：
 ```sh
 docker exec -it ceph bash
@@ -74,6 +76,7 @@ exit
 ```
 
 两台虚拟机对应两个实例，接下来为这两个实例分别创建密钥环（keyring），用它生成网关的用户和密钥（key），增加密钥的rwx权限并让其有权限访问Ceph对象集群。
+
 us-east：
 ```sh
 sudo ceph auth del client.radosgw.gateway
@@ -95,6 +98,7 @@ sudo ceph -k /etc/ceph/ceph.client.admin.keyring auth add client.radosgw.us-west
 ```
 
 接下来创建一个apache2的配置文件，监听80端口并把请求转发到radosgw提供的FastCGI 9000端口（稍后将会配置）上。
+
 us-east和us-west：
 ```sh
 cat << EOF > rgw.conf
@@ -130,6 +134,7 @@ sudo mv rgw.conf /etc/apache2/conf-enabled/rgw.conf
 ```
 
 由于上述配置需要用到apache2默认未加载的[rewrite模块](http://httpd.apache.org/docs/current/mod/mod_rewrite.html)，所以需要加载并重新启动apache2。
+
 us-east和us-west：
 ```sh
 sudo a2enmod rewrite
@@ -137,6 +142,7 @@ sudo service apache2 restart
 ```
 
 FastCGI需要一个脚本来启用兼容S3的接口，同样也是所有虚拟机都要配，但是实例名略有区别。
+
 us-east：
 ```sh
 cat << EOF > s3gw.fcgi
@@ -160,6 +166,7 @@ sudo chmod +x /var/www/s3gw.fcgi
 ```
 
 现在可以修改`ceph.conf`配置实例了。
+
 us-east：
 ```sh
 sudo sed -i '$a rgw region root pool = .us.rgw.root' /etc/ceph/ceph.conf
@@ -205,6 +212,7 @@ sudo sed -i '$a rgw print continue = false' /etc/ceph/ceph.conf
 - **rgw zone root pool**：指定域所使用的存储池
 
 接下来在各自实例上生成一个相同的json格式的辖区文件。
+
 us-east和us-west：
 ```sh
 docker exec -it ceph bash
@@ -242,6 +250,7 @@ exit
 ```
 
 然后通过辖区文件生成us辖区并设置其为默认辖区。
+
 us-east：
 ```sh
 docker exec -it ceph bash
@@ -261,6 +270,7 @@ exit
 ```
 
 接下来是域。在各自实例上生成两个相同的json格式的域文件。
+
 us-east和us-west：
 ```sh
 docker exec -it ceph bash
@@ -297,6 +307,7 @@ exit
 ```
 
 然后通过域文件生成两个域并更新辖区图（region map）。
+
 us-east：
 ```sh
 docker exec -it ceph bash
@@ -344,6 +355,7 @@ scp us-west.json root@192.168.33.15:/root
 ```
 
 现在两台虚拟机的用户主文件夹里都有对方的json文件，分别复制进ceph容器里。
+
 us-east：
 ```sh
 docker cp us-west.json ceph:/us-west.json
@@ -355,6 +367,7 @@ docker cp us-east.json ceph:/us-east.json
 ```
 
 接下来分别在两个实例里更新带了`access_key`和`secret_key`的各两个域。
+
 us-east：
 ```sh
 docker exec ceph radosgw-admin zone set --rgw-zone=us-east --infile us-east.json --name client.radosgw.us-east-1
@@ -368,6 +381,7 @@ docker exec ceph radosgw-admin zone set --rgw-zone=us-west --infile us-west.json
 ```
 
 都完成了以后，就可以重启ceph服务和apache2啦。
+
 us-east和us-west：
 ```sh
 docker restart ceph
