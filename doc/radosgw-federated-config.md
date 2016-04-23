@@ -13,6 +13,7 @@
 
 ## 相同辖区的同步
 首先需要安装一些ceph、radosgw的依赖包：
+
 ```sh us-east us-west eu-east
 sudo apt-get update
 sudo apt-get -y --force-yes install ceph-common radosgw radosgw-agent
