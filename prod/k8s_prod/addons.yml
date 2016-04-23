@@ -1,0 +1,8 @@
+---
+
+- name: install kubernetes addons
+  hosts: k8s_master
+  vars:
+    enable_ui: true
+  roles:
+    - k8s-addons

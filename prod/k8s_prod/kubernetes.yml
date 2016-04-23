@@ -1,4 +1,5 @@
 ---
+
 ##########################################
 # used docker images:
 #   k8smesos/kubelet-pack:v1.1.8
@@ -20,44 +21,43 @@
 # TODO remove google dns parser
 # TODO scale down etcd & skydns
 
- - name: install common dependence
-#   hosts: all:!localhost
-   hosts: 192.168.33.132
-   roles:
-     - common      # TODO to download a rpm
-     #### - collectd # TODO occupy cpu
-     - logrotate   # TODO customize logrotate
-     - consul-template # TODO to download a rpm & copy distributive file
-     - docker
-     - consul      # TODO to download a rpm, comment pem file with command ca file add, set verify, adj distibutive
-     - flannel     # TODO dail etcd url, flannel pkg
-     #### - logstash
-     - dnsmasq
-     - etcd        #TODO etcd rpm, etcd event
+- name: install common dependence
+  hosts: all:!localhost
+  roles:
+    - common      # TODO to download a rpm
+    #### - collectd # TODO occupy cpu
+    - logrotate   # TODO customize logrotate
+    - consul-template # TODO to download a rpm & copy distributive file
+    - docker
+    - consul      # TODO to download a rpm, comment pem file with command ca file add, set verify, adj distibutive
+    - flannel     # TODO dail etcd url, flannel pkg
+    #### - logstash
+    - dnsmasq
+    - etcd        #TODO etcd rpm, etcd event
 
-# - name: install kubernetes master
-#   hosts: k8s_master
-#   vars:
-#     kube_users:
-#       kube:
-#         pass: root
-#         role: admin
-#       root:
-#         pass: root
-#         role: admin
-#   roles:
-#     - k8s-master      # TODO add apiserver consul status check
+- name: install kubernetes master
+  hosts: k8s_master
+  vars:
+    kube_users:
+      kube:
+        pass: root
+        role: admin
+      root:
+        pass: root
+        role: admin
+  roles:
+    - k8s-master      # TODO add apiserver consul status check
 
- - name: install kubernetes master
-   hosts: 192.168.33.132
-   vars:
-     network: flannel   # TODO: calico surpport
-   roles:
-     - k8s-minion       # TODO: fluentd to collect logs?; reset server groups[k8s_master_group][0]
+- name: install kubernetes minion
+  hosts: k8s_minion
+  vars:
+    network: flannel   # TODO: calico surpport
+  roles:
+    - k8s-minion       # TODO: fluentd to collect logs?; reset server groups[k8s_master_group][0]
 #     # - k8s-addons
 
 # - name: install kubernetes addons
-#   hosts: k8s_mskaster
+#   hosts: k8s_master
 #   vars:
 #     enable_ui: true
 #   roles:
