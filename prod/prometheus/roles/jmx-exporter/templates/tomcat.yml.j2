@@ -6,31 +6,44 @@ lowercaseOutputLabelNames: true
 lowercaseOutputName: true
 
 rules:
-- pattern: 'Catalina<type=GlobalRequestProcessor, name=\"(\w+-\w+)-(\d+)\"><>(\w+):'
-  name: tomcat_$3_total
-  labels:
-    port: "$2"
-    protocol: "$1"
-  help: Tomcat global $3
-  type: COUNTER
-- pattern: 'Catalina<j2eeType=Servlet, WebModule=//([-a-zA-Z0-9+&@#/%?=~_|!:.,;]*[-a-zA-Z0-9+&@#/%=~_|]), name=([-a-zA-Z0-9+/$%~_-|!.]*), J2EEApplication=none, J2EEServer=none><>(requestCount|maxTime|processingTime|errorCount):'
-  name: tomcat_servlet_$3_total
-  labels:
-    module: "$1"
-    servlet: "$2"
-  help: Tomcat servlet $3 total
-  type: COUNTER
-- pattern: 'Catalina<type=ThreadPool, name="(\w+-\w+)-(\d+)"><>(currentThreadCount|currentThreadsBusy|keepAliveCount|pollerThreadCount|connectionCount):'
-  name: tomcat_threadpool_$3
-  labels:
-    port: "$2"
-    protocol: "$1"
-  help: Tomcat threadpool $3
-  type: COUNTER
-- pattern: 'Catalina<type=Manager, host=([-a-zA-Z0-9+&@#/%?=~_|!:.,;]*[-a-zA-Z0-9+&@#/%=~_|]), context=([-a-zA-Z0-9+/$%~_-|!.]*)><>(processingTime|sessionCounter|rejectedSessions|expiredSessions):'
-  name: tomcat_session_$3_total
-  labels:
-    context: "$2"
-    host: "$1"
-  help: Tomcat session $3 total
-  type: GAUGE
+  - pattern: 'java.lang<type=Memory><(\w+)>(\w+)'
+    name: tomcat_memory_$1_$2
+    labels:
+      type: "$1"
+    type: GAUGE
+
+  - pattern: 'Catalina<type=ThreadPool, name="(\w+-\w+)-(\d+)"><>(currentThreadCount|currentThreadsBusy|keepAliveCount|pollerThreadCount|connectionCount):'
+    name: tomcat_threadpool_$3
+    labels:
+      port: "$2"
+      protocol: "$1"
+    type: COUNTER
+
+  - pattern: 'Catalina<type=GlobalRequestProcessor, name=\"(\w+-\w+)-(\d+)\"><>(\w+):'
+    name: tomcat_$3_total
+    labels:
+      port: "$2"
+      protocol: "$1"
+    help: Tomcat global $3
+    type: COUNTER
+
+  - pattern: 'Catalina<type=Manager, host=([-a-zA-Z0-9+&@#/%?=~_|!:.,;]*[-a-zA-Z0-9+&@#/%=~_|]), context=([-a-zA-Z0-9+/$%~_-|!.]*)><>(processingTime|sessionCounter|rejectedSessions|expiredSessions):'
+    name: tomcat_session_$3_total
+    labels:
+      context: "$2"
+      host: "$1"
+    help: Tomcat session $3 total
+    type: GAUGE
+
+  - pattern: 'java.lang<type=GarbageCollector, name=(\w+)><(\w*)>(\w+)'
+    name: tomcat_gc_$2_$3
+    labels:
+      name: "$1"
+    type: GAUGE
+
+  - pattern: 'java.lang<type=GarbageCollector, name=([-a-zA-Z0-9+/$%~_-|!.]*), key=(\w+)><(\w*)>(\w+)'
+    name: tomcat_gc_$1
+    labels:
+      name: "$1"
+      key: "$2"
+    type: GAUGE

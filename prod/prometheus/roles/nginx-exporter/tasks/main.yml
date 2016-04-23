@@ -1,0 +1,57 @@
+---
+# tasks file for nginx-exporter
+
+- name: pull nginx
+  sudo: yes
+  command: docker pull library/nginx:stable-alpine
+
+- name: make sure config file exist
+  sudo: yes
+  file:
+    dest: /etc/nginx
+    state: directory
+
+- name: rm nginx
+  sudo: yes
+  shell: docker rm -f nginx
+  ignore_errors: true
+
+- name: copy config file
+  sudo: yes
+  copy:
+    dest: /etc/nginx/status.conf
+    content: |
+      server {
+        listen       9191;
+        server_name  localhost;
+        location /nginx_status {
+          stub_status on;
+          access_log off;
+        }
+      }
+
+- name: start nginx
+  sudo: yes
+  shell: |
+    docker run -d \
+    -p 9191:9191 \
+    -v /etc/nginx/status.conf:/etc/nginx/conf.d/status.conf \
+    --name nginx \
+    library/nginx:stable-alpine
+
+- name: pull nginx exporter
+  sudo: yes
+  command: docker pull fish/nginx-exporter
+
+- name: rm exporter
+  sudo: yes
+  shell: docker rm -f nginx-exporter
+  ignore_errors: true
+
+- name: run nginx exporter
+  sudo: yes
+  shell: |
+    docker run -d \
+    --name nginx-exporter \
+    -p 9113:9113 fish/nginx-exporter \
+    -nginx.scrape_uri=http://192.168.33.19:9191/nginx_status

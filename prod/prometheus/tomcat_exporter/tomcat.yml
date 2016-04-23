@@ -4,3 +4,31 @@ hostPort: "localhost:8880"
 
 lowercaseOutputLabelNames: true
 lowercaseOutputName: true
+
+rules:
+  - pattern: 'java.lang<type=Memory><(\w+)>(\w+)'
+    name: tomcat_memory_$1_$2
+    labels:
+      type: "$1"
+    type: GAUGE
+
+  - pattern: 'Catalina<type=ThreadPool, name="(\w+-\w+)-(\d+)"><>(currentThreadCount|currentThreadsBusy|keepAliveCount|pollerThreadCount|connectionCount):'
+    name: tomcat_threadpool_$3
+    labels:
+      port: "$2"
+      protocol: "$1"
+    type: COUNTER
+
+  - pattern: 'Catalina<type=GlobalRequestProcessor, name=\"(\w+-\w+)-(\d+)\"><>(\w+):'
+    name: tomcat_$3_total
+    labels:
+      port: "$2"
+      protocol: "$1"
+    help: Tomcat global $3
+    type: COUNTER
+
+  - pattern: 'java.lang<type=GarbageCollector, name=(\w+)><(\w*)>(\w+)'
+    name: tomcat_gc_$2_$3
+    labels:
+      name: "$1"
+    type: GAUGE
