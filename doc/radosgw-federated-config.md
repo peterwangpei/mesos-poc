@@ -12,9 +12,8 @@
 我们将会首先实现同一个辖区（us）里的同步，然后是不同辖区的同步。相同辖区可以同步元数据和数据对象，而不同的辖区只能同步元数据而不能同步数据对象。元数据包括网关用户和存储桶（bucket）。
 
 ## 相同辖区的同步
-首先需要安装一些ceph、radosgw的依赖包：
-
-```sh us-east us-west eu-east
+首先需要在全部三台虚拟机安装一些ceph、radosgw的依赖包：
+```sh
 sudo apt-get update
 sudo apt-get -y --force-yes install ceph-common radosgw radosgw-agent
 ```
