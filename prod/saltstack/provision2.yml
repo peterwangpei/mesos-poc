@@ -1,70 +1,6 @@
 ---
 #  gcr.io/google_containers/etcd:2.0.12
 
-# - name: add docker-engine dependency to all
-#   hosts: all:!localhost
-#   tasks:
-#     - name: cp docker repo to add docker engine repo to install latest docker
-#       sudo: yes
-#       copy:
-#         dest: /etc/yum.repos.d/docker.repo
-#         content: |
-#           [dockerrepo]
-#           name=Docker Repository
-#           baseurl=https://yum.dockerproject.org/repo/main/centos/7
-#           enabled=1
-#           gpgcheck=1
-#           gpgkey=https://yum.dockerproject.org/gpg
-
-- name: install salt stack for salt minion
-  sudo: yes
-  serial: 1
-  hosts:
-    - slave
-    - master
-    - saltmaster
-  vars:
-    saltmaster: "{{groups['saltmaster'][0]}}"
-  roles:
-    - salt-minion
-
-- name: set grains for k8s master
-  sudo: yes
-  hosts: master
-  # roles:
-  #   - copy-sls
-  tasks:
-    - name: set the grains of k8s master
-      copy:
-        dest: /etc/salt/grains
-        content: |
-          roles:
-            - kubernetes-master
-          cloud: hws
-          api_servers: {{groups['master'][0]}}
-          falnnel_net: 172.16.0.0/16
-          docker_opts: "{{docker_opts}}"
-
-    - name: restart salt minion
-      service: name=salt-minion state=restarted
-
-- name: set grains for k8s minion
-  sudo: yes
-  hosts: slave
-  tasks:
-    - name: set the grains of minion
-      copy:
-        dest: /etc/salt/grains
-        content: |
-          roles:
-            - kubernetes-pool
-          cloud: hws
-          api_servers: {{groups['master'][0]}}
-          docker_opts: "{{docker_opts}}"
-
-    - name: restart salt minion
-      service: name=salt-minion state=restarted
-
 - name: install salt stack for salt master
   hosts:
     - saltmaster
@@ -75,14 +11,7 @@
     tmp_dir: /opt/k8s_install
   roles:
     - salt-master
-  # tasks:
-    # - name: fix bug | set docker-io to docker engine
-    #   replace:
-    #     dest: "{{salt_file_roots}}/docker/init.sls"
-    #     regexp: 'docker-io'
-    #     replace: 'docker-engine'
-    #     backup: yes
-
+  tasks:
     - name: make sure a directory for store installer file
       file:
         dest: "{{tmp_dir}}"

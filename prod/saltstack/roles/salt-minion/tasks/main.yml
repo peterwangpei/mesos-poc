@@ -4,8 +4,15 @@
 - name: install salt-minion
   yum: name={{item}} state=present
   with_items:
+    - salt-minion
+  when: isCentos
+
+- name: install salt-minion
+  apt: name={{item}} state=present
+  with_items:
     - salt-common
     - salt-minion
+  when: isUbuntu
 
 - name: add master ip to minion
   lineinfile:

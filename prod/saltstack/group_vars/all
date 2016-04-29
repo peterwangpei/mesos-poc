@@ -1,0 +1,2 @@
+isUbuntu: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+isCentos: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
