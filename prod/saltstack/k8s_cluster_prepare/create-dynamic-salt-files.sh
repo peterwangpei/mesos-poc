@@ -2,12 +2,12 @@
 
 mkdir -p /srv/salt-overlay/pillar
 cat <<EOF > /srv/salt-overlay/pillar/cluster-params.sls
-instance_prefix: '($echo "$INSTANCE_PREFIX" | sed -e "s/'/''/g")'
+instance_prefix: '$(echo "$INSTANCE_PREFIX" | sed -e "s/'/''/g")'
 node_instance_prefix: $NODE_INSTANCE_PREFIX
 service_cluster_ip_range: $SERVICE_CLUSTER_IP_RANGE
 admission_control: '$(echo "$ADMISSION_CONTROL" | sed -e "s/'/''/g")'
 enable_cluster_dns: '$(echo "$ENABLE_CLUSTER_DNS" | sed -e "s/'/''/g")'
-dns_server: '$(echo "$DNS_SERVER" | sed -e "s/'/''/g")'
+dns_server: '$(echo "$DNS_SERVER_IP" | sed -e "s/'/''/g")'
 dns_domain: '$(echo "$DNS_DOMAIN" | sed -e "s/'/''/g")'
 dns_replicas: '$(echo "$DNS_REPLICAS" | sed -e "s/'/''/g")'
 master_floating_ip: '$(echo "$MASTER_FLOATING_IP" | sed -e "s/'/''/g")'
@@ -15,6 +15,7 @@ ops_server_ip: '$(echo "$OPS_SERVER_IP" | sed -e "s/'/''/g")'
 docker_opts: '$(echo "$DOCKER_OPTS" | sed -e "s/'/''/g")'
 http_proxy: '$(echo "$HTTP_PROXY" | sed -e "s/'/''/g")'
 etcd_out: '$ETCD_OUT'
+network_provider: 'flannel'
 EOF
 
 if [ "xtrue" == "x${USE_KUBEMARK}" ]; then
@@ -23,6 +24,7 @@ if [ "xtrue" == "x${USE_KUBEMARK}" ]; then
 fi
 
 known_tokens_file="/srv/salt-overlay/salt/kube-apiserver/known_tokens.csv"
+rm -fr /srv/salt-overlay/salt/kube-apiserver/known_tokens.csv
 
 if [[ ! -f "${known_tokens_file}" ]]; then
     mkdir -p /srv/salt-overlay/salt/kube-apiserver
@@ -50,6 +52,7 @@ current-context: service-account-context
 users:
 - name: kubelet
   user:
+    # token: ${KUBELET_TOKEN}
     client-certificate: ${cert_dir}/kubecfg.crt
     client-key: ${cert_dir}/kubecfg.key
 EOF
@@ -75,6 +78,7 @@ current-context: service-account-context
 users:
 - name: kube-proxy
   user:
+    # token: ${KUBE_PROXY_TOKEN}
     client-certificate: ${cert_dir}/kubecfg.crt
     client-key: ${cert_dir}/kubecfg.key
 EOF

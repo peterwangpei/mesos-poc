@@ -1,0 +1,44 @@
+---
+
+- name: install salt stack for salt master
+  hosts:
+    - saltmaster
+  sudo: yes
+  vars:
+    tmp_dir: /opt/k8s_install
+  tasks:
+    - name: make sure a directory for store installer file
+      file:
+        dest: "{{tmp_dir}}"
+        state: directory
+
+    - name: copy installer file
+      unarchive:
+        src: ./kubernetes.tar.gz
+        dest: "{{tmp_dir}}"
+
+- name: install salt stack for salt master
+  hosts:
+    - master
+  sudo: yes
+  vars:
+    tmp_dir: /opt/k8s_install
+  tasks:
+
+    - name: make sure a directory for store salt file
+      file:
+        dest: "{{tmp_dir}}"
+        state: directory
+
+    - name: copy installer file
+      unarchive:
+        src: ./kubernetes.tar.gz
+        dest: "{{tmp_dir}}"
+
+    - unarchive:
+        src: "{{tmp_dir}}/kubernetes/server/kubernetes-salt.tar.gz"
+        dest: "{{tmp_dir}}"
+        copy: no
+
+    - name: run install.sh of salt provisions
+      shell: "{{tmp_dir}}/kubernetes/saltbase/install.sh {{tmp_dir}}/kubernetes/server/kubernetes-server-linux-amd64.tar.gz"

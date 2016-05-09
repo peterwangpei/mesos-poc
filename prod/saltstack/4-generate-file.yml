@@ -1,0 +1,38 @@
+---
+# gcr.io/google_containers/etcd:2.2.1
+
+- name: install salt stack for salt master
+  hosts:
+    - saltmaster
+  sudo: yes
+  vars:
+    tmp_dir: /opt/k8s_install
+  tasks:
+
+    - name: generate server key
+      command: "{{tmp_dir}}/kubernetes/cluster/vagrant/make-ca-cert.sh {{groups['master'][0]}}"
+
+    - name: copy salt addons
+      copy:
+        src: ./saltbase/{{item}}
+        dest: /srv/salt
+      with_items:
+        - copy-cert
+
+    - copy:
+        src: /srv/kubernetes/{{item}}
+        dest: /srv/salt/copy-cert
+        remote_src: true
+      with_items:
+        - ca.crt
+        - kubecfg.crt
+        - kubecfg.key
+        - server.cert
+        - server.key
+
+    - name: override kube-proxy file
+      copy:
+        src: ./saltbase/kube-proxy.manifest
+        dest:  /srv/salt/kube-proxy/kube-proxy.manifest
+
+    - command: salt '*' state.sls copy-cert

@@ -10,11 +10,13 @@
   unarchive:
     src: ./kubernetes-salt.tar.gz
     dest: "{{tmp_dir}}"
+  delegate_to: saltmaster
 
 - name: copy dependency tar file
   copy:
     src: ./kubernetes-server-linux-amd64.tar.gz
     dest: "{{tmp_dir}}/k8s.tar.gz"
+  delegate_to: saltmaster
 
 - name: run install.sh of salt provisions
   shell: "{{tmp_dir}}/kubernetes/saltbase/install.sh {{tmp_dir}}/k8s.tar.gz"

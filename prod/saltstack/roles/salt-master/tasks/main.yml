@@ -19,7 +19,7 @@
     dest: /etc/salt/master
     state: present
     create: yes
-    regexp: '^\#default_include:'
+    regexp: '^default_include:'
     line: "default_include: master.d/*.conf"
   notify:
     - enable and restart salt-master

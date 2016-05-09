@@ -1,5 +1,5 @@
 ---
-
+a
 - name: get the node token values from token files
   sudo: yes
   slurp:

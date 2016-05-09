@@ -22,9 +22,9 @@ export DNS_DOMAIN=${DNS_DOMAIN:-"cluster.local"}
 export DNS_REPLICAS=${DNS_REPLICAS:-1}
 
 if [[ "${USE_KUBEMARK:-}" == "true" ]]; then
-   export ADMISSION_CONTROL=NamespaceLifecycle,NamepscaceExists,LimitRanger,SecurityContextDeny,ServiceAccount
+   export ADMISSION_CONTROL=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ServiceAccount
 else
-   export ADMISSION_CONTROL=NamespaceLifecycle,NamepscaceExists,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota
+   export ADMISSION_CONTROL=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota
 fi
 
 export DOCKER_OPTS="${DOCKER_OPTS:-}"

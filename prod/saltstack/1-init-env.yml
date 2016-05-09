@@ -15,7 +15,9 @@
           enabled=1
           gpgcheck=1
           gpgkey=https://yum.dockerproject.org/gpg
-
+    - name: install epel-relese
+      yum: name=epel-release state=present
+      when: isCentos
 
 - name: install salt stack for salt master
   hosts:
@@ -38,6 +40,9 @@
     saltmaster: "{{groups['saltmaster'][0]}}"
   roles:
     - salt-minion
+  tasks:
+    - group: name=paas state=present
+    - user: name=paas group=paas shell=/bin/bash state=present
 
 - name: set grains for k8s master
   sudo: yes
@@ -50,7 +55,7 @@
           roles:
             - kubernetes-master
           api_servers: {{groups['master'][0]}}
-          cloud: hws
+          cloud: vagrant
           flannel_net: 172.16.0.0/16
           docker_opts: "{{docker_opts}}"
 
@@ -68,7 +73,7 @@
           roles:
             - kubernetes-pool
           api_servers: {{groups['master'][0]}}
-          cloud: hws
+          cloud: vagrant
           flannel_net: 172.16.0.0/16
           docker_opts: "{{docker_opts}}"
 

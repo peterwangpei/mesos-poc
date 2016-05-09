@@ -1,0 +1,38 @@
+---
+# gcr.io/google_containers/etcd:2.2.1
+
+- name: install salt stack for salt master
+  hosts:
+    - saltmaster
+  sudo: yes
+  vars:
+    tmp_dir: /opt/k8s_install
+  tasks:
+    - name: rm cluster vagrant file
+      file:
+        dest: "{{tmp_dir}}/kubernetes/cluster/vagrant"
+        state: absent
+
+    - name: cover vagrant
+      copy:
+        src: ./k8s_cluster_prepare
+        dest: "{{tmp_dir}}/kubernetes/cluster/"
+
+    - name: rename k8s_cluster_prepare
+      command: >-
+        mv {{tmp_dir}}/kubernetes/cluster/k8s_cluster_prepare {{tmp_dir}}/kubernetes/cluster/vagrant
+
+    - name: chmod of make-ca-cert
+      file:
+        path: "{{tmp_dir}}/kubernetes/cluster/vagrant/make-ca-cert.sh"
+        mode: "a+x"
+
+
+
+
+    - name: run kube-up
+      command: "{{tmp_dir}}/kubernetes/cluster/kube-up.sh"
+      args:
+        chdir: "{{tmp_dir}}/kubernetes"
+      environment:
+        KUBERNETES_PROVIDER: vagrant

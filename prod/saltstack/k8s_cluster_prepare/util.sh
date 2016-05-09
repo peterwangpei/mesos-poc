@@ -1,4 +1,5 @@
-KUBE_ROOT=$(dirname "${BASH_SOURCE}")../..
+KUBE_ROOT=$(dirname "${BASH_SOURCE}")/../..
+
 source "${KUBE_ROOT}/cluster/${KUBERNETES_PROVIDER}/${KUBE_CONFIG_FILE-"config-default.sh"}"
 source "${KUBE_ROOT}/cluster/common.sh"
 
@@ -60,15 +61,15 @@ function get-password {
 
 function define-envs {
     export INSTANCE_PREFIX=${INSTANCE_PREFIX}
-    export NODE_INSTANCE_PREFIX=${NODE_INSTANCE_PREFIX}
+    export NODE_INSTANCE_PREFIX=${INSTANCE_PREFIX}-minion
     export SERVICE_CLUSTER_IP_RANGE=${SERVICE_CLUSTER_IP_RANGE}
     export ADMISSION_CONTROL=${ADMISSION_CONTROL:-}
     export KUBELET_TOKEN=${KUBELET_TOKEN:-}
     export KUBE_PROXY_TOKEN=${KUBE_PROXY_TOKEN:-}
     export KUBE_USER=${KUBE_USER:-}
     export KUBE_PASSWORD=${KUBE_PASSWORD:-}
-    export HTTP_PROXY=${HTTP_PROXY:-}
-    export HTTPS_PROXY=${HTTPS_PROXY:-}
+    export http_proxy=${http_proxy:-}
+    export https_proxy=${https_proxy:-}
     export ENABLE_CLUSTER_DNS=${ENABLE_CLUSTER_DNS}
     export DNS_SERVER_IP=${DNS_SERVER_IP}
     export DNS_DOMAIN=${DNS_DOMAIN}
@@ -79,11 +80,11 @@ function kube-up {
     ensure-temp-dir
 
     get-password
-    get-token
+    get-tokens
 
     define-envs
 
-    bash ${kube_root}/cluster/${KUBERNETES_PROVIDER}/create-dynamic-salt-files.sh
+    bash ${KUBE_ROOT}/cluster/${KUBERNETES_PROVIDER}/create-dynamic-salt-files.sh
 
     unpack-release-tars
 }
@@ -115,6 +116,6 @@ function restart-apiserver {
 }
 
 function get-tokens {
-    export KUBELET_TOKEN=$(dd if=/dev/urandom bs=128 count=1 2>dev/null | base64 | tr -d "=+/" | dd bs=32 count=1 2>/dev/null)
-    export KUBE_PROXY_TOKEN=$(dd if=/dev/urandom bs=128 count=1 2>dev/null | base64 | tr -d "=+/" | dd bs=32 count=1 2>/dev/null)
+    export KUBELET_TOKEN=$(dd if=/dev/urandom bs=128 count=1 2>/dev/null | base64 | tr -d "=+/" | dd bs=32 count=1 2>/dev/null)
+    export KUBE_PROXY_TOKEN=$(dd if=/dev/urandom bs=128 count=1 2>/dev/null | base64 | tr -d "=+/" | dd bs=32 count=1 2>/dev/null)
 }
