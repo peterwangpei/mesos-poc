@@ -1,0 +1,10 @@
+---
+# tasks file for kube2consul
+
+- name: copy rc file machine
+  template:
+    src: kube2consul-rc.yaml.j2
+    dest: /tmp/kube2consul-rc.yaml
+
+- name: create kube2consul-rc
+  command: /usr/local/bin/kubectl create -f /tmp/kube2consul-rc.yaml

@@ -27,9 +27,6 @@
         path: "{{tmp_dir}}/kubernetes/cluster/vagrant/make-ca-cert.sh"
         mode: "a+x"
 
-
-
-
     - name: run kube-up
       command: "{{tmp_dir}}/kubernetes/cluster/kube-up.sh"
       args:

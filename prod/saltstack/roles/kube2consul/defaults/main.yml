@@ -1,0 +1,8 @@
+---
+# defaults file for kube2consul
+
+kc_image: k8s/kube2consul:v1.2.4
+kc_consul_prefix: v1/router/k8s
+kc_resync_period: 32
+kc_cpu: 700m
+kc_memory: 600Mi

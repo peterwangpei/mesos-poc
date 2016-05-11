@@ -1,0 +1,17 @@
+# kube2consul 的镜像放到放到公共的 registry 里面
+
+- name: invoke kubeclt to run kube2consul
+  hosts:
+    - master
+  sudo: yes
+  vars:
+    kc_resync_period: 23
+    kc_consul_agent: http://192.168.33.121:8500
+    kc_consul_prefix: v1/router/k8s
+    kc_cpu: 100m
+    kc_memory: 60Mi
+    kc_image: k8s/kube2consul:v1.2.4
+    # consul_user:
+    # consul_pass:
+  roles:
+    - kube2consul

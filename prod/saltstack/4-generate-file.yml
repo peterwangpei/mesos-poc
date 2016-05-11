@@ -1,7 +1,6 @@
 ---
-# gcr.io/google_containers/etcd:2.2.1
 
-- name: install salt stack for salt master
+- name: fix some bug & add some file to up k8s
   hosts:
     - saltmaster
   sudo: yes
@@ -30,7 +29,7 @@
         - server.cert
         - server.key
 
-    - name: override kube-proxy file
+    - name: override kube-proxy file to fix bug
       copy:
         src: ./saltbase/kube-proxy.manifest
         dest:  /srv/salt/kube-proxy/kube-proxy.manifest
