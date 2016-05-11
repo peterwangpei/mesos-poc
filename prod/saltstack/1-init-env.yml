@@ -55,6 +55,7 @@
           roles:
             - kubernetes-master
           api_servers: {{groups['master'][0]}}
+          advertise_address: {{groups['master'][0]}}
           cloud: vagrant
           flannel_net: 172.16.0.0/16
           docker_opts: "{{docker_opts}}"
