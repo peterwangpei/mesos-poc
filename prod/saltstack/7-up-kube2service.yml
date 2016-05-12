@@ -1,6 +1,7 @@
-# 根据 roles/kube2service/files/builder, 修改 agents.yaml,
+#  进入roles/kube2service/files/builder, 修改 agents.yaml,
 # 并 运行 `docker build . -t xxxx` 来构建新的镜像
 # 并将镜像放到放到公共的 registry 里面， 修改 变量 ks_image, 运行此文件
+# 注意修改 内存 和 cpu 大小
 
 - name: up kube2service for prometheus
   hosts:
@@ -9,7 +10,7 @@
   vars:
     ks_cpu: 100m
     ks_memory: 60Mi
-    ks_image: k8s/kube2consul:v1.2.4
+    ks_image: k8s/kube2service:v1.2.4
     ks_portname: metrics
     ks_svc_prefix: prometheus_
   roles:
