@@ -1,0 +1,15 @@
+- name: agent1
+  url: http://192.168.33.221:8500
+  username: ""
+  password: ""
+  ipranges:
+    - from: 192.168.33.11
+      to: 192.168.33.19
+
+- name: agent2
+  url: http://192.168.33.231:8500
+  username: ""
+  password: ""
+  ipranges:
+    - from: 192.168.33.20
+      to: 192.168.33.250

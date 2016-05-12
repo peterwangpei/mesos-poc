@@ -1,0 +1,10 @@
+---
+# defaults file for kube2service
+
+ks_image: k8s/kube2service:v1.2.4
+
+ks_cpu: 700m
+ks_memory: 600Mi
+
+ks_portname: metrics
+ks_svc_prefix: prometheus_

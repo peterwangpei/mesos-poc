@@ -1,0 +1,10 @@
+---
+# tasks file for kube2service
+
+- name: copy rc file machine
+  template:
+    src: kube2service-rc.yaml.j2
+    dest: /tmp/kube2service-rc.yaml
+
+- name: create kube2service-rc
+  command: /usr/local/bin/kubectl create -f /tmp/kube2service-rc.yaml
