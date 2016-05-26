@@ -124,3 +124,97 @@
 	db.close()
 ## 在Slave中查看插入的数据
 如果一切顺利，那么在Slave中可以看到在Master中插入的数据。
+
+## 使用RBD
+1. 创建池
+		
+		ceph osd pool create kube 16 16
+2. 创建镜像
+	
+		rbd create kube --size 1024 --pool kube
+3. 将RBD挂载到Pod中
+
+		apiVersion: v1
+		kind: Pod
+		metadata:
+		  name: cephfs4
+		spec:
+		  containers:
+		    - name: cephfs-rw
+		      image: nginx:1.9.11
+		      volumeMounts:
+		        - mountPath: "/mnt/rbd"
+		          name: rbd
+		  volumes:
+		    - name: rbd
+		      rbd:
+		        monitors:
+		          - 192.168.0.160:6789
+		        user: admin
+		        pool: kube
+		        image: kube
+		        fsType: ext4
+		        keyring: ""
+		        secretRef:
+		          name: ceph-secret
+		        readOnly: false
+		        
+
+## 在线动态调整镜像尺寸
+1. 调整镜像尺寸
+
+		rbd resize --image kube --pool kube --size 4096
+
+2. 到Pod运行的主机，找到RBD挂载的块设备
+
+		mount | grep $卷名/$池名-image-$镜像名 
+		
+		执行的结构可能如下：
+		/dev/rbd1 on /var/lib/kubelet/plugins/kubernetes.io/rbd/rbd/kube-image-kube type ext4 (rw)
+		
+3. 扩展文件系统
+		
+		sudo resize2fs $挂载点 
+
+## 使用XFS文件系统
+
+1. 安装XFS文件系统支持
+	
+		apt-get install xfsprogs
+2. 创建镜像
+ 
+		rbd create xfs --size 1024 --pool kube
+3. 将RBD挂载到Pod中
+
+		apiVersion: v1
+		kind: Pod
+		metadata:
+		  name: cephfs4
+		spec:
+		  containers:
+		    - name: cephfs-rw
+		      image: nginx:1.9.11
+		      volumeMounts:
+		        - mountPath: "/mnt/rbd"
+		          name: rbd
+		  volumes:
+		    - name: rbd
+		      rbd:
+		        monitors:
+		          - 192.168.0.160:6789
+		        user: admin
+		        pool: kube
+		        image: kube
+		        fsType: ext4
+		        keyring: ""
+		        secretRef:
+		          name: ceph-secret
+		        readOnly: false
+		        
+4.　按照上述方式调整镜像大小
+
+5.　调整文件系统
+
+	sudo xfs_growfs $挂载点
+	
+*注意：只有以非只读方式挂载的文件系统才能够调整*
