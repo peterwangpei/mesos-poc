@@ -14,6 +14,29 @@
 	  --name=ceph \
 	  ceph/demo
   
+## 创建用户（可选）
+当Ceph容器启动之后，可以使用如下命令创建用户
+
+	ceph auth get-or-create client.demo  mon 'allow *' osd 'allow *' -o /etc/ceph/ceph.client.demo.keyring
+	
+## 创建Secret
+通过如下的命令获得keyring中保存的Key
+	
+	cat /etc/ceph/ceph.client.demo.keyring | sed -n 's/^.*key *= *//p' | base64
+	
+命令执行之后，会生成类似下面结果的字符串
+
+	QVFCTkxqeFgrTCt2SlJBQWx0OC9aUlpMbWM5RUxlMUxTeVpxamc9PQo=
+
+然后根据下面的配置创建一个Secret，其中Key部分的值为上一个步骤生成的字符串
+	
+	apiVersion: v1
+	kind: Secret
+	metadata:
+	  name: ceph-secret
+	data:
+	  key: QVFCTkxqeFgrTCt2SlJBQWx0OC9aUlpMbWM5RUxlMUxTeVpxamc9PQo=
+	  
 ## 启动MySQL Master
 使用Kubernete启动Master
 
