@@ -1,0 +1,54 @@
+- name: add docker-engine dependency to all
+  hosts: appended
+  tasks:
+    - name: cp docker repo to add docker engine repo to install latest docker
+      sudo: yes
+      copy:
+        dest: /etc/yum.repos.d/docker.repo
+        content: |
+          [dockerrepo]
+          name=Docker Repository
+          baseurl=https://yum.dockerproject.org/repo/main/centos/7
+          enabled=1
+          gpgcheck=1
+          gpgkey=https://yum.dockerproject.org/gpg
+    - name: install epel-relese
+      yum: name=epel-release state=present
+      when: isCentos
+
+- name: install salt stack for salt minion
+  sudo: yes
+  serial: 1
+  hosts: appended
+  vars:
+    saltmaster: "{{groups['saltmaster'][0]}}"
+  roles:
+    - salt-minion
+  tasks:
+    - group: name=paas state=present
+    - user: name=paas group=paas shell=/bin/bash state=present
+
+- name: set grains for k8s minion
+  sudo: yes
+  hosts: appended
+  tasks:
+    - name: set the grains of minion
+      copy:
+        dest: /etc/salt/grains
+        content: |
+          roles:
+            - kubernetes-pool
+          api_servers: {{groups['master'][0]}}
+          cloud: vagrant
+          flannel_net: 172.16.0.0/16
+          docker_opts: "{{docker_opts}}"
+
+    - name: restart salt minion
+      service: name=salt-minion state=restarted
+
+- name: fix some bug & add some file to up k8s
+  hosts:
+    - saltmaster
+  sudo: yes
+  tasks:
+    - command: salt '*' state.sls copy-cert

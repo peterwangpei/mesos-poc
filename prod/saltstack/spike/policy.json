@@ -1,0 +1,22 @@
+{
+  "kind" : "Policy",
+  "apiVersion" : "v1",
+  "predicates" : [
+	  {"name" : "NoDiskConflict"},
+    {"name" : "NoVolumeZoneConflict"},
+    {"name" : "MaxEBSVolumeCount"},
+    {"name" : "MaxGCEPDVolumeCount"},
+    {"name" : "GeneralPredicates"},
+    {"name" : "PodToleratesNodeTaints"},
+    {"name" : "CheckNodeMemoryPressure"},
+    {"name" : "MatchInterPodAffinity"}
+	],
+  "priorities" : [
+	  {"name" : "LeastRequestedPriority", "weight" : 1},
+	  {"name" : "BalancedResourceAllocation", "weight" : 1},
+	  {"name" : "SelectorSpreadPriority", "weight" : 1},
+	  {"name" : "NodeAffinityPriority", "weight" : 1},
+    {"name" : "TaintTolerationPriority", "weight" : 1},
+    {"name" : "InterPodAffinityPriority", "weight" : 1}
+	]
+}

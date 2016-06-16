@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod2
+  labels:
+    security: s2
+spec:
+  containers:
+  - name: with-newlabels
+    image: gcr.io/google_containers/pause:2.0

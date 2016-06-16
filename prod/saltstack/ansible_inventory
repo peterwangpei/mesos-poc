@@ -13,6 +13,9 @@ localhost ansible_connection=local
 [slave]
 192.168.33.231
 
+[appended]
+192.168.33.232
+
 [all:vars]
 docker_opts='--insecure-registry 192.168.33.110:5000 --registry-mirror http://192.168.33.110:5000'
 
