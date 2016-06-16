@@ -15,6 +15,7 @@ ops_server_ip: '$(echo "$OPS_SERVER_IP" | sed -e "s/'/''/g")'
 docker_opts: '$(echo "$DOCKER_OPTS" | sed -e "s/'/''/g")'
 http_proxy: '$(echo "$HTTP_PROXY" | sed -e "s/'/''/g")'
 etcd_out: '$ETCD_OUT'
+enable_cluster_ui: "${ENABLE_CLUSTER_UI:true}"
 network_provider: 'flannel'
 EOF
 

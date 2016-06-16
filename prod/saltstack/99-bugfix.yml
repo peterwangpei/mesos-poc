@@ -1,0 +1,15 @@
+---
+
+- name: fix bug | dns file namename
+  hosts:
+    - saltmaster
+  sudo: yes
+  vars:
+    tmp_dir: /opt/k8s_install
+  tasks:
+    - name: replace dns file name
+      replace:
+        dest: /srv/salt/kube-addons/init.sls
+        backup: yes
+        regexp: kubedns
+        replace: skydns

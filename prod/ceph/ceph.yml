@@ -1,0 +1,7 @@
+---
+
+- name: install ceph
+  hosts: deployer
+  tasks:
+    - command: ceph-deploy new {{ansible_hostname}}
+      delegate_to: "{{ groups['deployer'][0] }}"

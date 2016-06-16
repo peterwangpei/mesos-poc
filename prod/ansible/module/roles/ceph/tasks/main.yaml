@@ -1,4 +1,5 @@
 - copy: src=../../../../ceph dest=/etc/
+
 - name: run ceph-demo
   docker:
     name: ceph

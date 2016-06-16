@@ -1,0 +1,7 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+{% for item in groups['all'] %}
+{% if hostvars[item]['ansible_hostname'] is defined %}
+{{ item }} {{ hostvars[item]['ansible_hostname'] }}
+{% endif %}
+{% endfor %}

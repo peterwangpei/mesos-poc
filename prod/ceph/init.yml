@@ -1,0 +1,41 @@
+---
+
+- name: install ceph
+  hosts: all
+  sudo: yes
+  serial: 1
+  tasks:
+    - name: install epel-relese
+      yum: name=epel-release state=present
+
+    - name: install required package
+      yum: name={{item}} state=present
+      with_items:
+        - ceph-common
+        - net-tools
+
+    - name: copy host
+      template:
+        src: ./hosts.j2
+        dest: /etc/hosts
+
+- name: install ceph
+  hosts: deployer
+  sudo: yes
+  tasks:
+    - name: install ceph deploy
+      yum: name=ceph-deploy state=present
+
+    - name: generate ssh key for root
+      user: name={{ansible_user_id}} generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa
+
+    - name: get key
+      slurp:
+        src: "{{ansible_env.HOME}}/.ssh/id_rsa.pub"
+      register: _key
+
+    - authorized_key:
+        user: root
+        key: "{{ _key.content|b64decode }}"
+      delegate_to: "{{ item }}"
+      with_items: "{{ groups['node'] }}"
