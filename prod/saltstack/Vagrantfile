@@ -25,6 +25,13 @@ Vagrant.configure(2) do |config|
         v.name   = "k8s_salt-#{hostname}"
         v.memory = info[:mem]
         v.cpus   = info[:cpu]
+        if hostname =~ %r'^s'
+          disk = "./.vagrant/disk_#{hostname}.vdi"
+          unless File.exist?(disk)
+            v.customize ['createhd', '--filename', disk, '--size', 1 * 1024]
+          end
+          v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk]
+        end
       end
       host.vm.hostname = hostname
       host.vm.network "private_network", ip: info[:ip]

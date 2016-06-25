@@ -8,3 +8,4 @@ demo/demosite/demo/target/
 *.gitignore
 *.pyc
 *.retry
+*.vdi

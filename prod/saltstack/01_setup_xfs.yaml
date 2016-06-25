@@ -1,0 +1,49 @@
+- name: set up xfs
+  hosts:
+    - slave
+  sudo: yes
+  tasks:
+    - name: install dependency
+      yum: name={{item}} state=present
+      with_items:
+        - quota
+        - jq
+
+    # - name: the xfs file system
+    #   shell: mkfs.xfs /dev/sdb
+
+    - name: make an xfs file mount point
+      file:
+        state: directory
+        path: /mnt/xfs
+
+    - name: mounting an xfs file system
+      mount:
+        name: /mnt/xfs
+        src: /dev/sdb
+        fstype: xfs
+        opts: rw,usrquota,prjquota
+        state: mounted
+
+    - name: mk test file
+      file:
+        state: directory
+        path: /mnt/xfs/test
+
+    - name: set quota id
+      copy:
+        content: |
+          12:/mnt/xfs/test
+        dest: /etc/projects
+
+    - name: set quota prj id
+      copy:
+        content: |
+          test:12
+        dest: /etc/projid
+
+    - name: initial quota
+      shell: xfs_quota -x -c "project -s test"
+
+    - name: set limit
+      shell: xfs_quota -x -c "limit -p bhard=20M test" /mnt/xfs

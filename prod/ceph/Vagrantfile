@@ -12,8 +12,7 @@ Vagrant.configure(2) do |config|
   config.ssh.insert_key = false
 
   cluster = {
-    "c1" => { :ip => "192.168.33.85", :mem => 512,  :cpu => 1 },
-    "c2" => { :ip => "192.168.33.86", :mem => 512,  :cpu => 1 }
+    "c1" => { :ip => "192.168.33.85", :mem => 1024,  :cpu => 1 }
   }
 
   cluster.each_with_index do | (hostname, info), index |
@@ -23,7 +22,7 @@ Vagrant.configure(2) do |config|
         v.name   = "ceph-#{hostname}"
         v.memory = info[:mem]
         v.cpus   = info[:cpu]
-        disk = "./disk_#{hostname}.vdi"
+        disk = "./.vagrant/disk_#{hostname}.vdi"
 
         unless File.exist?(disk)
           v.customize ['createhd', '--filename', disk, '--size', 1 * 1024]

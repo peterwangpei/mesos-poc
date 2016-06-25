@@ -1,0 +1,18 @@
+---
+
+- name: start debug pod
+  hosts:
+    - master
+  sudo: yes
+  tasks:
+    - name: copy pod define file
+      copy:
+        dest: /tmp/pod.yaml
+        src: ./flexvolume/pod.yaml
+
+    - name: delete pod
+      shell: /usr/local/bin/kubectl delete -f /tmp/pod.yaml
+      ignore_errors: yes
+
+    - name: create pod
+      shell: /usr/local/bin/kubectl create -f /tmp/pod.yaml

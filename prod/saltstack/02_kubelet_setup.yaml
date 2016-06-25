@@ -1,0 +1,20 @@
+---
+# /usr/libexec/kubernetes/kubelet-plugins/volume/exec/
+- name: set up xfs
+  hosts:
+    - slave
+  sudo: yes
+  tasks:
+    - name: mkdir for plugin
+      file:
+        state: directory
+        path: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/kubernetes.io~quota
+
+    - name: copy kubelet plugin file
+      copy:
+        src: ./quota.sh
+        mode: 755
+        dest: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/kubernetes.io~quota/quota
+
+    - name: restart kubelet
+      service: name=kubelet state=restarted

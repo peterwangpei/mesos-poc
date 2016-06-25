@@ -1,0 +1,20 @@
+---
+
+- name: add docker-engine dependency to all
+  hosts: all:!localhost
+  sudo: yes
+  tasks:
+    - name: cp docker repo to add docker engine repo to install latest docker
+      copy:
+        dest: /etc/yum.repos.d/docker.repo
+        content: |
+          [dockerrepo]
+          name=Docker Repository
+          baseurl=https://yum.dockerproject.org/repo/main/centos/7
+          enabled=1
+          gpgcheck=1
+          gpgkey=https://yum.dockerproject.org/gpg
+    - name: install epel-relese
+      yum: name=epel-release state=present
+    - pause: seconds=10
+    - yum: name=docker
