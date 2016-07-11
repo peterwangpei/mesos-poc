@@ -1,0 +1,92 @@
+- name: install kubernetes addons
+  hosts: k8s_master
+  sudo: yes
+  vars:
+    work_dir: /etc/kubernetes/certs      #  /home/vagrant/test
+    kube_cert_dir: /etc/kubernetes/certs
+    common_name: "/CN=192.168.33.121"
+    # /CN=127.0.0.1/CN=kubernetes/CN=kubernetes.default/CN=kubernetes.default.svc/CN=kubernetes/CN=kubernetes.default.svc.cluster.local
+  tasks:
+    - name: restart service
+      service: name={{item}} state=stopped
+      with_items:
+        - kube-proxy
+        - kubelet
+        - docker
+
+    - copy:
+        dest: /etc/kubernetes/certs/req.config
+        content: |
+          [req]
+          req_extensions = v3_req
+          distinguished_name  = req_distinguished_name
+
+          [req_distinguished_name]
+
+          [ v3_req ]
+          # Extensions to add to a certificate request
+          basicConstraints = CA:FALSE
+          keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+          subjectAltName = @alt_names
+
+          [alt_names]
+          DNS.1   = 192.168.33.121
+          DNS.2   = kubernetes
+          DNS.3   = kubernetes.default
+
+    - shell: "{{item}}"
+      args:
+        chdir: "{{work_dir}}"
+      with_items:
+        - openssl genrsa -out ca.key 2048
+        - openssl req -x509 -new -nodes -key ca.key -subj "{{common_name}}" -days 10000 -out ca.crt -config /etc/kubernetes/certs/req.config
+        - openssl genrsa -out server.key 2048
+        - openssl req -new -key server.key -subj "{{common_name}}" -out server.csr
+        - openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -out server.crt -days 10000
+
+    - name: Read back the CA certificate
+      sudo: yes
+      slurp:
+        src: "{{ kube_cert_dir }}/ca.crt"
+      register: ca_cert
+
+    - name: copy file to minion
+      sudo: yes
+      copy:
+        content: "{{item.content}}"
+        dest: "{{kube_cert_dir}}/{{item.filename}}"
+      delegate_to: "{{ groups['s1'][0] }}"
+      with_items:
+        - filename: ca.crt
+          content: "{{ca_cert.content|b64decode}}"
+
+    - name: restart service
+      service: name={{item}} state=restarted
+      with_items:
+        - docker
+        - kubelet
+        - kube-proxy
+
+    - name: restart service
+      service: name={{item}} state=restarted
+      with_items:
+        - docker
+        - kubelet
+        - kube-proxy
+      delegate_to: "{{ groups['s1'][0] }}"
+
+    - template:
+        src: ./templates/kubeconfig.j2
+        dest: /home/vagrant/kubeconfig
+
+    # - name: certs | check certificate permissions
+    #   sudo: yes
+    #   file:
+    #     path={{ item }}
+    #     group=root
+    #     owner=kube
+    #     mode=0440
+    #   with_items:
+    #     - "{{ kube_cert_dir }}/ca.crt"
+    #     - "{{ kube_cert_dir }}/server.crt"
+    #     - "{{ kube_cert_dir }}/server.key"

@@ -1,0 +1,45 @@
+- name: init evn
+  hosts:
+    - master
+    # - agent
+  serial: 1
+  become: yes
+  tasks:
+    - name: set consul config
+      copy:
+        dest: /etc/consul/consul.json
+        content: |
+          {
+          "server": true,
+          "ui": true,
+          "data_dir": "/var/lib/consul",
+          "log_level": "INFO",
+          "bootstrap_expect": 1,
+          "client_addr": "0.0.0.0",
+          "advertise_addr": "{{ansible_all_ipv4_addresses[1]}}",
+          "bind_addr": "{{ansible_all_ipv4_addresses[1]}}"
+          }
+    - name: restart consul
+      service: name=consul state=restarted
+
+- name: init evn
+  hosts:
+    - agent
+  serial: 1
+  become: yes
+  tasks:
+    - name: set consul config
+      copy:
+        dest: /etc/consul/consul.json
+        content: |
+          {
+          "ui": true,
+          "data_dir": "/var/lib/consul",
+          "retry_join": {{groups['master'] | to_nice_json}},
+          "log_level": "INFO",
+          "client_addr": "0.0.0.0",
+          "advertise_addr": "{{ansible_all_ipv4_addresses[1]}}",
+          "bind_addr": "{{ansible_all_ipv4_addresses[1]}}"
+          }
+    - name: restart consul
+      service: name=consul state=restarted

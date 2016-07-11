@@ -1,0 +1,35 @@
+- name: init evn
+  hosts:
+    - master
+    - agent
+  serial: 1
+  become: yes
+  tasks:
+    - name: install useful package
+      yum: name={{item}} state=present
+      with_items:
+        - epel-release
+        - net-tools
+
+    - name: cp docker repo to add docker engine repo to install latest docker
+      copy:
+        dest: /etc/yum.repos.d/docker.repo
+        content: |
+          [dockerrepo]
+          name=Docker Repository
+          baseurl=https://yum.dockerproject.org/repo/main/centos/7
+          enabled=1
+          gpgcheck=1
+          gpgkey=https://yum.dockerproject.org/gpg
+
+    - name: install docker
+      yum: name=docker state=present
+
+    - name: install consul
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - https://bintray.com/artifact/download/asteris/mantl-rpm/consul-0.6.3-1.centos.x86_64.rpm
+        - https://bintray.com/artifact/download/asteris/mantl-rpm/consul-ui-0.6.3-1.x86_64.rpm
+        - https://bintray.com/artifact/download/asteris/mantl-rpm/consul-cli-0.1.0-2.x86_64.rpm

@@ -2,7 +2,7 @@
 
 
 - hosts:
-    - mk1
+    - m1
     # - ms1
   vars:
     consul_dns_domain: consul
@@ -29,9 +29,8 @@
     overlay_network_host_prefix: 24
     dns_setup: yes
     network: flannel
-  # tasks:
-  #   - debug: var=inventory_hostname
-  #     when: "not 'etcd_master' in group_names"
+  tasks:
+    - debug: var=groups
   roles:
     # - common
     # - collectd

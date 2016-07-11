@@ -1,0 +1,8 @@
+- name: init evn
+  hosts:
+    - master
+    - agent
+  serial: 1
+  become: yes
+  tasks:
+    - debug: var=ansible_all_ipv4_addresses[1]
