@@ -1,0 +1,50 @@
+---
+# tasks file for node-exporter-bin
+
+- name: stat the node-exporter
+  stat: path=/usr/local/bin/node_exporter
+  register: ne_status
+
+- name: set fact node_exporter exists
+  set_fact:
+    node_exporter_exists: "{{ne_status.stat.exists is defined and ne_status.stat.exists | bool}}"
+
+# - name: debug
+#   debug: var=node_exporter_exists
+#   when: not node_exporter_exists
+
+- name: get node_exportor bin
+  sudo: yes
+  unarchive:
+    src: https://github.com/prometheus/node_exporter/releases/download/0.12.0/node_exporter-0.12.0.linux-amd64.tar.gz
+    dest: /usr/local/bin
+    copy: no
+  when: not node_exporter_exists
+
+- name: generate node exporter bin service file
+  sudo: yes
+  copy:
+    dest: /usr/lib/systemd/system/node-exporter.service
+    content: |
+      [Unit]
+      Description=prometheus node exporter bin
+
+      [Service]
+      Restart=on-failure
+      RestartSec=20
+      TimeoutStartSec=20m
+      ExecStart=/usr/local/bin/node_exporter -web.listen-address=:9101
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: reload systemd daemon
+  sudo: yes
+  command: systemctl daemon-reload
+
+- name: restart and enable node-exporter bin
+  sudo: yes
+  service:
+    name: node-exporter
+    enabled: true
+    state: restarted

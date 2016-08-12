@@ -1,0 +1,89 @@
+- name: add tomcat service
+  hosts:
+    - agent
+  serial: 1
+  become: yes
+  vars:
+    jmx_port: 8321
+  tasks:
+    - name: add promitheus service
+      copy:
+        dest: /usr/lib/systemd/system/tomcat-prom.service
+        content: |
+          [Unit]
+          Description=tomcat
+
+          [Service]
+          Restart=on-failure
+          RestartSec=20
+          TimeoutStartSec=20m
+
+          ExecStart=/usr/bin/java -Xmx125m -jar /etc/prometheus/prom.jar 9138 /etc/prometheus/tomcat.yml
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - shell: systemctl daemon-reload
+
+    - name: add scripts
+      copy:
+        dest: /usr/bin/change_it
+        mode: 0755
+        content: |
+          curl -sSf http://localhost:8080 > /dev/null
+          if [ $? = 0 ]; then
+          echo "ok" >> /tmp/tests
+          service tomcat-prom start
+          else
+          echo "closed"  >> /tmp/tests
+          service tomcat-prom stop
+          fi
+# /usr/bin/docker run --name busybox -d busybox sh -c "while [ true ]; do echo 'e'; sleep 5; done;"
+# /usr/bin/docker rm -f busybox
+    - name: set consul config
+      copy:
+        dest: /etc/consul/tomcat-service.json
+        content: |
+          {
+            "service": {
+              "id": "tomcat",
+              "name": "tomcat",
+              "check": {
+                "http": "http://{{ansible_all_ipv4_addresses[1]}}:8080",
+                "interval": "5s",
+                "timeout": "2s"
+              }
+            }
+          }
+
+    - name: set consul config
+      copy:
+        dest: /etc/consul/consul-watchers.json
+        content: |
+          {
+              "watches": [
+              {
+              "type": "service",
+              "service": "tomcat",
+              "handler": "/usr/bin/change_it"
+              }
+              ]
+          }
+
+    - service: name=consul state=restarted
+
+
+    # - name: rm tomcat
+    #   sudo: yes
+    #   shell: docker rm -f tomcat
+    #   ignore_errors: true
+
+    # - name: start tomcat
+    #   sudo: yes
+    #   shell: |
+    #     docker run -d \
+    #     -p 8080:8080 \
+    #     -p {{jmx_port}}:{{jmx_port}} \
+    #     --name tomcat \
+    #     --env CATALINA_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port={{jmx_port}} -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.local.only=false" \
+    #     tomcat:8.0

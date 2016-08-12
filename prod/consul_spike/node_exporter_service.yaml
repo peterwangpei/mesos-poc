@@ -1,0 +1,23 @@
+- name: add node exporter service
+  hosts:
+    - agent
+  serial: 1
+  become: yes
+  tasks:
+    - name: set consul config
+      copy:
+        dest: /etc/consul/node_exporter.json
+        content: |
+          {
+            "service": {
+              "id": "node_exporter",
+              "name": "node_exporter",
+              "check": {
+                "http": "http://127.0.0.1:9101",
+                "interval": "5s",
+                "timeout": "2s"
+              }
+            }
+          }
+
+    - service: name=consul state=restarted
